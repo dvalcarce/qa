@@ -1,0 +1,120 @@
+\documentclass[12pt,a4paper,titlepage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{color,graphicx}
+\usepackage{listings}
+\usepackage{inconsolata}
+
+\definecolor{gray}{RGB}{127,127,127}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\lstset{
+language=Java,                          	% Code langugage
+basicstyle=\ttfamily,                   	% Code font
+numbers=left,                           	% Line nums position
+numberstyle=\tiny,                      	% Line-numbers fonts
+stepnumber=1,                           	% Step between two line-numbers
+numbersep=5pt,                          	% How far are line-numbers from code
+frame=none,                             	% A frame around the code
+tabsize=4,                              	% Default tab size
+captionpos=b,                           	% Caption-position = bottom
+breaklines=true,                        	% Automatic line breaking?
+breakatwhitespace=false,                	% Automatic breaks only at whitespace?
+showspaces=false,                       	% Dont make spaces visible
+showtabs=false,                         	% Dont make tabls visible
+linewidth=\textwidth,                   	% Defines the base line width
+commentstyle=\color{gray}
+}
+
+\author{
+	Daniel Garabato Míguez
+	\and Vanesa López Beade
+	\and Daniel Valcarce Silva
+}
+\title{Memoria Práctica LN}
+\date{Curso 2012-2013}
+
+\begin{document}
+
+% Título
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=10cm]{logo_udc}\\
+\vspace{1cm}
+\textsc{\Large Lenguajes Naturales}\\[0.5cm]
+\textsc{\Large Curso 2012/2013}\\[0.5cm]
+
+\HRule \\[0.4cm]
+{ \huge \bfseries My Little Trivial Player}\\[0.4cm]
+{ \Large \bfseries Memoria de la Práctica}\\[0cm]
+
+\HRule \\[0cm]
+\end{center}
+
+\vfill
+\emph{Autores:}
+\vspace{0.5cm}
+\\
+\vspace{0.1cm}
+Garabato Míguez, Daniel \texttt{<daniel.garabato@udc.es>}\\
+\vspace{0.1cm}
+López Beade, Vanesa \texttt{<vanesa.lopezb@udc.es>}\\
+\vspace{0.1cm}
+Valcarce Silva, Daniel \texttt{<daniel.valcarce@udc.es>} (Portavoz)\\
+
+\end{titlepage}
+
+
+% Índice
+\tableofcontents
+\newpage
+
+%Cuerpo
+\section{Arquitectura del sistema}
+
+
+
+\newpage
+\section{Herramientas empleadas}
+
+\subsection{Toolkits}
+NLTK
+
+\subsection{Sistema de control de versiones}
+Git y Bitbucket
+
+
+\newpage
+\section{Manual de instalación y uso}
+
+\subsection{Instalación del sistema}
+
+
+\subsection{Uso del sistema}
+
+
+
+\newpage
+\section{Diario de trabajo}
+A continuación se muestra un resumen del trabajo realizado a lo largo de la elaboración de la presente práctica. Las entradas se ordenan por su fecha cronológica y describen brevemente las decisiones y las acciones tomadas.
+
+
+\subsubsection*{2012/10/26}
+En la primera reunión del grupo, hemos discutido sobre los primeros pasos a la hora de enfrentar la práctica. Tras un análisis de los diferentes \emph{toolkits} que se nos presentan en el enunciado de la práctica, nos decidimos a usar NLTK por dos razones principales. El primer motivo es la gran cantidad de módulos que posee y su amplia documentación. En segundo lugar, porque Python nos parece un lenguaje muy cómodo para el desarrollo del proyecto.
+
+Profundizando más en el desarrollo del trabajo, decidimos usar Git como sistema de control de versiones y apoyarnos en un repositorio privado de Bitbucket. Esto nos permitirá tener nuestro código bien organizado y documentado así como proporcionarnos un respaldo de los datos.
+
+Por último, acordamos documentarnos más sobre el uso de Python en el procesamiento de lenguaje natural en general y con NLTK en particular. Para ello recurriremos a la bibliografía recomenadada por los creadores del toolkit \cite{nltk}.
+
+\subsubsection*{2012/10/29}
+
+
+\newpage
+\begin{thebibliography}{99}
+\bibitem{nltk}
+S. Bird, E. Klein, E. Loper: \emph{Natural Language Processing with Python --- Analyzing Text with the Natural Language Toolkit}, O'Reilly Media (2009)
+\end{thebibliography}
+
+
+\end{document}
