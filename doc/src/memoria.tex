@@ -79,7 +79,7 @@ Valcarce Silva, Daniel \texttt{<daniel.valcarce@udc.es>} (Portavoz)\\
 \section{Herramientas empleadas}
 
 \subsection{Toolkits}
-NLTK
+NLTK, Pattern.
 
 \subsection{Sistema de control de versiones}
 Git y Bitbucket
@@ -108,9 +108,12 @@ Profundizando más en el desarrollo del trabajo, decidimos usar Git como sistema
 Por último, acordamos documentarnos más sobre el uso de Python en el procesamiento de lenguaje natural en general y con NLTK en particular. Para ello recurriremos a la bibliografía recomendada por los creadores del toolkit \cite{nltk}. También optamos por estudiar las APIs de Google y de Bing para realizar consultas.
 
 \subsubsection*{2012/10/29}
+Hemos instalado y configurado NLTK. Hemos estudiado utilizar el módulo Pattern (en Python) para la implementación de las consultas en los buscadores (Google y Bing). Hemos solicitado unas claves para poder utilizar las APIs de dichos buscadores.
 
+Por otro lado, hemos comenzado a estudiar la formulación de la consulta (\emph{query formulation}). Debemos eliminar aquellas palabras innecesarias (\emph{stopwords}) por lo que utilizamos el diccionario de Porter ya integrado en NLTK. Consideramos mantener las comillas y los apóstrofes ya que dan mejores resultados en los buscadores. Optamos por no eliminar la interrogación final puesto que es irrelevante para ellos.
 
 \newpage
+\section{Bibliografía}
 \begin{thebibliography}{99}
 \bibitem{nltk}
 S. Bird, E. Klein, E. Loper: \emph{Natural Language Processing with Python --- Analyzing Text with the Natural Language Toolkit}, O'Reilly Media (2009)
