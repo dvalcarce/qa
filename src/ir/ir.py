@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import nltk
 import pprint
-from pattern.web import Google, Bing, Wikipedia
+from Document import Document
+from pattern.web import Google, Bing
 #from Google import Google
 
 def get_search_engines():
@@ -19,19 +20,21 @@ def get_search_engines():
 def search(query):
 	search_engines = get_search_engines()
 	
-	res = []
+	results = []
 	for engine in search_engines:
-		res += engine.search(query)
+		results += engine.search(query)
 
-	return res
+	doc_list = []
+	for resource in results:
+		doc_list.append(Document(resource))
+
+	return doc_list
 
 if __name__ == '__main__':
 	query = raw_input("Dame una query: ")
 
 	print "Buscando %s" % query
 
-	result = search(query)
+	doc_list = search(query)
 
-	for r in result:
-		pprint.pprint(r)
-		print r.description
+	pprint.pprint(doc_list[0].content)
