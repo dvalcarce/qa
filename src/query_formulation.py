@@ -12,6 +12,8 @@ def formulate_query(question):
 
 	return " ".join(final_list)
 
-question = raw_input("Write your question: ")
-query = formulate_query(question)
-print query
+if __name__ == '__main__':
+	question = raw_input("Write your question: ")
+	query = formulate_query(question)
+	print query
+
