@@ -50,16 +50,9 @@ if __name__ == '__main__':
 		else:
 			sys.exit("QA Error: bad syntax\nQA.py [file]\n")
 
-		try:
-			config = ConfigParser()
-			config.read('config.cfg')
-			num = config.getint("search_engine", "n_results")
-		except:
-			num = 10
-
 		# questions :: list of Question
 		for q in questions:
-			q.search(num)
+			q.search()
 
 	except KeyboardInterrupt:
 		sys.exit()

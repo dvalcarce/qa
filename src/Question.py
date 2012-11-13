@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import nltk
+import pickle
 import pprint
+import sys
+import ConfigParser
+from MyConfig import MyConfig
 from Document import Document
-from ConfigParser import ConfigParser
 from pattern.web import Google, Bing
 #from Google import Google
 
@@ -31,24 +34,33 @@ class Question(object):
 
 	def _get_search_engines(self):
 		try:
-			config = ConfigParser()
-			config.read('config.cfg')
-			
-			lang = config.get("search_engine", "lang")
-			engines = eval(config.get("search_engine", "engines"))
-			throttle = config.getint("search_engine", "throttle")
-		except:
-			pass
+			lang = MyConfig.get("search_engine", "lang")
+			engines = eval(MyConfig.get("search_engine", "engines"))
+			throttle = MyConfig.get("search_engine", "throttle")
+
+			l = []
+			for (engine, license) in engines:
+				# Eval to something like this:
+				# Google(google_license, throttle, lang)
+				l.append(eval(engine + "(\"" + license + "\", " + throttle + ", " + lang + ")"))
+
+			return l
+
+		except ConfigParser.Error:
+			sys.exit("_get_search_engines: config error")
+		except Exception as e:
+			print e
+			sys.exit("_get_search_engines: fatal error")
 
 
-		# Eval config file to something like this:
-		# Google(google_license, throttle, lang)			
-		return [eval(engine + "(\"" + license + "\", throttle, lang)") for (engine, license) in engines]
-
-
-	def search(self, num):
+	def search(self):
 		search_engines = self._get_search_engines()
-		
+
+		try:
+			num = int(MyConfig.get("search_engine", "n_results"))
+		except ConfigParser.Error:
+			num = 10
+
 		results = []
 		for engine in search_engines:
 			results += engine.search(self.query, count=num)
@@ -56,6 +68,11 @@ class Question(object):
 		doc_list = []
 		for resource in results:
 			doc_list.append(Document(resource))
+
+		
+		output = open("documentos.pkl", "wb")
+		pickle.dump(doc_list, output, 0)
+		output.close()
 
 		return doc_list
 
