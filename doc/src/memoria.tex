@@ -4,7 +4,6 @@
 \usepackage[T1]{fontenc}
 \usepackage[pdftex]{color,graphicx}
 \usepackage{listings}
-\usepackage{inconsolata}
 
 \definecolor{gray}{RGB}{127,127,127}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -96,6 +95,7 @@ nltk.download()
 
 \subsubsection{Google API}
 sudo pip install -U google-api-python-client
+sudo pip install -u pdfminer
 
 \subsubsection{Bing API}
 
@@ -138,6 +138,18 @@ Durante la sesión de hoy hemos continuado refinando nuestro sistema realizando 
 Además se ha implementado una sencilla interfaz para la realización de las consultas. Por un lado, se ofrece la posibilidad de introducir una única consulta manualmente en el sistema y, por otro lado, permitiremos el uso de un fichero externo para realizar múltiples consultas mediante el paso de un fichero como parámetro en nuestro programa principal. El tratamiento de dicho fichero de preguntas se realiza mediante una expresión regular con el fin de proporcionar mayor robustez al sistema.
 
 En último lugar desarrollamos la lógica necesaria para gestionar un fichero de configuración.
+
+\subsubsection*{2012/11/13}
+En primer lugar, hemos decidido crear una clase \texttt{MyConfig} cuyo objetivo es encapsular la forma de acceder al fichero de configuración.
+
+A continuación hemos utilizado el módulo pickle de Python para serializar los documentos resultantes de realizar la consulta en los buscadores.
+
+Por último, se ha desarrollado código capaz de manejar distintos tipos de documentos que nos podemos encontrar por la red:
+\begin{itemize}
+\item Los ficheros HTML se tratan con un procesador dedicado a ello que elimina las etiquetas, el código CSS o JavaScript, etc.
+\item Los archivos en texto plano no necesitan procesamiento.
+\item Aquellos documentos cuyo formato no reconocemos\footnote{En un inicio pensamos en tratar de forma especial documentos ofimáticos (.doc, .docx, .xls, .xlsx, .ppt, .pptx, OpenDocument...); sin embargo, la probabilidad de encontrárselos como resultado de la búsqueda generada por una pregunta factual es muy baja y el tratamiento genérico que hemos implementado da unos resultados satisfactorios.} son manejados de una forma genérica: mediante una expresión regular extraemos los caracteres legibles de los mismos.
+\end{itemize}
 
 \newpage
 \section{Bibliografía}
