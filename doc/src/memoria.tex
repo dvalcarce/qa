@@ -132,6 +132,13 @@ Comprobamos que efectivamente ese era el error y decidimos volver a utilizar la 
 \subsubsection*{2012/11/06}
 Se ha realizado la planificación de la arquitectura del sistema de búsqueda de respuetas con el objetivo de orientar el desarrollo de los componentes que faltan. Hemos concluido crear las clases \texttt{QA}, \texttt{Query}, \texttt{Document}, \texttt{Passage} y \texttt{Answer} tras un esbozo del diagrama de clases que se ha construido a partir de un estudio de los casos de uso.
 
+\subsubsection*{2012/11/12}
+Durante la sesión de hoy hemos continuado refinando nuestro sistema realizando una adaptación de las funcionalidades ya implementadas a la arquitectura del sistema esbozada en la sesión previa.
+
+Además se ha implementado una sencilla interfaz para la realización de las consultas. Por un lado, se ofrece la posibilidad de introducir una única consulta manualmente en el sistema y, por otro lado, permitiremos el uso de un fichero externo para realizar múltiples consultas mediante el paso de un fichero como parámetro en nuestro programa principal. El tratamiento de dicho fichero de preguntas se realiza mediante una expresión regular con el fin de proporcionar mayor robustez al sistema.
+
+En último lugar desarrollamos la lógica necesaria para gestionar un fichero de configuración.
+
 \newpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
