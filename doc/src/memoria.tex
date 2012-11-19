@@ -151,6 +151,11 @@ Por último, se ha desarrollado código capaz de manejar distintos tipos de docu
 \item Aquellos documentos cuyo formato no reconocemos\footnote{En un inicio pensamos en tratar de forma especial documentos ofimáticos (.doc, .docx, .xls, .xlsx, .ppt, .pptx, OpenDocument...); sin embargo, la probabilidad de encontrárselos como resultado de la búsqueda generada por una pregunta factual es muy baja y el tratamiento genérico que hemos implementado da unos resultados satisfactorios.} son manejados de una forma genérica: mediante una expresión regular extraemos los caracteres legibles de los mismos.
 \end{itemize}
 
+\subsubsection*{2012/11/19}
+Hemos comenzado con la división de los documentos en pasajes. Consideramos oportuno que los fragmentos sean solapados para evitar la posible pérdida de información. En principio hemos decidido segmentar los documentos por líneas ---el número de ellas será especificado en el fichero de configuración---.
+
+Posteriormente, se ha implementado el uso de logs mediante el módulo logging de Python. Hemos creado un fichero de configuración para tal efecto.
+
 \newpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
