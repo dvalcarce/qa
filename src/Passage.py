@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from pattern.web import Result, plaintext
-
+from random import random
 
 class Passage(object):
 
-	def _get_content(self, url):
-		return plaintext(url.download())
+	def calculate_score(self):
+		self.score = int(random()*10)
 
-	def __init__(self, result):
-		self.title = result.title
-		self.url = result.url
-		self.description = result.description
-		self.content = self._get_content(result)
+	def __init__(self, text):
+		self.text = text

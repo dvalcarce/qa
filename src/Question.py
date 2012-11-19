@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import nltk
 import pickle
 import pprint
@@ -49,8 +50,9 @@ class Question(object):
 		except ConfigParser.Error:
 			sys.exit("_get_search_engines: config error")
 		except Exception as e:
-			print e
-			sys.exit("_get_search_engines: fatal error")
+			logger = logging.getLogger("qa_logger")
+			logger.exception("_get_search_engines: fatal error")
+			sys.exit(2)
 
 
 	def search(self):
@@ -69,15 +71,12 @@ class Question(object):
 		for resource in results:
 			doc_list.append(Document(resource))
 
-		
-		output = open("documentos.pkl", "wb")
-		pickle.dump(doc_list, output, 0)
-		output.close()
+		try:
+			if MyConfig.get("persistence", "document") == "True":
+				output = open("documentos.pkl", "wb")
+				pickle.dump(doc_list, output, 0)
+				output.close()
+		except:
+			pass
 
 		return doc_list
-
-
-
-
-
-

@@ -1,10 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
+import logging, logging.config
+import os
 import sys
 import re
 from Question import Question
 from ConfigParser import ConfigParser
+
+def init_logger():
+	directory = "log"
+	log_config = "conf/logging.conf"
+	if not os.path.exists(directory):
+		os.mkdir(directory)
+	if not os.path.exists(log_config):
+		sys.exit("Missing or invalid log configuration")
+
+	try:
+		logging.config.fileConfig(log_config)
+	except:
+		sys.exit("fileConfig: Critical error")
+
+	logging.getLogger("qa_logger").debug('logging initialized')
+
 
 def ask():
 	print "Welcome to the best Question Answering System"
@@ -33,27 +52,43 @@ def parse_questions(path):
 	try:
 		q_file.close()
 	except:
-		pass
+		logger = logging.getLogger("qa_logger")
+		logger.warning("Questions file not closed")
 
 	return questions
+
+
+def process_documents(doc_list):
+	for doc in doc_list:
+		for passage in doc.passages:
+			passage.calculate_score()
+
 
 def show_answers(algo):
 	#do algo
 	pass
 
+
 if __name__ == '__main__':
 	try:
+		init_logger()
+
 		if len(sys.argv) == 1:
 			questions = ask()
 		elif len(sys.argv) == 2:
+			if sys.argv[1] == "pickle":
+				pkl_file = open('documentos.pkl', 'rb')
+				doc_list = pickle.load(pkl_file)
+				process_documents(doc_list)
+
 			questions = parse_questions(sys.argv[1])
 		else:
-			sys.exit("QA Error: bad syntax\nQA.py [file]\n")
+			sys.exit("QA Error: bad syntax\nQA.py [file]")
 
-		# questions :: list of Question
 		for q in questions:
-			q.search()
+			doc_list = q.search()
+			process_documents(doc_list)
 
 	except KeyboardInterrupt:
-		sys.exit()
+		sys.exit("\nExiting...")
 

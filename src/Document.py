@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import re
 from pattern.web import Result, URL, URLError, plaintext
@@ -7,10 +8,11 @@ from pdfminer.pdfinterp import PDFResourceManager, process_pdf
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from cStringIO import StringIO
+from Passage import Passage
 
 class Document(object):
 
-	def _extract_text(self, content):
+	def _binary_to_plaintext(self, content):
 		print content
 		text = " ".join(re.findall(r"[\w'?!\(\)\{\}\[\]\$\.,:;\-\_@\&\*\+]+", content))
 		print "\n"*5
@@ -42,28 +44,59 @@ class Document(object):
 
 		return text
 
+	def _extract_text(self, text, mimetype):
+		if (mimetype == "text/html" or mimetype == "xml"):
+			return plaintext(text)
+		elif (mimetype == "application/pdf"):
+			self._pdf_to_plaintext(text)
+		elif (mimetype == "text/plain"):
+			return text
+		else:
+			return self._binary_to_plaintext(text)
 
-	def get_content(self, result):
+	def _get_content(self, result):
 		url = URL(result.url)
 		mimetype = url.mimetype
 
 		try:
 			content = url.download()
-		except URLError:
+		except:
+			# If we cannot retrieve the document,
+			# we skip it
+			logger = logging.getLogger("qa_logger")
+			logger.warning("%s couldn't be retrieved", result.url)
 			return ""
 
-		if (mimetype == "text/html" or mimetype == "xml"):
-			return plaintext(content)
-		elif (mimetype == "application/pdf"):
-			self._pdf_to_plaintext(content)
-		elif (mimetype == "text/plain"):
-			return content
-		else:
-			return self._extract_text(content)
+		return self._extract_text(content, mimetype)
 
+
+	def _get_passages(self, text):
+
+		lines = text.split("\n")
+		passage_list = []
+
+		try:
+			n_lines = int(MyConfig.get("passage_retrieval", "n_lines"))
+		except:
+			n_lines = 5
+
+		# Iterating over the lines of the document
+		# obtaining overlapped passages:
+		# 	max(1, len(lines)-n_lines+1)
+		# Don't ask: magic numbers ;-)
+		for i in range(0, max(1, len(lines)-n_lines+1)):
+			piece_of_text = lines[i : i+n_lines]
+
+			passage_list.append(Passage(piece_of_text))
+
+		return passage_list
 
 	def __init__(self, result):
 		self.title = result.title
 		self.url = result.url
-		self.description = result.description
-		self.content = self.get_content(result)
+		self.description = plaintext(result.description)
+
+		# Split document into passages
+		content = self._get_content(result)
+		self.passages = self._get_passages(content)
+
