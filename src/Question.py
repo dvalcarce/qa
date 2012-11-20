@@ -9,23 +9,19 @@ import ConfigParser
 from MyConfig import MyConfig
 from Document import Document
 from pattern.web import Google, Bing
-#from Google import Google
+from algorythms.query import *
 
 class Question(object):
 
 	def _formulate_query(self):
-		
-		q = self.text.lower()
-
-		# Tokenize question
-		token_list = q.split()
-
-		# Remove stopwords
-		stopwords_list = nltk.corpus.stopwords.words('english')
-		final_list = [w for w in token_list if not (w in stopwords_list)]
-
-		return " ".join(final_list)
-
+		try:
+			algorythm = MyConfig.get("query_formulation", "algorythm")
+			if algorythm == "stopwords":
+				return StopwordsAlgorythm.formulate_query(self.text)
+			else:
+				return StopwordsAlgorythm.formulate_query(self.text)
+		except:
+			return StopwordsAlgorythm.formulate_query(self.text)
 
 	def __init__(self, id_q, text):
 		self.id_q = id_q
@@ -61,6 +57,8 @@ class Question(object):
 		try:
 			num = int(MyConfig.get("search_engine", "n_results"))
 		except ConfigParser.Error:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("search_engine:n_results not found")
 			num = 10
 
 		results = []
@@ -68,8 +66,13 @@ class Question(object):
 			results += engine.search(self.query, count=num)
 
 		doc_list = []
+		# rank loops over [0..num-1]
+		rank = 0
 		for resource in results:
-			doc_list.append(Document(resource))
+			# rank+1 loops over [1..num]
+			# rank+1 is the relative position of the results
+			doc_list.append(Document(resource, rank+1))
+			rank = (rank+1) % num
 
 		try:
 			if MyConfig.get("persistence", "document") == "True":

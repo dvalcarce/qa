@@ -5,7 +5,7 @@ import ConfigParser
 class MyConfig:
 
 	_instance = ConfigParser.ConfigParser()
-	_instance.read("config.cfg")
+	_instance.read("conf/config.conf")
 
 	@classmethod
 	def get(self, section, item):

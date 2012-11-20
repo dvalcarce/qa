@@ -6,6 +6,7 @@ import logging, logging.config
 import os
 import sys
 import re
+import pickle
 from Question import Question
 from ConfigParser import ConfigParser
 
@@ -58,10 +59,10 @@ def parse_questions(path):
 	return questions
 
 
-def process_documents(doc_list):
+def score_passages(doc_list, question):
 	for doc in doc_list:
 		for passage in doc.passages:
-			passage.calculate_score()
+			passage.calculate_score(question)
 
 
 def show_answers(algo):
@@ -76,18 +77,19 @@ if __name__ == '__main__':
 		if len(sys.argv) == 1:
 			questions = ask()
 		elif len(sys.argv) == 2:
+			# DEBUG
 			if sys.argv[1] == "pickle":
 				pkl_file = open('documentos.pkl', 'rb')
 				doc_list = pickle.load(pkl_file)
-				process_documents(doc_list)
-
+				score_passages(doc_list, Question("0001", "Who discovered radium?"))
+			# END DEBUG
 			questions = parse_questions(sys.argv[1])
 		else:
 			sys.exit("QA Error: bad syntax\nQA.py [file]")
 
 		for q in questions:
 			doc_list = q.search()
-			process_documents(doc_list)
+			score_passages(doc_list, q)
 
 	except KeyboardInterrupt:
 		sys.exit("\nExiting...")

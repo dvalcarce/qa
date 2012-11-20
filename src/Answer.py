@@ -2,7 +2,6 @@
 
 from pattern.web import Result, plaintext
 
-
 class Answer(object):
 
 	def _get_content(self, url):

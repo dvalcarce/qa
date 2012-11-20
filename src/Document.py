@@ -85,15 +85,17 @@ class Document(object):
 		# 	max(1, len(lines)-n_lines+1)
 		# Don't ask: magic numbers ;-)
 		for i in range(0, max(1, len(lines)-n_lines+1)):
-			piece_of_text = lines[i : i+n_lines]
-
-			passage_list.append(Passage(piece_of_text))
+			lines_of_text = lines[i : i+n_lines]
+			# Join list of lines
+			piece_of_text = "\n".join(lines_of_text)
+			passage_list.append(Passage(piece_of_text, self))
 
 		return passage_list
 
-	def __init__(self, result):
+	def __init__(self, result, rank):
 		self.title = result.title
 		self.url = result.url
+		self.rank = rank
 		self.description = plaintext(result.description)
 
 		# Split document into passages
