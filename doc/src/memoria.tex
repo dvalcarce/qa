@@ -156,6 +156,13 @@ Hemos comenzado con la división de los documentos en pasajes. Consideramos opor
 
 Posteriormente, se ha implementado el uso de logs mediante el módulo logging de Python. Hemos creado un fichero de configuración para tal efecto.
 
+\subsubsection*{2012/11/20}
+En primer lugar, hemos reestructurado el proyecto para utilizar el patrón estrategia para los algoritmos de formulación de consultas, puntuación de pasajes y procesamiento de respuestas.
+
+Hemos desarrollado nuestra primera heurística para la evaluación de la relevancia de los pasajes en la búsqueda de respuestas. El algoritmo se basa en la similitud entre el pasaje y la pregunta. Se limpia la pregunta y el pasaje de símbolos y stopwords. A continuación se calcula el número de palabras coincidentes. Dividimos dicha cantidad entre el número de palabras en el pasaje y lo ponderamos por la relevancia del resultado según el buscador.
+
+Por otro lado, se ha refinado el algoritmo de formulación de consultas eliminando símbolos no deseados.
+
 \newpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
