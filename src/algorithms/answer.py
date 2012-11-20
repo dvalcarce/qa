@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-class AnswerAlgorythm(object):
+class AnswerAlgorithm(object):
 
 	@classmethod
 	def cosa(self):
 		pass
 
-class XXXAlgorithm(PassageAlgorythm):
+class XXXAlgorithm(PassageAlgorithm):
 
 	@classmethod
 	def cosa(self):

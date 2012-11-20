@@ -3,23 +3,23 @@
 import logging
 from MyConfig import MyConfig
 
-from algorythms.passage import *
+from algorithms.passage import *
 
 class Passage(object):
 
 	def calculate_score(self, question):
 
 		try:
-			algorythm = MyConfig.get("passage_score", "algorythm")
-			if (algorythm == "similarity"):
+			algorithm = MyConfig.get("passage_score", "algorithm")
+			if (algorithm == "similarity"):
 				self.score = SimilarityAlgorithm.calculate_score(question, self)
-			elif (algorythm == "0"):
+			elif (algorithm == "0"):
 				self.score = 0
 			else:
 				self.score = 0
 		except:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("passage algorythm not found")
+			logger.warning("passage algorithm not found")
 			self.score = SimilarityAlgorithm.calculate_score(question, self)
 
 	def __init__(self, text, document):

@@ -9,19 +9,19 @@ import ConfigParser
 from MyConfig import MyConfig
 from Document import Document
 from pattern.web import Google, Bing
-from algorythms.query import *
+from algorithms.query import *
 
 class Question(object):
 
 	def _formulate_query(self):
 		try:
-			algorythm = MyConfig.get("query_formulation", "algorythm")
-			if algorythm == "stopwords":
-				return StopwordsAlgorythm.formulate_query(self.text)
+			algorithm = MyConfig.get("query_formulation", "algorithm")
+			if algorithm == "stopwords":
+				return StopwordsAlgorithm.formulate_query(self.text)
 			else:
-				return StopwordsAlgorythm.formulate_query(self.text)
+				return StopwordsAlgorithm.formulate_query(self.text)
 		except:
-			return StopwordsAlgorythm.formulate_query(self.text)
+			return StopwordsAlgorithm.formulate_query(self.text)
 
 	def __init__(self, id_q, text):
 		self.id_q = id_q

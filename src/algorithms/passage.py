@@ -4,13 +4,13 @@ import logging
 from MyConfig import MyConfig
 from query import *
 
-class PassageAlgorythm(object):
+class PassageAlgorithm(object):
 
 	@classmethod
 	def calculate_score(self, question, text):
 		pass
 
-class SimilarityAlgorithm(PassageAlgorythm):
+class SimilarityAlgorithm(PassageAlgorithm):
 
 	@classmethod
 	def calculate_score(self, question, passage):
@@ -20,8 +20,8 @@ class SimilarityAlgorithm(PassageAlgorythm):
 
 		# Remove stopwords from question and passage
 		# and split it into words
-		q = StopwordsAlgorythm.formulate_query(q).split()
-		text = StopwordsAlgorythm.formulate_query(text).split()
+		q = StopwordsAlgorithm.formulate_query(q).split()
+		text = StopwordsAlgorithm.formulate_query(text).split()
 
 		# Filter all words in passage that they are
 		# not present in question
