@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+from algorithms.passage import *
 from pattern.web import Result, URL, URLError, plaintext
 from pdfminer.pdfinterp import PDFResourceManager, process_pdf
 from pdfminer.converter import TextConverter
@@ -69,36 +70,25 @@ class Document(object):
 
 		return self._extract_text(content, mimetype)
 
-
-	def _get_passages(self, text):
-
-		lines = text.split("\n")
-		passage_list = []
-
-		try:
-			n_lines = int(MyConfig.get("passage_retrieval", "n_lines"))
-		except:
-			n_lines = 5
-
-		# Iterating over the lines of the document
-		# obtaining overlapped passages:
-		# 	max(1, len(lines)-n_lines+1)
-		# Don't ask: magic numbers ;-)
-		for i in range(0, max(1, len(lines)-n_lines+1)):
-			lines_of_text = lines[i : i+n_lines]
-			# Join list of lines
-			piece_of_text = "\n".join(lines_of_text)
-			passage_list.append(Passage(piece_of_text, self))
-
-		return passage_list
-
 	def __init__(self, result, rank):
 		self.title = result.title
 		self.url = result.url
 		self.rank = rank
 		self.description = plaintext(result.description)
 
-		# Split document into passages
 		content = self._get_content(result)
-		self.passages = self._get_passages(content)
+
+		# Split document into passages
+		try:
+			algorithm = MyConfig.get("passage_retrieval", "algorithm")
+			if algorithm == "fixed_lines":
+				self.passages = FixedNumberOfLinesAlgorithm.split_into_passages(self, content)
+			elif algorithm == "paragraphs":
+				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
+			else:
+				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
+		except:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("passage retrieval algorithm not found")
+			self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
 

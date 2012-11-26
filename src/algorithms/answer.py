@@ -6,8 +6,13 @@ class AnswerAlgorithm(object):
 	def cosa(self):
 		pass
 
+
 class XXXAlgorithm(PassageAlgorithm):
 
 	@classmethod
-	def cosa(self):
-		pass
+	def process_answer(self, passage, question):
+		# Do magic
+
+		answer = Answer(passage, question, window, exact, score)
+
+		return answer
