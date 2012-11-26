@@ -163,6 +163,15 @@ Hemos desarrollado nuestra primera heurística para la evaluación de la relevan
 
 Por otro lado, se ha refinado el algoritmo de formulación de consultas eliminando símbolos no deseados.
 
+\subsubsection*{2012/11/26}
+Decidimos utilizar otro patrón estrategia para la segmentación del texto en pasajes. Creamos una estrategia nueva que segmenta el texto en párrafos, complementando asi a la estrategia de segmentar por un número fijo de líneas.
+
+Mejoramos el algoritmo de filtrado de pasajes relevantes por similitud aplicando \emph{stemming} a la pregunta y al pasaje mediante el uso del Stemmer de Porter. Probamos además el uso de un lematizador basado en WordNet, pero tras su prueba descartamos su utilización ya que discriminaba menos casos similares.
+
+Documentamos el fichero de configuración con los posibles algoritmos a emplear (formulación de consultas, segmentación en pasajes, búsqueda de pasajes relevantes y procesamiento de respuestas).
+
+Implementamos lógica adicional para la gestión de las respuestas y su correcta visualización de acuerdo a las normas del enunciado de la práctica.
+
 \newpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
