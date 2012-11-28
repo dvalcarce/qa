@@ -2,13 +2,13 @@
 
 import nltk.corpus
 
-class QueryAlgorithm(object):
+class QueryFormulationAlgorithm(object):
 
 	@classmethod
 	def formulate_query(self, question):
 		pass
 
-class StopwordsAlgorithm(QueryAlgorithm):
+class StopwordsAlgorithm(QueryFormulationAlgorithm):
 
 	@classmethod
 	def formulate_query(self, question):

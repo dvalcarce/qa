@@ -3,7 +3,7 @@
 import logging
 import os
 import re
-from algorithms.passage import *
+from algorithms.document import *
 from pattern.web import Result, URL, URLError, plaintext
 from pdfminer.pdfinterp import PDFResourceManager, process_pdf
 from pdfminer.converter import TextConverter

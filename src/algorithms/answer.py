@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-class AnswerAlgorithm(object):
+class AnswerExtractionAlgorithm(object):
 
 	@classmethod
 	def cosa(self):
 		pass
 
 
-class XXXAlgorithm(PassageAlgorithm):
+class XXXAlgorithm(AnswerExtractionAlgorithm):
 
 	@classmethod
 	def process_answer(self, passage, question):
