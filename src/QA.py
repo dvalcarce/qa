@@ -75,7 +75,7 @@ def score_passages(doc_list, question):
 
 def get_relevant_passages(doc_list, question):
 	passage_list = score_passages(doc_list, question)
-	passage_list.sort(key=Passage.comparator, reverse=True)
+	passage_list.sort(key=lambda x: x.score, reverse=True)
 
 	# Select n best passages
 	try:
@@ -91,17 +91,17 @@ def get_relevant_passages(doc_list, question):
 def get_best_answers(passage_list, q):
 	answer_list = []
 	for passage in passage_list:
-		answer_list.append(passage.find_answer())
+		answer_list.append(passage.find_answer(q))
 
 	# Calculate best answers
-	answer_list.sort(key=Answer.comparator, reverse=True)
+	answer_list.sort(key=lambda x: x.score, reverse=True)
 
 	return answer_list[:3]
 
 
 def show_answers(answer_list):
 	for i in range(0, 3):
-		print answer_list[i].format(i)
+		print str(answer_list[i]).format(i+1)
 
 
 if __name__ == '__main__':

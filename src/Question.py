@@ -68,7 +68,13 @@ class Question(object):
 		doc_list = []
 		# rank loops over [0..num-1]
 		rank = 0
+		# ignore repeated urls
+		unique_urls = set()
 		for resource in results:
+			if resource.url in unique_urls:
+				continue
+			unique_urls.add(resource.url)
+
 			# rank+1 loops over [1..num]
 			# rank+1 is the relative position of the results
 			doc_list.append(Document(resource, rank+1))
