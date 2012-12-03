@@ -4,6 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[pdftex]{color,graphicx}
 \usepackage{listings}
+\usepackage{url}
 
 \definecolor{gray}{RGB}{127,127,127}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -70,21 +71,39 @@ Valcarce Silva, Daniel \texttt{<daniel.valcarce@udc.es>} (Portavoz)\\
 \clearpage
 
 %Cuerpo
-\section{Arquitectura del sistema}
-Bla, bla, bla...
+\section{Introducción}
+El objetivo de la presente práctica es realizar la implementación de un sistema de búsqueda de respuestas (\emph{question answering}). Para ello, en primer lugar, diseñaremos una arquitectura general del sistema. A continuación, se especificará el funcionamiento de cada uno de los módulos y como se implementará.
 
-En la Figura \ref{fig:arquitectura}, se puede observar la arquitectura general del sistema.
+Consideraremos diferentes estrategias a la hora de resolver los diferentes problemas y las evaluaremos para quedarnos con las que nos den mejores resultados.
+
+\section{Arquitectura del sistema}
+Basándonos en varios modelos conceptuales de un sistema de búsqueda de respuestas (\cite{modelo1}, \cite{modelo2}) y el dado en la asignatura, hemos desarrollado nuestra propia arquitectura que puede verse en la Figura \ref{fig:arquitectura}.
 
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[width=\textwidth]{res/arquitectura}
+\includegraphics[width=\textwidth]{res/secuencia}
 \end{center}
 \caption{Arquitectura general del sistema}
 \label{fig:arquitectura}
 \end{figure}
 
+\begin{description}
+	\item[Query Formulation] A partir de una pregunta en lenguaje natural genera una consulta (\emph{query}) que será posteriormente interpretada por un motor de búsqueda web.
+	\item[Document Retrieval] Obtiene una lista de documentos tras realizar la consulta pertinente en los motores de búsqueda. 
+	\item[Passage Retrieval] Devuelve los pasajes relevantes de la lista de documentos anterior.
+		\begin{description}
+			\item[Document Segmentation] Divide cada documento en pasajes.
+			\item[Passage Filtering] Selecciona los pasajes más relevantes.
+		\end{description}
+	\item[Answer Procesing] Genera las respuestas asociadas a los pasajes relevantes.
+		\begin{description}
+			\item[Answer Extraction] Extrae las respuestas asociadas a cada pasaje.
+			\item[Answer Filtering]	Filtra las mejores respuestas.
+		\end{description}
+\end{description}
+
 \subsection{Proceso de búsqueda}
-El proceso de búsqueda de respuestas del sistema... Se puede ver un diagrama de secuencia en la Figura \ref{fig:secuencia}.
+Para ilustrar el proceso de búsqueda de respuestas del sistema, hemos elaborado un diagrama de secuencia que puede verse en la Figura \ref{fig:secuencia}.
 
 \begin{figure}[h!]
 \begin{center}
@@ -97,11 +116,16 @@ El proceso de búsqueda de respuestas del sistema... Se puede ver un diagrama de
 \clearpage
 \section{Herramientas empleadas}
 
-\subsection{Toolkits}
-NLTK.
 
-\subsection{Sistema de control de versiones}
-Git y Bitbucket
+\begin{description}
+	\item[NLTK] Framework libre de procesamiento de lenguaje natural para Python. Puede descargarse en \cite{nltk}.
+	\item[Pattern] Módulo de \emph{web mining} libre para Python. Puede descargarse en \cite{pattern}.
+	\item[PDFMiner] Módulo de Python para la extracción de información de docuemntos PDF. Más información en \cite{pdfminer}.
+	\item[Git] Sistema de control de versiones distribuido libre. Puede descargarse en \cite{git}.
+	\item[BitBucket] Repositorio online para git. Puede accederse a él en \cite{bitbucket}.
+	\item[\LaTeX] Sistema de composición de textos con el que se ha elborado el presente documento. Más información en \cite{latex}.
+	
+\end{description}
 
 
 \clearpage
@@ -114,7 +138,7 @@ sudo pip install -U nltk
 nltk.download()
 
 \subsubsection{Google API}
-sudo pip install -U google-api-python-client
+
 sudo pip install -u pdfminer
 
 \subsubsection{Bing API}
@@ -194,30 +218,54 @@ Implementamos lógica adicional para la gestión de las respuestas y su correcta
 
 \subsubsection*{2012/11/27}
 Durante el día de hoy se ha diseñado el gráfico de arquitectura del sistema, estableciendo los diferentes módulos que componen el mismo:
+
 \begin{itemize}
 \item Query Formulation 
 \item Document Retrieval
 \item Passage Retrieval
-\begin{itemize}
-\item Document Segmentation
-\item Passage Filtering 
-\end{itemize}
+	\begin{itemize}
+	\item Document Segmentation
+	\item Passage Filtering 
+	\end{itemize}
 \item Answer Processing
-\begin{itemize}
-\item Answer Extraction
-\item Answer Filtering
-\end{itemize}
+	\begin{itemize}
+	\item Answer Extraction
+	\item Answer Filtering
+	\end{itemize}
 \end{itemize}
 
 Así mismo hemos elaborado un diagrama de secuencia en el que se expone el funcionamiento global del sistema (puesto que éste solo contempla un único caso de uso: realizar consultas).
 
+\subsubsection*{2012/12/03}
+Corrección de múltiples errores en diferentes módulos de la práctica.
+
+Hemos considerado que una consulta en diferentes motores de búsqueda nos puede dar los mismos documentos como resultado; por tanto, se ha decidido controlar la posible repetición de documentos para evitar duplicados.
+
 \clearpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
+
+\bibitem{nltk}
+NLTK: \url{http://www.nltk.org}.
+
 \bibitem{nltk-book}
-S. Bird, E. Klein, E. Loper: \emph{Natural Language Processing with Python --- Analyzing Text with the Natural Language Toolkit}, O'Reilly Media (2009)
-\bibitem{pattern-web}
-CLIPS: Pattern. http://www.clips.ua.ac.be/pages/pattern
+S. Bird, E. Klein, E. Loper: \emph{Natural Language Processing with Python --- Analyzing Text with the Natural Language Toolkit}, O'Reilly Media (2009).
+
+\bibitem{pattern}
+CLIPS Pattern: \url{http://www.clips.ua.ac.be/pages/pattern}.
+
+\bibitem{pdfminer}
+PDFMiner: \url{http://www.unixuser.org/~euske/python/pdfminer/index.html}.
+
+\bibitem{git}
+Git: \url{http://www.git-scm.com}.
+
+\bibitem{bitbucket}
+BitBucket: \url{http://www.bitbucket.org/daniel_garabato/ln}.
+
+\bibitem{latex}
+\LaTeX: \url{http://www.latex-project.org}.
+
 \end{thebibliography}
 
 
