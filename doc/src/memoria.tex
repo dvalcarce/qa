@@ -172,6 +172,25 @@ Documentamos el fichero de configuración con los posibles algoritmos a emplear 
 
 Implementamos lógica adicional para la gestión de las respuestas y su correcta visualización de acuerdo a las normas del enunciado de la práctica.
 
+\subsubsection*{2012/11/27}
+Durante el día de hoy se ha diseñado el gráfico de arquitectura del sistema, estableciendo los diferentes módulos que componen el mismo:
+\begin{itemize}
+\item Query Formulation 
+\item Document Retrieval
+\item Passage Retrieval
+\begin{itemize}
+\item Document Segmentation
+\item Passage Filtering 
+\end{itemize}
+\item Answer Processing
+\begin{itemize}
+\item Answer Extraction
+\item Answer Filtering
+\end{itemize}
+\end{itemize}
+
+Así mismo hemos elaborado un diagrama de secuencia en el que se expone el funcionamiento global del sistema (puesto que éste solo contempla un único caso de uso: realizar consultas).
+
 \newpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
