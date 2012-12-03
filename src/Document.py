@@ -14,10 +14,8 @@ from Passage import Passage
 class Document(object):
 
 	def _binary_to_plaintext(self, content):
-		print content
 		text = " ".join(re.findall(r"[\w'?!\(\)\{\}\[\]\$\.,:;\-\_@\&\*\+]+", content))
-		print "\n"*5
-		print text
+
 		return text
 
 	def _pdf_to_plaintext(self, content):
@@ -53,6 +51,8 @@ class Document(object):
 		elif (mimetype == "text/plain"):
 			return text
 		else:
+			logger = logging.getLogger("qa_logger")
+			logger.debug("document mimetype %s processed", mimetype)
 			return self._binary_to_plaintext(text)
 
 	def _get_content(self, result):

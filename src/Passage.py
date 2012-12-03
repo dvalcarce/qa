@@ -4,12 +4,9 @@ import logging
 from MyConfig import MyConfig
 
 from algorithms.passage import *
+from algorithms.answer import *
 
 class Passage(object):
-
-	@classmethod
-	def comparator(x, y):
-		return cmp(x.score, y.score)
 
 	def calculate_score(self, question):
 		try:

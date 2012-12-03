@@ -6,10 +6,6 @@ from pattern.web import Result, plaintext
 
 class Answer(object):
 
-	@classmethod
-	def comparator(x, y):
-		return cmp(x.score, y.score)
-
 	def __str__(self):
 		id_q = self.question.id_q
 		
@@ -25,7 +21,7 @@ class Answer(object):
 		url = self.passage.document.url
 		text = self.exact if exact else self.window
 
-		return id_q + " " + run_tag + " {0} " + score + " " + url + " " + text
+		return id_q + " " + run_tag + " {0} " + str(score) + " " + url + " " + text
 
 
 	def __init__(self, passage, question, window, exact, score):

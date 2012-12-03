@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import Passage
+from Passage import Passage
 
 from MyConfig import MyConfig
 
