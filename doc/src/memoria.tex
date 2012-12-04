@@ -241,6 +241,13 @@ Corrección de múltiples errores en diferentes módulos de la práctica.
 
 Hemos considerado que una consulta en diferentes motores de búsqueda nos puede dar los mismos documentos como resultado; por tanto, se ha decidido controlar la posible repetición de documentos para evitar duplicados.
 
+\subsubsection*{2012/12/04}
+Añadimos la escritura de resultados en un fichero.
+
+Implementamos la lógica necesaria para gestionar la posible falta de respuestas. Por un lado, si los motores de búsqueda no nos devuelven resultados deolvemos NIL con la puntuación máxima. Por otro lado, si no encontramos una buena respuesta en los documentos de la web devolvemos NIL con la puntuación mínima. Por último si el número de respuestas admisibles es menor que tres, las mostramos y añadimos un NIL con puntuación mínima.
+
+En el fichero de configuración, podemos especificar el umbral de lo que consideramos una respuesta admisible.
+
 \clearpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
