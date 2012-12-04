@@ -6,9 +6,8 @@ from pattern.web import Result, plaintext
 
 class Answer(object):
 
-	def __str__(self):
-		id_q = self.question.id_q
-		
+	@classmethod
+	def get_run_tag(self):
 		try:
 			exact = MyConfig.get("show_answer", "exact") == "True"
 		except:
@@ -16,7 +15,12 @@ class Answer(object):
 			logger.warning("show_answer exact not found")
 			exact = False
 
-		run_tag = "plna" + ("ex" if exact else "st") + "031ms"
+		return ("plna" + ("ex" if exact else "st") + "031ms", exact)
+
+
+	def __str__(self):
+		id_q = self.question.id_q
+		(run_tag, exact) = Answer.get_run_tag()
 		score = self.score
 		url = self.passage.document.url
 		text = self.exact if exact else self.window

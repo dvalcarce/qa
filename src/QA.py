@@ -7,11 +7,13 @@ import os
 import sys
 import re
 import pickle
+import codecs
 from Answer import Answer
 from Passage import Passage
 from MyConfig import MyConfig
 from Question import Question
 from ConfigParser import ConfigParser
+from datetime import datetime
 
 def init_logger():
 	directory = "log"
@@ -48,7 +50,7 @@ def parse_questions(path):
 	questions = []
 	for line in q_file:
 		# We use a regular expression for matching questions
-		m = re.match(r"(?P<id>[^ \t]*)[ \t]*(?P<question>.*)", line)
+		m = re.match(r"(?P<id>[^ \t]+)[ \t]*(?P<question>.+)", line)
 		id_q = m.group("id")
 		q = m.group("question")
 		questions.append(Question(id_q, q))
@@ -89,19 +91,75 @@ def get_relevant_passages(doc_list, question):
 
 
 def get_best_answers(passage_list, q):
+	empty = passage_list == []
+
 	answer_list = []
 	for passage in passage_list:
 		answer_list.append(passage.find_answer(q))
 
-	# Calculate best answers
+	# Sort answers by score
 	answer_list.sort(key=lambda x: x.score, reverse=True)
 
-	return answer_list[:3]
+	# Filter bad answers
+	try:
+		threshold = int(MyConfig.get("answer_filtering", "threshold"))
+	except:
+		logger = logging.getLogger("qa_logger")
+		logger.error("answer quality threshold not found")
+		threshold = 200
+
+	answer_list = filter(lambda x: x.score > threshold, answer_list)
+
+	return (answer_list[:3], empty)
 
 
-def show_answers(answer_list):
-	for i in range(0, 3):
-		print str(answer_list[i]).format(i+1)
+def write_answers(answer_list, empty, q):
+	id_q = q.id_q
+	(run_tag, _) = Answer.get_run_tag()
+
+	date = datetime.strftime(datetime.today(), "%Y-%m-%d_%H:%M:%S")
+	folder = "answers"
+	if not os.path.isdir(folder) and os.path.exists(folder):
+		logger = logging.getLogger("qa_logger")
+		logger.error("answers folder cannot be created")
+		sys.exit()
+	if not os.path.exists(folder):
+		os.mkdir(folder)
+
+	f = codecs.open(os.path.join(folder, date + ".txt"), "a", encoding="ascii", errors="ignore")
+
+	if answer_list == []:
+
+		if empty:
+			# If there are no documents related to the query,
+			# then there is no answer with maximum probability.
+			f.write(id_q + " " + run_tag + " 1 1000 NIL\n")
+		else:
+			# If there are no good answer,
+			# then we return NIL with score 0.
+			f.write(id_q + " " + run_tag + " 1 0 NIL\n")
+		return
+
+	position = 1
+	for answer in answer_list:
+		f.write(str(answer).format(position) + "\n")
+		position += 1
+
+	if len(answer_list) < 3:
+		# If the are less than 3 good answers,
+		# then we return NIL with score 0 in the next position
+		f.write(id_q + " " + run_tag + " " + str(position) + " 0 NIL\n")
+
+
+def debug():
+	pkl_file = open('documentos.pkl', 'rb')
+	doc_list = pickle.load(pkl_file)
+	q = Question("0001", "Who discovered radium?")
+	passages = get_relevant_passages(doc_list, q)
+	(answers, empty) = get_best_answers(passages, q)
+	write_answers(answers, empty, q)
+
+	sys.exit()
 
 
 if __name__ == '__main__':
@@ -113,9 +171,7 @@ if __name__ == '__main__':
 		elif len(sys.argv) == 2:
 			# DEBUG
 			if sys.argv[1] == "pickle":
-				pkl_file = open('documentos.pkl', 'rb')
-				doc_list = pickle.load(pkl_file)
-				score_passages(doc_list, Question("0001", "Who discovered radium?"))
+				debug()
 			# END DEBUG
 			questions = parse_questions(sys.argv[1])
 		else:
@@ -124,8 +180,8 @@ if __name__ == '__main__':
 		for q in questions:
 			doc_list = q.search()
 			passages = get_relevant_passages(doc_list, q)
-			answers = get_best_answers(passages, q)
-			show_answers(answers)
+			(answers, empty) = get_best_answers(passages, q)
+			write_answers(answers, empty, q)
 
 
 	except KeyboardInterrupt:
