@@ -24,17 +24,17 @@ class Passage(object):
 
 	def find_answer(self, question):
 		try:
-			algorithm = MyConfig.get("answer_retrieval", "algorithm")
-			if (algorithm == "xxx"):
-				self.answer = XXXAlgorithm.process_answer(self, question)
-			elif (algorithm == "0"):
-				self.answer = None
+			algorithm = MyConfig.get("answer_extraction", "algorithm")
+			if (algorithm == "random"):
+				self.answer = RandomAlgorithm.process_answer(self, question)
+			elif (algorithm == "entity"):
+				self.answer = EntityRecognitionAlgorithm.process_answer(self, question)
 			else:
 				self.answer = None
 		except:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("answer retrieval algorithm not found")
-			self.answer = XXXAlgorithm.process_answer(self, question)
+			logger.warning("answer extraction algorithm not found")
+			self.answer = EntityRecognitionAlgorithm.process_answer(self, question)
 
 		return self.answer
 
