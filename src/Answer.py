@@ -18,6 +18,10 @@ class Answer(object):
 		return ("plna" + ("ex" if exact else "st") + "031ms", exact)
 
 
+	def is_successful(self):
+		return self.exact != "" or self.window != ""
+
+
 	def __str__(self):
 		id_q = self.question.id_q
 		(run_tag, exact) = Answer.get_run_tag()
@@ -34,3 +38,15 @@ class Answer(object):
 		self.window = window
 		self.exact = exact
 		self.score = score
+
+
+	def __eq__(self, other):
+		return self.exact.lower() == other.exact.lower()
+
+
+	def __cmp__(self, other):
+		return cmp(self.exact.lower(), other.exact.lower())
+
+
+	def __hash__(self):
+		return hash(self.exact.lower())

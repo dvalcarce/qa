@@ -25,8 +25,8 @@ class Passage(object):
 	def find_answer(self, question):
 		try:
 			algorithm = MyConfig.get("answer_extraction", "algorithm")
-			if (algorithm == "random"):
-				self.answer = RandomAlgorithm.process_answer(self, question)
+			if (algorithm == "xxx"):
+				self.answer = XXXAlgorithm.process_answer(self, question)
 			elif (algorithm == "entity"):
 				self.answer = EntityRecognitionAlgorithm.process_answer(self, question)
 			else:

@@ -18,6 +18,9 @@ class FixedNumberOfLinesAlgorithm(DocumentSegmentationAlgorithm):
 
 	@classmethod
 	def split_into_passages(self, document, text):
+		if text is None or document is None:
+			return []
+
 		lines = document.split("\n")
 		passage_list = []
 
@@ -43,6 +46,9 @@ class SplitIntoParagraphsAlgorithm(DocumentSegmentationAlgorithm):
 
 	@classmethod
 	def split_into_passages(self, document, text):
+		if text is None or document is None:
+			return []
+
 		paragraphs = text.split("\n")
 
 		passage_list = []

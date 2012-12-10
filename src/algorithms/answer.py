@@ -42,7 +42,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		if False:
 			return "ORGANIZATION"
 		elif True:
-			return "PERSON"
+			return ["PERSON"]
 		elif False:
 			return "LOCATION"
 		elif False:
@@ -59,7 +59,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 			return "GPE"
 
 	@classmethod
-	def _ne_recognition(self, text, searched_entity):
+	def _ne_recognition(self, text, searched_entities):
 		# Entity Classification
 		sentences = nltk.sent_tokenize(text)
 		tokenized_sentences = [nltk.word_tokenize(s) for s in sentences]
@@ -70,7 +70,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		entities = []
 		for tree in ne_chunked_sentences:
 			for child in tree:
-				if isinstance(child, Tree) and child.node == searched_entity:
+				if isinstance(child, Tree) and child.node in searched_entities:
 					entity = " ".join([word for (word, pos) in child.leaves()])
 					entities.append(entity)
 
@@ -79,7 +79,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 	@classmethod
 	def _entity_ranking(self, question, entities):
 		if len(entities) == 0:
-			return "", "", 0
+			return "", "", int(0)
 
 		# Obtain frequency of entities
 		entities_freq = FreqDist(entities)
@@ -101,8 +101,9 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		q = question.text
 		p = passage.text
 
-		searched_entity = self._question_classification(q)
-		entities = self._ne_recognition(p, searched_entity)
+		searched_entities = self._question_classification(q)
+
+		entities = self._ne_recognition(p, searched_entities)
 
 		exact, window, score = self._entity_ranking(q, entities)
 

@@ -14,6 +14,7 @@ from MyConfig import MyConfig
 from Question import Question
 from ConfigParser import ConfigParser
 from datetime import datetime
+from nltk.probability import FreqDist
 
 def init_logger():
 	directory = "log"
@@ -95,7 +96,19 @@ def get_best_answers(passage_list, q):
 
 	answer_list = []
 	for passage in passage_list:
-		answer_list.append(passage.find_answer(q))
+		a = passage.find_answer(q)
+		if a.is_successful():
+			answer_list.append(a)
+
+	# Obtain answer frequency
+	fd = FreqDist(answer_list)
+
+	# Normalize frequencies
+	normalize = fd.freq(fd.max())
+
+	# Modify scores by frequency
+	for answer in answer_list:
+		answer.score = int(answer.score * (fd.freq(answer) / normalize))
 
 	# Sort answers by score
 	answer_list.sort(key=lambda x: x.score, reverse=True)
@@ -106,11 +119,18 @@ def get_best_answers(passage_list, q):
 	except:
 		logger = logging.getLogger("qa_logger")
 		logger.error("answer quality threshold not found")
-		threshold = 200
+		threshold = 50
 
 	answer_list = filter(lambda x: x.score > threshold, answer_list)
 
-	return (answer_list[:3], empty)
+	final_answers = []
+	for a in answer_list:
+		if a not in final_answers:
+			final_answers.append(a)
+		if len(final_answers) == 3:
+			break
+
+	return (final_answers, empty)
 
 
 def write_answers(answer_list, empty, q):
