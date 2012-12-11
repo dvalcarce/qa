@@ -1,0 +1,353 @@
+NUMBER How far is it from Denver to Aspen ?
+LOCATION What county is Modesto , California in ?
+PERSON Who was Galileo ?
+DATE When did Hawaii become a state ?
+NUMBER How tall is the Sears Building ?
+PERSON George Bush purchased a small interest in which baseball team ?
+OTHER What is Australia 's national flower ?
+LOCATION What city had a world fair in 1900 ?
+PERSON What person 's head is on a dime ?
+NUMBER What is the average weight of a Yellow Labrador ?
+PERSON Who was the first man to fly across the Pacific Ocean ?
+DATE When did Idaho become a state ?
+NUMBER What is the life expectancy for crickets ?
+OTHER What metal has the highest melting point ?
+PERSON Who developed the vaccination against polio ?
+DATE What year did the Titanic sink ?
+PERSON Who was the first American to walk in space ?
+LOCATION What river in the US is known as the Big Muddy ?
+PERSON Who developed the Macintosh computer ?
+LOCATION What imaginary line is halfway between the North and South Poles ?
+LOCATION Where is John Wayne airport ?
+LOCATION What hemisphere is the Philippines in ?
+NUMBER What is the average speed of the horses at the Kentucky Derby ?
+LOCATION Where are the Rocky Mountains ?
+NUMBER What is the temperature at the center of the earth ?
+DATE When did John F. Kennedy get elected as President ?
+TIME How old was Elvis Presley when he died ?
+LOCATION Where is the Orinoco River ?
+NUMBER How far is the service line from the net in tennis ?
+NUMBER How much fiber should you have per day ?
+NUMBER How many Great Lakes are there ?
+OTHER Material called linen is made from what plant ?
+OTHER What is the proper name for a female walrus ?
+OTHER What is a group of turkeys called ?
+TIME How long did Rip Van Winkle sleep ?
+NUMBER How many liters in a gallon ?
+PERSON What is the name of the chocolate company in San Francisco ?
+PERSON Who discovered x-rays ?
+PERSON Which comedian 's signature line is `` Can we talk '' ?
+DATE When did Elvis Presley die ?
+LOCATION What is the capital of Yugoslavia ?
+LOCATION Where is Milan ?
+NUMBER What is the speed hummingbirds fly ?
+LOCATION What is the oldest city in the United States ?
+PERSON What was W.C. Fields ' real name ?
+LOCATION What river flows between Fargo , North Dakota and Moorhead , Minnesota ?
+OTHER What do bats eat ?
+LOCATION What state did the Battle of Bighorn take place in ?
+PERSON Who was Abraham Lincoln ?
+OTHER What do you call a newborn kangaroo ?
+DATE What day and month did John Lennon die ?
+LOCATION What strait separates North America from Asia ?
+NUMBER What is the population of Seattle ?
+MONEY How much was a ticket for the Titanic ?
+LOCATION What is the largest city in the world ?
+PERSON What American composer wrote the music for `` West Side Story '' ?
+LOCATION Where is the Mall of the America ?
+OTHER What type of currency is used in Australia ?
+NUMBER How tall is the Gateway Arch in St. Louis , MO ?
+NUMBER How much does the human adult female brain weigh ?
+PERSON Who was the first governor of Alaska ?
+DATE When was the first liver transplant ?
+PERSON Who was elected president of South Africa in 1994 ?
+NUMBER What is the population of China ?
+DATE When was Rosa Parks born ?
+PERSON Who was the first female United States Representative ?
+LOCATION What country did Ponce de Leon come from ?
+OTHER The U.S. Department of Treasury first issued paper currency for the U.S. during which war ?
+NUMBER What is the temperature of the sun 's surface ?
+DATE What year did Canada join the United Nations ?
+PERSON What is the oldest university in the US ?
+LOCATION Where is Prince Edward Island ?
+DATE Mercury , what year was it discovered ?
+OTHER What is the longest major league baseball-winning streak ?
+PERSON Who invented the calculator ?
+PERSON Who is Duke Ellington ?
+LOCATION What county is Phoenix , AZ in ?
+NUMBER The sun 's core , what is the temperature ?
+OTHER What is the Ohio state bird ?
+DATE When were William Shakespeare 's twins born ?
+LOCATION What is the highest dam in the U.S. ?
+OTHER What color is a poison arrow frog ?
+NUMBER What is the length of the coastline of the state of Alaska ?
+PERSON What is the name of Neil Armstrong 's wife ?
+OTHER What is Hawaii 's state flower ?
+PERSON Who won Ms. American in 1989 ?
+DATE When did the Hindenberg crash ?
+OTHER What mineral helps prevent osteoporosis ?
+DATE What was the last year that the Chicago Cubs won the World Series ?
+LOCATION Where is Perth ?
+DATE What year did WWII begin ?
+NUMBER What is the diameter of a golf ball ?
+PERSON Who discovered America ?
+NUMBER What is the earth 's diameter ?
+PERSON Which president was unmarried ?
+NUMBER How wide is the Milky Way galaxy ?
+DATE During which season do most thunderstorms occur ?
+TIME What is the gestation period for a cat ?
+NUMBER How far is a nautical mile ?
+PERSON Who was the abolitionist who led the raid on Harper 's Ferry in 1859 ?
+OTHER What was the first satellite to go into space ?
+OTHER What is the major fault line near Kentucky ?
+LOCATION Where is the Holland Tunnel ?
+PERSON Who wrote the hymn `` Amazing Grace '' ?
+PERSON What position did Willie Davis play in baseball ?
+OTHER What is the name of Roy Roger 's dog ?
+LOCATION Where are the National Archives ?
+OTHER What is a baby turkey called ?
+OTHER What is the longest bone in the human body ?
+PERSON Who is a German philosopher ?
+OTHER What were Christopher Columbus ' three ships ?
+OTHER What is another name for vitamin B1 ?
+PERSON Who discovered radium ?
+DATE When was Algeria colonized ?
+PERSON What baseball team was the first to make numbers part of their uniform ?
+LOCATION What continent is Egypt on ?
+LOCATION What is the capital of Mongolia ?
+LOCATION In the late 1700 's British convicts were used to populate which colony ?
+LOCATION What state is the geographic center of the lower 48 states ?
+DATE When is hurricane season in the Caribbean ?
+LOCATION Where is the volcano Mauna Loa ?
+OTHER What is another astronomic term for the Northern Lights ?
+LOCATION What peninsula is Spain part of ?
+DATE When was Lyndon B. Johnson born ?
+LOCATION What state has the least amount of rain per year ?
+PERSON Who founded American Red Cross ?
+DATE What year did the Milwaukee Braves become the Atlanta Braves ?
+NUMBER How fast is alcohol absorbed ?
+DATE When is the summer solstice ?
+LOCATION Where is the Shawnee National Forest ?
+LOCATION What U.S. state 's motto is `` Live free or Die '' ?
+LOCATION Where is the Lourve ?
+DATE When was the first stamp issued ?
+OTHER What primary colors do you mix to make orange ?
+NUMBER How far is Pluto from the sun ?
+LOCATION What body of water are the Canary Islands in ?
+LOCATION Where is the Euphrates River ?
+OTHER What is natural gas composed of ?
+PERSON Who is the Prime Minister of Canada ?
+PERSON What French ruler was defeated at the battle of Waterloo ?
+LOCATION Where did Howard Hughes die ?
+OTHER What is the birthstone for June ?
+OTHER What is the sales tax in Minnesota ?
+NUMBER What is the distance in miles from the earth to the sun ?
+TIME What is the average life span for a chicken ?
+DATE When was the first Wal-Mart store opened ?
+LOCATION What city has the zip code of 35824 ?
+OTHER What currency is used in Algeria ?
+PERSON Who invented the hula hoop ?
+OTHER What was the most popular toy in 1957 ?
+OTHER What is pastrami made of ?
+OTHER What is the name of the satellite that the Soviet Union sent into space in 1957 ?
+LOCATION What city 's newspaper is called `` The Enquirer '' ?
+PERSON Who invented the slinky ?
+OTHER What are the animals that don 't have backbones called ?
+NUMBER What is the melting point of copper ?
+LOCATION Where is the volcano Olympus Mons located ?
+PERSON Who was the 23rd president of the United States ?
+NUMBER What is the average body temperature ?
+DATE What year did the United States abolish the draft ?
+NUMBER How fast is the speed of light ?
+LOCATION What province is Montreal in ?
+LOCATION What New York City structure is also known as the Twin Towers ?
+OTHER What is the most frequently spoken language in the Netherlands ?
+OTHER What are the spots on dominoes called ?
+NUMBER How many pounds in a ton ?
+DATE What year was the Mona Lisa painted ?
+OTHER What is the electrical output in Madrid , Spain ?
+LOCATION Which mountain range in North America stretches from Maine to Georgia ?
+OTHER What is plastic made of ?
+NUMBER What is the population of Nigeria ?
+LOCATION Where is the Grand Canyon ?
+PERSON Who invented the telephone ?
+DATE What year did the U.S. buy Alaska ?
+PERSON What is the name of the leader of Ireland ?
+NUMBER How many gallons of water are there in a cubic foot ?
+OTHER What are the two houses of the Legislative branch ?
+LOCATION In Poland , where do most people live ?
+LOCATION What is the location of the Sea of Tranquility ?
+NUMBER How fast is sound ?
+LOCATION What French province is cognac produced in ?
+LOCATION What is the longest suspension bridge in the U.S. ?
+OTHER What is the criterion for being legally blind ?
+PERSON Who is the tallest man in the world ?
+LOCATION What are the twin cities ?
+OTHER What did Edward Binney and Howard Smith invent in 1903 ?
+OTHER What is the statue of liberty made of ?
+LOCATION What planet is known as the `` red '' planet ?
+NUMBER What is the depth of the Nile river ?
+OTHER What is the colorful Korean traditional dress called ?
+MONEY Mexican pesos are worth what in U.S. dollars ?
+PERSON Who was the first African American to play for the Brooklyn Dodgers ?
+PERSON Who was the first Prime Minister of Canada ?
+NUMBER How many Admirals are there in the U.S. Navy ?
+OTHER What instrument did Glenn Miller play ?
+TIME How old was Joan of Arc when she died ?
+LOCATION What is the capital of Ethiopia ?
+TIME For how long is an elephant pregnant ?
+OTHER What is the primary language in Iceland ?
+PERSON Who was the first woman governor in the U.S. ?
+DATE What year did Oklahoma become a state ?
+OTHER What is a mirror made out of ?
+LOCATION Where on the body is a mortarboard worn ?
+PERSON What was J.F.K. 's wife 's name ?
+LOCATION Where is Hitler buried ?
+LOCATION What is the largest city in the U.S. ?
+OTHER What is foot and mouth disease ?
+NUMBER What is the life expectancy of a dollar bill ?
+OTHER What do you call a professional map drawer ?
+OTHER What color is indigo ?
+TIME How old do you have to be in order to rent a car in Italy ?
+OTHER What does a barometer measure ?
+OTHER What color is a giraffe 's tongue ?
+DATE What year did the NFL go on strike ?
+DATE What date did Neil Armstrong land on the moon ?
+DATE When was Hiroshima bombed ?
+LOCATION Where is the Savannah River ?
+PERSON Who was the first woman killed in the Vietnam War ?
+LOCATION What planet has the strongest magnetic field of all the planets ?
+PERSON Who is the governor of Alaska ?
+DATE What year did Mussolini seize power in Italy ?
+LOCATION What is the capital of Persia ?
+LOCATION Where is the Eiffel Tower ?
+NUMBER How many hearts does an octopus have ?
+LOCATION What is the deepest lake in the US ?
+PERSON Who was the first U.S. president to appear on TV ?
+LOCATION Where is the Little League Museum ?
+OTHER What are the two types of twins ?
+LOCATION What is the brightest star ?
+DATE When was President Kennedy shot ?
+OTHER What color is yak milk ?
+DATE What date was Dwight D. Eisenhower born ?
+MONEY What is the conversion rate between dollars and pounds ?
+DATE When was Abraham Lincoln born ?
+DATE What year was Mozart born ?
+OTHER What is a group of frogs called ?
+OTHER What is the name of William Penn 's ship ?
+NUMBER What is the melting point of gold ?
+LOCATION What is the street address of the White House ?
+OTHER What fruit is Melba sauce made from ?
+PERCENT What is the percentage of water content in the human body ?
+NUMBER How much does water weigh ?
+OTHER What was President Lyndon Johnson 's reform program called ?
+PERCENT What is the murder rate in Windsor , Ontario ?
+PERSON Who is the only president to serve 2 non-consecutive terms ?
+NUMBER What is the population of Australia ?
+PERSON Who painted the ceiling of the Sistine Chapel ?
+OTHER Name a stimulant .
+DATE What year did the Andy Griffith show begin ?
+DATE What is the date of Mexico 's independence ?
+LOCATION What is the location of Lake Champlain ?
+OTHER What is the Illinois state flower ?
+OTHER What is Maryland 's state bird ?
+PERSON Who wrote `` The Divine Comedy '' ?
+NUMBER What is the speed of light ?
+NUMBER What is the width of a football field ?
+OTHER What kind of dog was Toto in the Wizard of Oz ?
+OTHER What is the only artery that carries blue blood from the heart to the lungs ?
+NUMBER How often does Old Faithful erupt at Yellowstone National Park ?
+NUMBER What is the elevation of St. Louis , MO ?
+OTHER What color does litmus paper turn when it comes into contact with a strong acid ?
+OTHER What are the colors of the German flag ?
+LOCATION What soviet seaport is on the Black Sea ?
+NUMBER What is the atomic weight of silver ?
+OTHER What currency do they use in Brazil ?
+OTHER Name a food high in zinc .
+DATE When did North Carolina enter the union ?
+LOCATION Where do apple snails live ?
+PERSON Who killed John F. Kennedy ?
+PERSON Who was the first vice president of the U.S. ?
+OTHER What birthstone is turquoise ?
+PERSON Who was the first US President to ride in an automobile to his inauguration ?
+TIME How old was the youngest president of the United States ?
+DATE When was Ulysses S. Grant born ?
+PERSON Who lived in the Neuschwanstein castle ?
+PERSON Who invented the instant Polaroid camera ?
+OTHER What is a baby lion called ?
+NUMBER What is the world 's population ?
+NUMBER What is the sales tax rate in New York ?
+PERCENT Developing nations comprise what percentage of the world 's population ?
+LOCATION What is the fourth highest mountain in the world ?
+PERSON What is Shakespeare 's nickname ?
+OTHER What is the heaviest naturally occurring element ?
+DATE When is Father 's Day ?
+NUMBER How long is the Columbia River in miles ?
+LOCATION What city 's newspaper is called `` The Star '' ?
+LOCATION Where is the Mason/Dixon line ?
+DATE When was the Boston tea party ?
+PERSON Which U.S.A. president appeared on `` Laugh-In '' ?
+OTHER What are cigarettes made of ?
+LOCATION What is the capital of Zimbabwe ?
+OTHER What is the state flower of Michigan ?
+PERSON Who is the congressman from state of Texas on the armed forces committee ?
+PERSON Who was president in 1913 ?
+DATE When was the first kidney transplant ?
+LOCATION What are Canada 's two territories ?
+OTHER What was the name of the plane Lindbergh flew solo across the Atlantic ?
+LOCATION What continent is Argentina on ?
+OTHER What monastery was raided by Vikings in the late eighth century ?
+LOCATION Where is the tallest roller coaster located ?
+PERSON Who discovered oxygen ?
+OTHER What is the name given to the Tiger at Louisiana State University ?
+LOCATION Where are the British crown jewels kept ?
+PERSON Who was the first person to reach the North Pole ?
+DATE When is the official first day of summer ?
+OTHER What is the smallest bird in Britain ?
+PERSON Who invented Trivial Pursuit ?
+OTHER What gasses are in the troposphere ?
+LOCATION Which country has the most water pollution ?
+OTHER What is the scientific name for elephant ?
+PERSON Who is the actress known for her role in the movie `` Gypsy '' ?
+OTHER What breed of hunting dog did the Beverly Hillbillies own ?
+LOCATION What is the rainiest place on Earth ?
+PERSON Who was the first African American to win the Nobel Prize in literature ?
+DATE When is St. Patrick 's Day ?
+OTHER What was FDR 's dog 's name ?
+OTHER What colors need to be mixed to get the color pink ?
+OTHER What is the most popular sport in Japan ?
+OTHER What is the active ingredient in baking soda ?
+DATE When was Thomas Jefferson born ?
+NUMBER How cold should a refrigerator be ?
+DATE When was the telephone invented ?
+OTHER What is the most common eye color ?
+LOCATION Where was the first golf course in the United States ?
+PERSON What did Jesse Jackson organize ?
+OTHER What is New York 's state bird ?
+LOCATION What is the National Park in Utah ?
+DATE What is Susan B. Anthony 's birthday ?
+LOCATION In which state would you find the Catskill Mountains ?
+OTHER What do you call a word that is spelled the same backwards and forwards ?
+PERSON What chain store is headquartered in Bentonville , Arkansas ?
+OTHER What currency does Luxembourg use ?
+NUMBER What is the population of Venezuela ?
+OTHER What type of polymer is used for bulletproof vests ?
+OTHER What currency does Argentina use ?
+LOCATION What Canadian city has the largest population ?
+OTHER What color are crickets ?
+LOCATION Which country gave New York the Statue of Liberty ?
+OTHER What was the name of the first U.S. satellite sent into space ?
+OTHER What precious stone is a form of pure carbon ?
+OTHER What kind of gas is in a fluorescent bulb ?
+LOCATION What river runs through Rowe , Italy ?
+LOCATION What city is also known as `` The Gateway to the West '' ?
+NUMBER How far away is the moon ?
+OTHER What is the source of natural gas ?
+OTHER In what spacecraft did U.S. astronaut Alan Shepard make his historic 1961 flight ?
+OTHER What 's the easiest way to remove wallpaper ?
+DATE What year did the Titanic start on its journey ?
+NUMBER How much of an apple is water ?
+PERSON Who was the 22nd President of the US ?
+OTHER What is the money they use in Zambia ?
+NUMBER How many feet in a mile ?
+OTHER What is the birthstone of October ?
