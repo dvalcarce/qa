@@ -150,6 +150,22 @@ sudo pip install -u pdfminer
 
 
 \clearpage
+\section{Algoritmos}
+\subsection{Query Formulation}
+\subsubsection{Stopwords}
+
+\subsection{Document Segmentation}
+\subsubsection{Fixed Number off Lines}
+\subsubsection{Split into Paragraphs}
+
+\subsection{Passage Filtering}
+\subsubsection{Similarity}
+
+\subsection{Answer Extraction}
+\subsubsection{Entity Recognition}
+\label{s:ne_recog}
+
+\clearpage
 \section{Diario de trabajo}
 A continuación se muestra un resumen del trabajo realizado a lo largo de la elaboración de la presente práctica. Las entradas se ordenan por su fecha cronológica y describen brevemente las decisiones y las acciones tomadas.
 
@@ -247,6 +263,13 @@ Añadimos la escritura de resultados en un fichero.
 Implementamos la lógica necesaria para gestionar la posible falta de respuestas. Por un lado, si los motores de búsqueda no nos devuelven resultados deolvemos NIL con la puntuación máxima. Por otro lado, si no encontramos una buena respuesta en los documentos de la web devolvemos NIL con la puntuación mínima. Por último si el número de respuestas admisibles es menor que tres, las mostramos y añadimos un NIL con puntuación mínima.
 
 En el fichero de configuración, podemos especificar el umbral de lo que consideramos una respuesta admisible.
+
+\subsubsection*{2012/12/10}
+Creamos un algoritmo de Answer Extraction basado en la técnica de Named Entities Recognition explicado en la Sección \ref{s:ne_recog}. Queda por completar la parte de Query Classification (de momento solo admitimos preguntas sobre personas).
+
+Mejoramos nuestra metodología de Answer Filtering ponderando las puntuaciones de las respuestas por su frecuencia relativa de aparición en los pasajes relevantes.
+
+Realizamos las primeras pruebas sobre un sistema ya funcional y obtenemos buenos resultados ---en principio--- para preguntas relacionadas con personas. Las respuestas están motivadas correctamente y la tasa de aciertos ronda el 20\%. Consideramos esto un hito en el desarrollo del sistema ya que tenemos una primera versión preliminar que proporciona resultados coherentes.
 
 \clearpage
 \section{Bibliografía}
