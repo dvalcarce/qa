@@ -2,8 +2,8 @@
 
 import logging
 
-from nltk.stem.porter import PorterStemmer
 from MyConfig import MyConfig
+from nltk.stem.porter import PorterStemmer
 from query import *
 
 # Algorithms for Passage Filtering
@@ -43,7 +43,7 @@ class SimilarityAlgorithm(PassageFilteringAlgorithm):
 			num = int(MyConfig.get("search_engine", "n_results"))
 		except:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("search_engine:n_results not found")
+			logger.warning("search_engine: n_results not found")
 			return score
 
 		# Reverse rank order from 1..n to n..1

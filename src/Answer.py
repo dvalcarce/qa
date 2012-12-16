@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+
 from MyConfig import MyConfig
 from pattern.web import Result, plaintext
 

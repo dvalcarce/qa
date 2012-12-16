@@ -4,7 +4,7 @@ import ConfigParser
 
 class MyConfig:
 
-	_instance = ConfigParser.ConfigParser()
+	_instance = ConfigParser.SafeConfigParser()
 	_instance.read("conf/config.conf")
 
 	@classmethod

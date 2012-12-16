@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from MyConfig import MyConfig
 
-from algorithms.passage import *
 from algorithms.answer import *
+from algorithms.passage import *
+from MyConfig import MyConfig
 
 class Passage(object):
 

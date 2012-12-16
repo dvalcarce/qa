@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import ConfigParser
 import logging
 import nltk
 import pickle
 import pprint
 import sys
-import ConfigParser
-from MyConfig import MyConfig
-from Document import Document
-from pattern.web import Google, Bing
+
 from algorithms.query import *
+from ast import literal_eval as safe_eval
+from Document import Document
+from MyConfig import MyConfig
+from pattern.web import Google, Bing
 
 class Question(object):
 
@@ -32,7 +34,7 @@ class Question(object):
 	def _get_search_engines(self):
 		try:
 			lang = MyConfig.get("search_engine", "lang")
-			engines = eval(MyConfig.get("search_engine", "engines"))
+			engines = safe_eval(MyConfig.get("search_engine", "engines"))
 			throttle = MyConfig.get("search_engine", "throttle")
 
 			l = []
@@ -40,12 +42,11 @@ class Question(object):
 				# Eval to something like this:
 				# Google(google_license, throttle, lang)
 				l.append(eval(engine + "(\"" + license + "\", " + throttle + ", " + lang + ")"))
-
 			return l
 
 		except ConfigParser.Error:
 			sys.exit("_get_search_engines: config error")
-		except Exception as e:
+		except Exception:
 			logger = logging.getLogger("qa_logger")
 			logger.exception("_get_search_engines: fatal error")
 			sys.exit(2)

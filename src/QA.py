@@ -1,20 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import codecs
 import datetime
 import logging, logging.config
 import os
-import sys
-import re
 import pickle
-import codecs
+import re
+import sys
+
 from Answer import Answer
-from Passage import Passage
-from MyConfig import MyConfig
-from Question import Question
 from ConfigParser import ConfigParser
 from datetime import datetime
+from MyConfig import MyConfig
 from nltk.probability import FreqDist
+from Passage import Passage
+from Question import Question
 
 def init_logger():
 	directory = "log"

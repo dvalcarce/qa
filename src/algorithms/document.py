@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from Passage import Passage
 
 from MyConfig import MyConfig
+from Passage import Passage
 
 # Algorithms for Document Segmentation
 
@@ -27,6 +27,8 @@ class FixedNumberOfLinesAlgorithm(DocumentSegmentationAlgorithm):
 		try:
 			n_lines = int(MyConfig.get("passage_retrieval", "n_lines"))
 		except:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("FixedNumberOfLinesAlgorithm: n_lines not found")
 			n_lines = 5
 
 		# Iterating over the lines of the document

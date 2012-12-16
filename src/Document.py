@@ -3,13 +3,14 @@
 import logging
 import os
 import re
+
 from algorithms.document import *
-from pattern.web import Result, URL, URLError, plaintext
-from pdfminer.pdfinterp import PDFResourceManager, process_pdf
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
 from cStringIO import StringIO
 from Passage import Passage
+from pattern.web import Result, URL, URLError, plaintext
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfinterp import PDFResourceManager, process_pdf
 
 class Document(object):
 
