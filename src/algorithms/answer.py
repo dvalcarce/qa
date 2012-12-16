@@ -2,11 +2,14 @@
 
 import random
 import nltk
+import pickle
+from MyConfig import MyConfig
 
 from nltk.tree import Tree
 from nltk.probability import FreqDist
 from collections import Counter
 from Answer import Answer
+from qc import *
 
 class AnswerExtractionAlgorithm(object):
 
@@ -36,27 +39,16 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 	@classmethod
 	def _question_classification(self, question):
-		# Do things like...
-		# if "who" in question.split():
-		#	return "PERSON"
-		if False:
-			return "ORGANIZATION"
-		elif True:
-			return ["PERSON"]
-		elif False:
-			return "LOCATION"
-		elif False:
-			return "DATE"
-		elif False:
-			return "TIME"
-		elif False:
-			return "MONEY"
-		elif False:
-			return "PERCENT"
-		elif False:
-			return "FACILITY"
-		elif False:
-			return "GPE"
+		classifier= MyConfig.get("answer_extraction", "question_classifier")
+		if (classifier == "bayes"):
+			pkl_file= open('res/qc_bayes.pkl')
+		else:
+			pkl_file= open('res/qc_maxent.pkl')
+
+		classifier= pickle.load(pkl_file)
+		pkl_file.close()
+
+		return classifier.classify(QuestionClassifier.get_features(question))
 
 	@classmethod
 	def _ne_recognition(self, text, searched_entities):
