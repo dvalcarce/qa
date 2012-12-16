@@ -15,16 +15,28 @@ class QuestionClassifier(object):
 		("Maximum Entropy", nltk.MaxentClassifier, "qc_maxent.pkl")
 	]
 
+	# For caching purposes
+	_questions = {}
+
+	_preps = ["in", "on"]
+
 	@classmethod
 	def get_features(self, question):
-		_preps = ["in", "on"]
+		# Query question cache (optimization)
+		if self._questions.__contains__(question):
+			return self._questions[question]
+
 		q = question.lower()
 		q = nltk.word_tokenize(q)
 		tokens = nltk.pos_tag(q)
 		nouns = filter(lambda x: x[1] == "NN", tokens)
+
 		result = {}
-		result["first"] = q[0] if q[0] not in _preps else q[0] + " " + q[1]
+		result["first"] = q[0] if q[0] not in self._preps else q[0] + " " + q[1]
 		result["noun"] = nouns[0] if len(nouns) > 0 else ""
+
+		self._questions[question] = result
+
 		return result
 
 	@classmethod
