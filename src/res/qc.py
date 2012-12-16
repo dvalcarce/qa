@@ -27,21 +27,26 @@ class QuestionClassifier(object):
 		corpus = [tuple(line.split(" ", 1)) for line in corpus]
 		f.close()
 		return corpus
+	
+	@classmethod
+	def train(self):
+		train_corpus = QuestionClassifier.get_qc_corpus("corpus/qc_train.txt")
+		train_set = [(QuestionClassifier.get_features(question), entity) for (entity, question) in train_corpus]
 
-train_corpus = QuestionClassifier.get_qc_corpus("corpus/qc_train.txt")
-train_set = [(QuestionClassifier.get_features(question), entity) for (entity, question) in train_corpus]
+		test_corpus = QuestionClassifier.get_qc_corpus("corpus/qc_test.txt")
+		test_set = [(QuestionClassifier.get_features(question), entity) for (entity, question) in test_corpus]
 
-test_corpus = QuestionClassifier.get_qc_corpus("corpus/qc_test.txt")
-test_set = [(QuestionClassifier.get_features(question), entity) for (entity, question) in test_corpus]
+		classifier = nltk.NaiveBayesClassifier.train(train_set)
+		f = open("qc_bayes.pkl", "wb")
+		pickle.dump(classifier, f, 0)
+		f.close()
+		print nltk.classify.accuracy(classifier, test_set)
 
-classifier = nltk.NaiveBayesClassifier.train(train_set)
-f = open("qc_bayes.pkl", "wb")
-pickle.dump(classifier, f, 0)
-f.close()
-print nltk.classify.accuracy(classifier, test_set)
+		classifier = nltk.MaxentClassifier.train(train_set)
+		f = open("qc_maxent.pkl", "wb")
+		pickle.dump(classifier, f, 0)
+		f.close()
+		print nltk.classify.accuracy(classifier, test_set)
 
-classifier = nltk.MaxentClassifier.train(train_set)
-f = open("qc_maxent.pkl", "wb")
-pickle.dump(classifier, f, 0)
-f.close()
-print nltk.classify.accuracy(classifier, test_set)
+if __name__ == '__main__':
+	QuestionClassifier.train()

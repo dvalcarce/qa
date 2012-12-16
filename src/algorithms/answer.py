@@ -9,7 +9,7 @@ from nltk.tree import Tree
 from nltk.probability import FreqDist
 from collections import Counter
 from Answer import Answer
-from qc import *
+from res.qc import *
 
 class AnswerExtractionAlgorithm(object):
 
