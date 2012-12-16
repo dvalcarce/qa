@@ -3,6 +3,7 @@
 import random
 import nltk
 import pickle
+import re
 from MyConfig import MyConfig
 
 from nltk.tree import Tree
@@ -39,6 +40,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 	@classmethod
 	def _question_classification(self, question):
+		# Classifier Type
 		classifier= MyConfig.get("answer_extraction", "question_classifier")
 		if (classifier == "bayes"):
 			pkl_file= open('res/qc_bayes.pkl')
@@ -47,7 +49,8 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		classifier= pickle.load(pkl_file)
 		pkl_file.close()
-
+		
+		#Query classification
 		return classifier.classify(QuestionClassifier.get_features(question))
 
 	@classmethod
@@ -66,7 +69,41 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 					entity = " ".join([word for (word, pos) in child.leaves()])
 					entities.append(entity)
 
+		if 'OTHER' in searched_entities:
+			entities+= self._other_recognition(text, entities)
+
+		if 'NUMBER' in searched_entities:
+			entities+= self._number_recognition(text, entities)
+
 		return entities
+
+	@classmethod
+	def _other_recognition(self, text, entities):
+		# Nouns retrieval
+		t= text.lower()
+		t= nltk.word_tokenize(t)
+		tokens= nltk.pos_tag(t)
+		nouns= filter(lambda x: x[1] == "NN", tokens)
+		nouns= [noun for (noun, tag) in nouns]
+		nouns= set(nouns)
+
+		# Nouns filtering
+		for noun in nouns:
+			for entity in entities:
+				nouns-= set(entity.split())
+
+		return list(nouns)
+
+	@classmethod
+	def _number_recognition(self, text, entities):
+		numbers= re.findall(r"[0-9]+", text)
+		numbers= set(numbers)
+		
+		for number in numbers:
+			for entity in entities:
+				numbers-=  set(entity.split())
+		
+		return list(numbers)
 
 	@classmethod
 	def _entity_ranking(self, question, entities):
