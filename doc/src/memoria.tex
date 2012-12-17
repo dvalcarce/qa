@@ -278,6 +278,11 @@ Modificamos el corpus qc del NLTK para que se adapte a nuestras entidades y entr
 
 Consideramos realizar para el próximo día la integración del Named Entity Recognizer de Stanford puesto que los resultados del reconocedor de entidades del NLTK no son muy satisfactorios en algunos casos.
 
+\subsubsection*{2012/12/17}
+Hemos implementado dos técnicas para detectar números y otros tipos de entidades (NUMBER y OTHER, respectivamente). Los números se reconocen como caracteres numérico o como sustantivos y adjetivos numerales. El reconocimiento de otro tipo de entidades se realiza mediante la extración de sustantivos (exceptuando aquellos que son entidades).
+
+Realizamos también pequeñas refactorizaciones del código. Optimizamos la técnica de Question Classification mediante el uso de una caché de preguntas.
+
 \clearpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
