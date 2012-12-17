@@ -102,7 +102,7 @@ def get_best_answers(passage_list, q):
 			answer_list.append(a)
 
 	if not answer_list:
-		return ([], True)
+		return ([], empty)
 
 	# Obtain answer frequency
 	fd = FreqDist(answer_list)

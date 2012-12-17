@@ -72,22 +72,24 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		# Entity Extraction
 		entities = []
+		all_entitites = []
 		for tree in ne_chunked_sentences:
 			for child in tree:
 				if isinstance(child, Tree) and child.node in searched_entities:
 					entity = " ".join([word for (word, pos) in child.leaves()])
 					entities.append(entity)
+				all_entitites.append(entity)
 
 		if 'OTHER' in searched_entities:
-			entities += self._other_recognition(tagged_sentences, entities)
+			entities += self._other_recognition(tagged_sentences, all_entities)
 
 		if 'NUMBER' in searched_entities:
-			entities += self._number_recognition(text, entities)
+			entities += self._number_recognition(text, all_entities)
 
 		return entities
 
 	@classmethod
-	def _other_recognition(self, tagged_sentences, entities):
+	def _other_recognition(self, tagged_sentences, all_entities):
 		# Nouns retrieval
 		nouns = []
 		for sentence in tagged_sentences:
@@ -96,28 +98,29 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		nouns = set(nouns)
 
 		# Nouns filtering
-		#for noun in nouns:
-		#	for entity in entities:
-		#		nouns -= set(entity.split())
-		entities = set(itertools.chain(*map(str.split, entities)))
-		nouns -= entities
+		# Remove all entities that are nouns
+		all_entities = set(itertools.chain(*map(str.split, all_entities)))
+		nouns -= all_entities
 
 		return list(nouns)
 
 	@classmethod
-	def _number_recognition(self, text, entities):
+	def _number_recognition(self, text, all_entities):
+		# Numbers retrieval
 		numbers = re.findall(r"[0-9]+", text)
 		numbers = set(numbers)
 		
-		#for number in numbers:
-		#	for entity in entities:
-		#		numbers -=  set(entity.split())
-		entities = set(itertools.chain(*map(str.split, entities)))
-		numbers -= entities
+		# Number filtering
+		# Remove all entities that are numbers
+		all_entities = set(itertools.chain(*map(str.split, all_entities)))
+		numbers -= all_entities
 
+		# Numerals retrieval
+		# CD = numeral, cardinal
+		# JJ = numeral, ordinal
 		numerals = []
 		for sentence in tagged_sentences:
-			numerals += filter(lambda x: x[1] == "CD", sentence)
+			numerals += filter(lambda x: x[1] == "CD" or x[1] == "JJ", sentence)
 		numerals = [noun for (noun, tag) in numerals]
 		numerals = set(numerals)
 
@@ -134,11 +137,10 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		# Our answer is the sample with the greatest number of outcomes
 		exact = entities_freq.max()
 
-		# Our window is ??? TODO
-		window = "ventana de texto"
+		# Our window is empty because this algorithm generates exact answers
+		window = ""
 
 		# Our score is the entity frequency
-		# To be improved...
 		score = int(entities_freq.freq(exact) * 1000)
 
 		return exact, window, score

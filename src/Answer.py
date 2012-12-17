@@ -20,7 +20,7 @@ class Answer(object):
 
 
 	def is_successful(self):
-		return self.exact != "" or self.window != ""
+		return self.exact != "" and self.window != ""
 
 
 	def __str__(self):
