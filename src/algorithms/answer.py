@@ -12,7 +12,8 @@ from collections import Counter
 from MyConfig import MyConfig
 from nltk.probability import FreqDist
 from nltk.tree import Tree
-from res.qc import QuestionClassifier
+from qc.QuestionClassifier import QuestionClassifier
+from stanford_ner.StanfordNER import StanfordNER
 
 class AnswerExtractionAlgorithm(object):
 
@@ -44,17 +45,12 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 	def _question_classification(self, question):
 		# Choose the specified classifier
 		try:
-			classifier = MyConfig.get("answer_extraction", "question_classifier")
-			if classifier == "bayes":
-				pkl_file = open('res/qc_bayes.pkl')
-			elif classifier == "dct":
-				pkl_file = open('res/qc_dtc.pkl')
-			else:
-				pkl_file = open('res/qc_maxent.pkl')
+			classifier_path = MyConfig.get("answer_extraction", "question_classifier")
+			pkl_file = open(classifier_path)
 		except:
 			logger = logging.getLogger("qa_logger")
 			logger.warning("EntityRecognitionAlgorithm: question_classifier not found")
-			pkl_file= open('res/qc_maxent.pkl')
+			pkl_file= open('qc/qc_maxent.pkl')
 
 		classifier = pickle.load(pkl_file)
 		pkl_file.close()
@@ -63,7 +59,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		return classifier.classify(QuestionClassifier.get_features(question))
 
 	@classmethod
-	def _ne_recognition(self, text, searched_entities):
+	def _ne_recognition_nltk(self, text, searched_entity):
 		# Entity Classification
 		sentences = nltk.sent_tokenize(text)
 		tokenized_sentences = [nltk.word_tokenize(s) for s in sentences]
@@ -75,16 +71,57 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		all_entitites = []
 		for tree in ne_chunked_sentences:
 			for child in tree:
-				if isinstance(child, Tree) and child.node in searched_entities:
+				if isinstance(child, Tree) and child.node == searched_entity:
 					entity = " ".join([word for (word, pos) in child.leaves()])
 					entities.append(entity)
 				all_entitites.append(entity)
 
-		if 'OTHER' in searched_entities:
+		if 'OTHER' in searched_entity:
 			entities += self._other_recognition(tagged_sentences, all_entities)
 
-		if 'NUMBER' in searched_entities:
-			entities += self._number_recognition(text, all_entities)
+		if 'NUMBER' in searched_entity:
+			entities += self._number_recognition(text, tagged_sentences, all_entities)
+
+		return entities
+
+	@classmethod
+	def _ne_recognition_stanford(self, text, searched_entity):
+		sentences = nltk.sent_tokenize(text)
+		tokenized_sentences = [nltk.word_tokenize(s) for s in sentences]
+		tagged_sentences = [nltk.pos_tag(s) for s in tokenized_sentences]
+
+		# Entity Classification
+		try:
+			host = MyConfig.get("answer_extraction", "stanford_host") 
+		except:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("stanford ner host not found")
+			host = "localhost"
+
+		try:
+			port = int(MyConfig.get("answer_extraction", "stanford_port"))
+		except:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("stanford ner port not found")
+			port = 1234
+
+		recognizer = StanfordNER.get_instance(host, port)
+		processed_text = recognizer.process(text)
+
+		# Entity Extraction
+		entities = []
+		all_entities = []
+		for (word, entity) in processed_text:
+			if entity == searched_entity:
+				entities.append(word)
+			if entity != "O":
+				all_entities.append(word)
+
+		if 'OTHER' in searched_entity:
+			entities += self._other_recognition(tagged_sentences, all_entities)
+
+		if 'NUMBER' in searched_entity:
+			entities += self._number_recognition(text, tagged_sentences, all_entities)
 
 		return entities
 
@@ -105,7 +142,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		return list(nouns)
 
 	@classmethod
-	def _number_recognition(self, text, all_entities):
+	def _number_recognition(self, text, tagged_sentences, all_entities):
 		# Numbers retrieval
 		numbers = re.findall(r"[0-9]+", text)
 		numbers = set(numbers)
@@ -150,10 +187,10 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		q = question.text
 		p = passage.text
 
-		searched_entities = self._question_classification(q)
+		searched_entity = self._question_classification(q)
 
-		entities = self._ne_recognition(p, searched_entities)
-		print searched_entities
+		entities = self._ne_recognition_stanford(p, searched_entity)
+		
 		exact, window, score = self._entity_ranking(q, entities)
 
 		answer = Answer(passage, question, window, exact, score)

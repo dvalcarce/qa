@@ -10,4 +10,3 @@ class MyConfig:
 	@classmethod
 	def get(self, section, item):
 		return self._instance.get(section, item)
-

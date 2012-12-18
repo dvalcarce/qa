@@ -4,6 +4,7 @@ import logging
 
 from algorithms.answer import *
 from algorithms.passage import *
+from ConfigParser import Error as ConfigError
 from MyConfig import MyConfig
 
 class Passage(object):
@@ -17,7 +18,7 @@ class Passage(object):
 				self.score = 0
 			else:
 				self.score = 0
-		except:
+		except ConfigError:
 			logger = logging.getLogger("qa_logger")
 			logger.warning("passage evaluation algorithm not found")
 			self.score = SimilarityAlgorithm.calculate_score(question, self)
@@ -31,7 +32,7 @@ class Passage(object):
 				self.answer = EntityRecognitionAlgorithm.process_answer(self, question)
 			else:
 				self.answer = None
-		except:
+		except ConfigError:
 			logger = logging.getLogger("qa_logger")
 			logger.warning("answer extraction algorithm not found")
 			self.answer = EntityRecognitionAlgorithm.process_answer(self, question)

@@ -8,6 +8,7 @@ import os
 import pickle
 import re
 import sys
+import utils
 
 from Answer import Answer
 from ConfigParser import ConfigParser
@@ -186,6 +187,7 @@ def debug():
 	sys.exit()
 
 
+
 if __name__ == '__main__':
 	try:
 		init_logger()
@@ -207,7 +209,8 @@ if __name__ == '__main__':
 			(answers, empty) = get_best_answers(passages, q)
 			write_answers(answers, empty, q)
 
-
 	except KeyboardInterrupt:
-		sys.exit("\nExiting...")
-
+		sys.exit("Exiting...")
+	finally:
+		#utils.clean()
+		pass
