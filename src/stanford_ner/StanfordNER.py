@@ -46,7 +46,7 @@ class StanfordNER:
 		except socket.error as e:
 			self.launch_servlet(self.host, self.port)
 			logger = logging.getLogger("qa_logger")
-			logger.info("stanford servlet manually launched")
+			logger.info("stanford servlet automatically launched")
 			time.sleep(2.0)
 			self.socket.connect((self.host, self.port))
 
