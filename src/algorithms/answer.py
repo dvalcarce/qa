@@ -9,7 +9,7 @@ import re
 
 from Answer import Answer
 from collections import Counter
-from MyConfig import MyConfig
+from conf.MyConfig import MyConfig, MyConfigException
 from nltk.probability import FreqDist
 from nltk.tree import Tree
 from qc.QuestionClassifier import QuestionClassifier
@@ -47,9 +47,9 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		try:
 			classifier_path = MyConfig.get("answer_extraction", "question_classifier")
 			pkl_file = open(classifier_path)
-		except:
+		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("EntityRecognitionAlgorithm: question_classifier not found")
+			logger.warning(str(e))
 			pkl_file= open('qc/qc_maxent.pkl')
 
 		classifier = pickle.load(pkl_file)
@@ -57,6 +57,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		# Question classification
 		return classifier.classify(QuestionClassifier.get_features(question))
+
 
 	@classmethod
 	def _ne_recognition_nltk(self, text, searched_entity):
@@ -84,6 +85,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		return entities
 
+
 	@classmethod
 	def _ne_recognition_stanford(self, text, searched_entity):
 		sentences = nltk.sent_tokenize(text)
@@ -93,16 +95,16 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		# Entity Classification
 		try:
 			host = MyConfig.get("answer_extraction", "stanford_host") 
-		except:
+		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("stanford ner host not found")
+			logger.warning(str(e))
 			host = "localhost"
 
 		try:
 			port = int(MyConfig.get("answer_extraction", "stanford_port"))
-		except:
+		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("stanford ner port not found")
+			logger.warning(str(e))
 			port = 1234
 
 		recognizer = StanfordNER.get_instance(host, port)
@@ -125,6 +127,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		return entities
 
+
 	@classmethod
 	def _other_recognition(self, tagged_sentences, all_entities):
 		# Nouns retrieval
@@ -140,6 +143,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		nouns -= all_entities
 
 		return list(nouns)
+
 
 	@classmethod
 	def _number_recognition(self, text, tagged_sentences, all_entities):
@@ -163,6 +167,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		return list(numbers | numerals)
 
+
 	@classmethod
 	def _entity_ranking(self, question, entities):
 		if len(entities) == 0:
@@ -181,6 +186,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		score = int(entities_freq.freq(exact) * 1000)
 
 		return exact, window, score
+
 
 	@classmethod
 	def process_answer(self, passage, question):

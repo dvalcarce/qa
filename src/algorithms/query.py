@@ -8,6 +8,7 @@ class QueryFormulationAlgorithm(object):
 	def formulate_query(self, question):
 		pass
 
+
 class StopwordsAlgorithm(QueryFormulationAlgorithm):
 
 	@classmethod

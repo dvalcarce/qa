@@ -2,7 +2,7 @@
 
 import logging
 
-from MyConfig import MyConfig
+from conf.MyConfig import MyConfig, MyConfigException
 from nltk.stem.porter import PorterStemmer
 from query import *
 
@@ -13,6 +13,7 @@ class PassageFilteringAlgorithm(object):
 	@classmethod
 	def calculate_score(self, question, passage):
 		pass
+
 
 class SimilarityAlgorithm(PassageFilteringAlgorithm):
 
@@ -40,10 +41,10 @@ class SimilarityAlgorithm(PassageFilteringAlgorithm):
 		score = len(words)
 
 		try:
-			num = int(MyConfig.get("search_engine", "n_results"))
-		except:
+			num = int(MyConfig.get("document_retrieval", "n_results"))
+		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("search_engine: n_results not found")
+			logger.warning(str(e))
 			return score
 
 		# Reverse rank order from 1..n to n..1

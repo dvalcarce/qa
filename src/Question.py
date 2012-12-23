@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import ConfigParser
 import logging
 import nltk
 import pickle
-import pprint
 import sys
 
 from algorithms.query import *
 from ast import literal_eval as safe_eval
+from conf.MyConfig import MyConfig, MyConfigException
 from Document import Document
-from MyConfig import MyConfig
 from pattern.web import Google, Bing
 
 class Question(object):
@@ -22,8 +20,11 @@ class Question(object):
 				return StopwordsAlgorithm.formulate_query(self.text)
 			else:
 				return StopwordsAlgorithm.formulate_query(self.text)
-		except:
+		except MyConfigException as e:
+			logger = logging.getLogger("qa_logger")
+			logger.warning(str(e))
 			return StopwordsAlgorithm.formulate_query(self.text)
+
 
 	def __init__(self, id_q, text):
 		self.id_q = id_q
@@ -33,9 +34,9 @@ class Question(object):
 
 	def _get_search_engines(self):
 		try:
-			lang = MyConfig.get("search_engine", "lang")
-			engines = safe_eval(MyConfig.get("search_engine", "engines"))
-			throttle = MyConfig.get("search_engine", "throttle")
+			lang = MyConfig.get("document_retrieval", "lang")
+			engines = safe_eval(MyConfig.get("document_retrieval", "engines"))
+			throttle = MyConfig.get("document_retrieval", "throttle")
 
 			l = []
 			for (engine, license) in engines:
@@ -44,9 +45,9 @@ class Question(object):
 				l.append(eval(engine + "(\"" + license + "\", " + throttle + ", " + lang + ")"))
 			return l
 
-		except ConfigParser.Error:
+		except MyConfigException:
 			sys.exit("_get_search_engines: config error")
-		except Exception:
+		except:
 			logger = logging.getLogger("qa_logger")
 			logger.exception("_get_search_engines: fatal error")
 			sys.exit(2)
@@ -56,10 +57,10 @@ class Question(object):
 		search_engines = self._get_search_engines()
 
 		try:
-			num = int(MyConfig.get("search_engine", "n_results"))
-		except ConfigParser.Error:
+			num = int(MyConfig.get("document_retrieval", "n_results"))
+		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("search_engine:n_results not found")
+			logger.warning(str(e))
 			num = 10
 
 		results = []
@@ -86,7 +87,8 @@ class Question(object):
 				output = open("documentos.pkl", "wb")
 				pickle.dump(doc_list, output, 0)
 				output.close()
-		except:
-			pass
+		except MyConfigException as e:
+			logger = logging.getLogger("qa_logger")
+			logger.warning(str(e))
 
 		return doc_list

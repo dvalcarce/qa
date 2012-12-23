@@ -2,7 +2,7 @@
 
 import logging
 
-from MyConfig import MyConfig
+from conf.MyConfig import MyConfig, MyConfigException
 from pattern.web import Result, plaintext
 
 class Answer(object):
@@ -11,9 +11,9 @@ class Answer(object):
 	def get_run_tag(self):
 		try:
 			exact = MyConfig.get("show_answer", "exact") == "True"
-		except:
+		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("show_answer exact not found")
+			logger.warning(str(e))
 			exact = False
 
 		return ("plna" + ("ex" if exact else "st") + "031ms", exact)

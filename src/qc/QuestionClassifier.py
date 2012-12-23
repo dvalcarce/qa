@@ -39,6 +39,7 @@ class QuestionClassifier(object):
 
 		return result
 
+
 	@classmethod
 	def get_qc_corpus(self, path):
 		f = open(path, "r")
@@ -47,6 +48,7 @@ class QuestionClassifier(object):
 		corpus = [tuple(line.split(" ", 1)) for line in corpus]
 		f.close()
 		return corpus
+
 
 	@classmethod
 	def train(self):

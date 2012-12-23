@@ -5,6 +5,7 @@ import os
 import re
 
 from algorithms.document import *
+from conf.MyConfig import MyConfig, MyConfigException
 from cStringIO import StringIO
 from Passage import Passage
 from pattern.web import Result, URL, URLError, plaintext
@@ -18,6 +19,7 @@ class Document(object):
 		text = " ".join(re.findall(r"[\w'?!\(\)\{\}\[\]\$\.,:;\-\_@\&\*\+]+", content))
 
 		return text
+
 
 	def _pdf_to_plaintext(self, content):
 		pdf_file = "tmp.pdf"
@@ -44,6 +46,7 @@ class Document(object):
 
 		return text
 
+
 	def _extract_text(self, text, mimetype):
 		if (mimetype == "text/html" or mimetype == "xml"):
 			return plaintext(text)
@@ -55,6 +58,7 @@ class Document(object):
 			logger = logging.getLogger("qa_logger")
 			logger.debug("document mimetype %s processed", mimetype)
 			return self._binary_to_plaintext(text)
+
 
 	def _get_content(self, result):
 		url = URL(result.url)
@@ -71,6 +75,7 @@ class Document(object):
 
 		return self._extract_text(content, mimetype)
 
+
 	def __init__(self, result, rank):
 		self.title = result.title
 		self.url = result.url
@@ -81,15 +86,14 @@ class Document(object):
 
 		# Split document into passages
 		try:
-			algorithm = MyConfig.get("passage_retrieval", "algorithm")
+			algorithm = MyConfig.get("document_segmentation", "algorithm")
 			if algorithm == "fixed_lines":
 				self.passages = FixedNumberOfLinesAlgorithm.split_into_passages(self, content)
 			elif algorithm == "paragraphs":
 				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
 			else:
 				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
-		except:
+		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("passage retrieval algorithm not found")
+			logger.warning(str(e))
 			self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
-

@@ -84,7 +84,7 @@ def get_relevant_passages(doc_list, question):
 
 	# Select n best passages
 	try:
-		n = int(MyConfig.get("passage_retrieval", "n_relevants"))
+		n = int(MyConfig.get("document_segmentation", "n_relevants"))
 	except:
 		n = 100
 		logger = logging.getLogger("qa_logger")
