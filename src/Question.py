@@ -14,6 +14,9 @@ from pattern.web import Google, Bing
 class Question(object):
 
 	def _formulate_query(self):
+		logger = logging.getLogger("qa_logger")
+		logger.info("{0}:\tQuery Formulation".format(self.id_q))
+
 		try:
 			algorithm = MyConfig.get("query_formulation", "algorithm")
 			if algorithm == "stopwords":
@@ -54,6 +57,9 @@ class Question(object):
 
 
 	def search(self):
+		logger = logging.getLogger("qa_logger")
+		logger.info("{0}:\tDocument Retrieval".format(self.id_q))
+
 		search_engines = self._get_search_engines()
 
 		try:

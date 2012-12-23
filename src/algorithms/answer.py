@@ -69,13 +69,14 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		# Entity Extraction
 		entities = []
-		all_entitites = []
+		all_entities = []
 		for tree in ne_chunked_sentences:
 			for child in tree:
-				if isinstance(child, Tree) and child.node == searched_entity:
+				if isinstance(child, Tree):
 					entity = " ".join([word for (word, pos) in child.leaves()])
-					entities.append(entity)
-				all_entitites.append(entity)
+					if child.node == searched_entity:
+						entities.append(entity)
+					all_entities.append(entity)
 
 		if 'OTHER' in searched_entity:
 			entities += self._other_recognition(tagged_sentences, all_entities)
@@ -109,12 +110,11 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		try:
 			recognizer = StanfordNER.get_instance(host, port)
+			processed_text = recognizer.process(text)
 		except StanfordNERError:
 			logger = logging.getLogger("qa_logger")
 			logger.warning("Stanford NER not available, using NLTK NER")
 			return self._nltk_ner(text, searched_entity)
-
-		processed_text = recognizer.process(text)
 
 		# Entity Extraction
 		entities = []
@@ -198,7 +198,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 	def process_answer(self, passage, question):
 		q = question.text
 		p = passage.text
-		print q, passage
+
 		searched_entity = self._question_classification(q)
 
 		entities = self._stanford_ner(p, searched_entity)
@@ -206,5 +206,5 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		exact, window, score = self._entity_ranking(q, entities)
 
 		answer = Answer(passage, question, window, exact, score)
-		print exact, score
+
 		return answer

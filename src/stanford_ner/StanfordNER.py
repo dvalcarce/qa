@@ -20,15 +20,9 @@ class StanfordNER:
 
 	@classmethod
 	def disconnect_all(self):
-		for _instance in self.instances.itervalues():
+		for instance in self._instances.itervalues():
 			try:
-				_instance.socket.shutdown(socket.SHUT_RDWR)
-				_instance.socket.close()
-			except:
-				logger = logging.getLogger("qa_logger")
-				logger.warning("error closing socket " + str(socket))
-			try:
-				_instance.servlet.kill()
+				instance.servlet.kill()
 			except:
 				pass
 
@@ -36,19 +30,33 @@ class StanfordNER:
 	def __init__(self, host, port):
 		self.host = host
 		self.port = port
-		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
-	def process(self, text):
-		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	def connect(self):
 		try:
-			self.socket.connect((self.host, self.port))
+			return socket.create_connection((self.host, self.port))
 		except socket.error as e:
 			self.launch_servlet(self.host, self.port)
 			logger = logging.getLogger("qa_logger")
-			logger.info("stanford servlet automatically launched")
-			time.sleep(2.0)
-			self.socket.connect((self.host, self.port))
+			logger.debug("Stanford servlet automatically launched")
+
+		try:
+			return socket.create_connection((self.host, self.port))
+		except socket.error as e:
+			raise StanfordNERError("Stanford servlet not found")
+
+
+	def disconnect(self):
+		try:
+			self.socket.shutdown(socket.SHUT_RDWR)
+			self.socket.close().sco
+		except socket.error:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("error closing socket " + str(socket))
+
+
+	def process(self, text):
+		self.socket = self.connect()
 
 		try:
 			msg = (text + "\n").encode('utf-8')
@@ -59,6 +67,8 @@ class StanfordNER:
 			result = map(lambda x: tuple(x.split("/")), buf.split())
 			result = filter(lambda x: len(x) == 2, result)
 		except socket.error:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("error with socket " + str(socket.getsockname()))
 			return ""
 
 		return result
@@ -68,7 +78,7 @@ class StanfordNER:
 		if self.host != "localhost" \
 			and self.host != socket.gethostbyname("localhost") \
 			and self.host != socket.gethostbyname(socket.gethostname()):
-			raise StanfordNERError("Stanford servlet not found")
+			raise StanfordNERError("Stanford servlet cannot be automatically launched")
 
 		dev_null = open(os.path.join("/", "dev", "null"), "w")
 		log = open(os.path.join("conf", "config.conf"))
@@ -85,7 +95,6 @@ class StanfordNER:
 
 		dev_null.close()
 		log.close()
-
 
 
 class StanfordNERError(Exception):
