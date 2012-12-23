@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+import unicodedata
 
 from algorithms.document import *
 from conf.MyConfig import MyConfig, MyConfigException
@@ -49,7 +50,7 @@ class Document(object):
 
 	def _extract_text(self, text, mimetype):
 		if (mimetype == "text/html" or mimetype == "xml"):
-			return plaintext(text)
+			return unicodedata.normalize("NFKD", plaintext(text)).encode("ascii", "ignore")
 		elif (mimetype == "application/pdf"):
 			self._pdf_to_plaintext(text)
 		elif (mimetype == "text/plain"):
@@ -82,18 +83,18 @@ class Document(object):
 		self.rank = rank
 		self.description = plaintext(result.description)
 
-		content = self._get_content(result)
+		self.content = self._get_content(result)
 
 		# Split document into passages
 		try:
 			algorithm = MyConfig.get("document_segmentation", "algorithm")
 			if algorithm == "fixed_lines":
-				self.passages = FixedNumberOfLinesAlgorithm.split_into_passages(self, content)
+				self.passages = FixedNumberOfLinesAlgorithm.split_into_passages(self, self.content)
 			elif algorithm == "paragraphs":
-				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
+				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, self.content)
 			else:
-				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
+				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, self.content)
 		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
 			logger.warning(str(e))
-			self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, content)
+			self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, self.content)

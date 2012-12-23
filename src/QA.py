@@ -13,7 +13,7 @@ import utils
 from Answer import Answer
 from ConfigParser import ConfigParser
 from datetime import datetime
-from MyConfig import MyConfig
+from conf.MyConfig import MyConfig, MyConfigException
 from nltk.probability import FreqDist
 from Passage import Passage
 from Question import Question
@@ -22,7 +22,7 @@ class QA(object):
 
 	def init_logger(self):
 		directory = "log"
-		log_config = "conf/logging.conf"
+		log_config = os.path.join("conf", "logging.conf")
 		if not os.path.exists(directory):
 			os.mkdir(directory)
 		if not os.path.exists(log_config):
@@ -48,7 +48,7 @@ class QA(object):
 
 	def parse_questions(self, path):
 		try:
-			q_file = open(path, "r")
+			q_file = codecs.open(path, "r", encoding="utf-8", errors="ignore")
 		except:
 			sys.exit("QA Error: bad argument")
 
@@ -73,7 +73,7 @@ class QA(object):
 		passage_list = []
 
 		logger = logging.getLogger("qa_logger")
-		logger.info("{0}:\t\tDocument Segmentation".format(question.id_q))
+		logger.info("%s:\t\tDocument Segmentation", question.id_q)
 
 		for doc in doc_list:
 			for passage in doc.passages:
@@ -85,7 +85,7 @@ class QA(object):
 
 	def get_relevant_passages(self, doc_list, question):
 		logger = logging.getLogger("qa_logger")
-		logger.info("{0}:\tPassage Retrieval".format(question.id_q))
+		logger.info("%s:\tPassage Retrieval", question.id_q)
 
 		passage_list = self.score_passages(doc_list, question)
 		passage_list.sort(key=lambda x: x.score, reverse=True)
@@ -98,18 +98,18 @@ class QA(object):
 			logger = logging.getLogger("qa_logger")
 			logger.warning("n_relevants not found")
 
-		logger.info("{0}:\t\tPassage Filtering".format(question.id_q))
+		logger.info("%s:\t\tPassage Filtering", question.id_q)
 
 		return passage_list[:n]
 
 
 	def get_best_answers(self, passage_list, q):
 		logger = logging.getLogger("qa_logger")
-		logger.info("{0}:\tAnswer Processing".format(q.id_q))
+		logger.info("%s:\tAnswer Processing", q.id_q)
 
 		empty = passage_list == []
 
-		logger.info("{0}:\t\tAnswer Extraction".format(q.id_q))
+		logger.info("%s:\t\tAnswer Extraction", q.id_q)
 
 		answer_list = []
 		for passage in passage_list:
@@ -120,7 +120,7 @@ class QA(object):
 		if not answer_list:
 			return ([], empty)
 
-		logger.info("{0}:\t\tAnswer Filtering".format(q.id_q))
+		logger.info("%s:\t\tAnswer Filtering", q.id_q)
 
 		# Obtain answer frequency
 		fd = FreqDist(answer_list)

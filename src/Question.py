@@ -15,7 +15,7 @@ class Question(object):
 
 	def _formulate_query(self):
 		logger = logging.getLogger("qa_logger")
-		logger.info("{0}:\tQuery Formulation".format(self.id_q))
+		logger.info("%s:\tQuery Formulation", self.id_q)
 
 		try:
 			algorithm = MyConfig.get("query_formulation", "algorithm")
@@ -58,7 +58,7 @@ class Question(object):
 
 	def search(self):
 		logger = logging.getLogger("qa_logger")
-		logger.info("{0}:\tDocument Retrieval".format(self.id_q))
+		logger.info("%s:\tDocument Retrieval", self.id_q)
 
 		search_engines = self._get_search_engines()
 
