@@ -13,7 +13,7 @@ from conf.MyConfig import MyConfig, MyConfigException
 from nltk.probability import FreqDist
 from nltk.tree import Tree
 from qc.QuestionClassifier import QuestionClassifier
-from stanford_ner.StanfordNER import StanfordNER
+from stanford_ner.StanfordNER import StanfordNER, StanfordNERError
 
 class AnswerExtractionAlgorithm(object):
 
@@ -60,7 +60,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 
 	@classmethod
-	def _ne_recognition_nltk(self, text, searched_entity):
+	def _nltk_ner(self, text, searched_entity):
 		# Entity Classification
 		sentences = nltk.sent_tokenize(text)
 		tokenized_sentences = [nltk.word_tokenize(s) for s in sentences]
@@ -87,7 +87,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 
 	@classmethod
-	def _ne_recognition_stanford(self, text, searched_entity):
+	def _stanford_ner(self, text, searched_entity):
 		sentences = nltk.sent_tokenize(text)
 		tokenized_sentences = [nltk.word_tokenize(s) for s in sentences]
 		tagged_sentences = [nltk.pos_tag(s) for s in tokenized_sentences]
@@ -107,7 +107,13 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 			logger.warning(str(e))
 			port = 1234
 
-		recognizer = StanfordNER.get_instance(host, port)
+		try:
+			recognizer = StanfordNER.get_instance(host, port)
+		except StanfordNERError:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("Stanford NER not available, using NLTK NER")
+			return self._nltk_ner(text, searched_entity)
+
 		processed_text = recognizer.process(text)
 
 		# Entity Extraction
@@ -192,13 +198,13 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 	def process_answer(self, passage, question):
 		q = question.text
 		p = passage.text
-
+		print q, passage
 		searched_entity = self._question_classification(q)
 
-		entities = self._ne_recognition_stanford(p, searched_entity)
+		entities = self._stanford_ner(p, searched_entity)
 		
 		exact, window, score = self._entity_ranking(q, entities)
 
 		answer = Answer(passage, question, window, exact, score)
-
+		print exact, score
 		return answer

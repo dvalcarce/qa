@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import nltk
+import os
 import pickle
 
 from nltk.corpus import qc
-
 
 class QuestionClassifier(object):
 
@@ -53,11 +53,11 @@ class QuestionClassifier(object):
 	@classmethod
 	def train(self):
 		print "Getting training corpus"
-		train_corpus = QuestionClassifier.get_qc_corpus("corpus/qc_train.txt")
+		train_corpus = QuestionClassifier.get_qc_corpus(os.path.join("corpus", "qc_train.txt"))
 		train_set = [(QuestionClassifier.get_features(question), entity) for (entity, question) in train_corpus]
 
 		print "Getting testing corpus"
-		test_corpus = QuestionClassifier.get_qc_corpus("corpus/qc_test.txt")
+		test_corpus = QuestionClassifier.get_qc_corpus(os.path.join("corpus", "qc_test.txt"))
 		test_set = [(QuestionClassifier.get_features(question), entity) for (entity, question) in test_corpus]
 
 		classifier = {}

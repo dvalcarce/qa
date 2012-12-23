@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import ConfigParser
+import os
 
 from ConfigParser import Error as ConfigError
 
 class MyConfig:
 
 	_instance = ConfigParser.SafeConfigParser()
-	_instance.read("conf/config.conf")
+	_instance.read(os.path.join("conf", "config.conf"))
 
 	@classmethod
 	def get(self, section, item):
