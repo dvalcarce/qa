@@ -17,11 +17,11 @@ class DocumentSegmentationAlgorithm(object):
 class FixedNumberOfLinesAlgorithm(DocumentSegmentationAlgorithm):
 
 	@classmethod
-	def split_into_passages(self, document, text):
-		if text is None or document is None:
+	def split_into_passages(self, document):
+		if document is None or document.content is None or document.content == "":
 			return []
 
-		lines = document.split("\n")
+		lines = document.content.split("\n")
 		passage_list = []
 
 		try:
@@ -41,25 +41,28 @@ class FixedNumberOfLinesAlgorithm(DocumentSegmentationAlgorithm):
 			piece_of_text = "\n".join(lines_of_text)
 			passage_list.append(Passage(piece_of_text, document))
 
+		# Adds search engine snippet
+		passage_list.append(Passage(document.description, document))
+
 		return passage_list
 
 
 class SplitIntoParagraphsAlgorithm(DocumentSegmentationAlgorithm):
 
 	@classmethod
-	def split_into_passages(self, document, text):
-		if text is None or document is None:
+	def split_into_passages(self, document):
+		if document is None or document.content is None or document.content == "":
 			return []
 
-		paragraphs = text.split("\n")
+		paragraphs = document.content.split("\n")
 
 		passage_list = []
-		# Iterating over the lines of the document
-		# obtaining overlapped passages:
-		# 	max(1, len(lines)-n_lines+1)
-		# Don't ask: magic numbers ;-)
+
 		for paragraph in paragraphs:
 			passage_list.append(Passage(paragraph, document))
+
+		# Adds search engine snippet
+		passage_list.append(Passage(document.description, document))
 
 		return passage_list
 

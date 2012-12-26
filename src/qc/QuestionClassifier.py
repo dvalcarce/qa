@@ -4,6 +4,7 @@
 import nltk
 import os
 import pickle
+import random
 
 from nltk.corpus import qc
 

@@ -6,6 +6,7 @@ import nltk
 import pickle
 import random
 import re
+import sys
 
 from Answer import Answer
 from collections import Counter
@@ -50,7 +51,12 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
 			logger.warning(str(e))
-			pkl_file= open('qc/qc_maxent.pkl')
+			try:
+				pkl_file= open('qc/qc_maxent.pkl')
+			except IOerror:
+				logger.error("Question classifier not available. Please, train one with qc/QuestionClassifier.py")
+				sys.exit()
+
 
 		classifier = pickle.load(pkl_file)
 		pkl_file.close()
@@ -175,6 +181,12 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 
 	@classmethod
+	def _filter_entities(self, entities, question):
+		words = nltk.word_tokenize(question.lower())
+		return [entity for entity in entities if entity.lower() not in words]
+
+
+	@classmethod
 	def _entity_ranking(self, question, entities):
 		if len(entities) == 0:
 			return "", "", int(0)
@@ -201,8 +213,20 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		searched_entity = self._question_classification(q)
 
-		entities = self._stanford_ner(p, searched_entity)
-		
+		try:
+			ner_algorithm = MyConfig.get("answer_extraction", "ner")
+		except MyConfigException as e:
+			ner_algorithm = "stanford"
+			logger = logging.getLogger("qa_logger")
+			logger.warning(str(e))
+
+		if ner_algorithm == "nltk":
+			entities = self._nltk_ner(p, searched_entity)
+		else:
+			entities = self._stanford_ner(p, searched_entity)
+
+		entities = self._filter_entities(entities, q)
+
 		exact, window, score = self._entity_ranking(q, entities)
 
 		answer = Answer(passage, question, window, exact, score)

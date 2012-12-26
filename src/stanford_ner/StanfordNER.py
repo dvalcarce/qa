@@ -24,7 +24,8 @@ class StanfordNER:
 			try:
 				instance.servlet.kill()
 			except:
-				pass
+				logger = logging.getLogger("qa_logger")
+				logger.info("Servlet couldn't be killed")
 
 
 	def __init__(self, host, port):
@@ -49,7 +50,7 @@ class StanfordNER:
 	def disconnect(self):
 		try:
 			self.socket.shutdown(socket.SHUT_RDWR)
-			self.socket.close().sco
+			self.socket.close()
 		except socket.error:
 			logger = logging.getLogger("qa_logger")
 			logger.warning("error closing socket " + str(socket))
@@ -83,7 +84,7 @@ class StanfordNER:
 		dev_null = open(os.path.join("/", "dev", "null"), "w")
 		log = open(os.path.join("conf", "config.conf"))
 
-		self.servlet = subprocess.Popen(["java", "-mx700m",
+		self.servlet = subprocess.Popen(["java", "-mx500m",
 			"-cp", os.path.join("stanford_ner", "stanford-ner.jar"),
 			"edu.stanford.nlp.ie.NERServer",
 			"-loadClassifier",
@@ -95,6 +96,9 @@ class StanfordNER:
 
 		dev_null.close()
 		log.close()
+
+		# Give some time to Stanford NER Servlet to get ready
+		time.sleep(5.0)
 
 
 class StanfordNERError(Exception):

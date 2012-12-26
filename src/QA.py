@@ -49,20 +49,20 @@ class QA(object):
 	def parse_questions(self, path):
 		try:
 			q_file = codecs.open(path, "r", encoding="utf-8", errors="ignore")
-		except:
+		except IOError:
 			sys.exit("QA Error: bad argument")
 
 		questions = []
 		for line in q_file:
 			# We use a regular expression for matching questions
-			m = re.match(r"(?P<id>[^ \t]+)[ \t]*(?P<question>.+)", line)
+			m = re.match(r"(?P<id>[^ \t]+)[ \t]*(?P<question>.+)", utils.from_unicode_to_ascii(line))
 			id_q = m.group("id")
 			q = m.group("question")
 			questions.append(Question(id_q, q))
 
 		try:
 			q_file.close()
-		except:
+		except IOError:
 			logger = logging.getLogger("qa_logger")
 			logger.warning("Questions file not closed")
 
@@ -159,7 +159,6 @@ class QA(object):
 		id_q = q.id_q
 		(run_tag, _) = Answer.get_run_tag()
 
-		date = datetime.strftime(datetime.today(), "%Y-%m-%d_%H:%M:%S")
 		folder = "answers"
 		if not os.path.isdir(folder) and os.path.exists(folder):
 			logger = logging.getLogger("qa_logger")
@@ -168,7 +167,7 @@ class QA(object):
 		if not os.path.exists(folder):
 			os.mkdir(folder)
 
-		f = codecs.open(os.path.join(folder, date + ".txt"), "a", encoding="utf-8", errors="ignore")
+		f = open(os.path.join(folder, self.date + ".txt"), "a")
 
 		if answer_list == []:
 
@@ -206,6 +205,8 @@ class QA(object):
 		sys.exit()
 
 	def main(self):
+		self.date = datetime.strftime(datetime.today(), "%Y-%m-%d_%H:%M:%S")
+
 		try:
 			self.init_logger()
 

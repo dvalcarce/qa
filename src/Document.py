@@ -3,7 +3,7 @@
 import logging
 import os
 import re
-import unicodedata
+import utils
 
 from algorithms.document import *
 from conf.MyConfig import MyConfig, MyConfigException
@@ -18,7 +18,6 @@ class Document(object):
 
 	def _binary_to_plaintext(self, content):
 		text = " ".join(re.findall(r"[\w'?!\(\)\{\}\[\]\$\.,:;\-\_@\&\*\+]+", content))
-
 		return text
 
 
@@ -50,7 +49,7 @@ class Document(object):
 
 	def _extract_text(self, text, mimetype):
 		if (mimetype == "text/html" or mimetype == "xml"):
-			return unicodedata.normalize("NFKD", plaintext(text)).encode("ascii", "ignore")
+			return utils.from_unicode_to_ascii(plaintext(text))
 		elif (mimetype == "application/pdf"):
 			self._pdf_to_plaintext(text)
 		elif (mimetype == "text/plain"):
@@ -66,8 +65,15 @@ class Document(object):
 		mimetype = url.mimetype
 
 		try:
-			content = url.download()
-		except:
+			timeout = int(MyConfig.get("document_retrieval", "timeout"))
+		except MyConfigException as e:
+			logger = logging.getLogger("qa_logger")
+			logger.warning(str(e))
+			timeout = 15
+
+		try:
+			content = url.download(timeout=timeout)
+		except URLTimeoutError:
 			# If we cannot retrieve the document,
 			# we skip it
 			logger = logging.getLogger("qa_logger")
@@ -79,7 +85,7 @@ class Document(object):
 
 	def __init__(self, result, rank):
 		self.title = result.title
-		self.url = result.url
+		self.url = utils.from_unicode_to_ascii(result.url)
 		self.rank = rank
 		self.description = plaintext(result.description)
 
@@ -89,11 +95,11 @@ class Document(object):
 		try:
 			algorithm = MyConfig.get("document_segmentation", "algorithm")
 			if algorithm == "fixed_lines":
-				self.passages = FixedNumberOfLinesAlgorithm.split_into_passages(self, self.content)
+				self.passages = FixedNumberOfLinesAlgorithm.split_into_passages(self)
 			elif algorithm == "paragraphs":
-				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, self.content)
+				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self)
 			else:
-				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, self.content)
+				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self)
 		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
 			logger.warning(str(e))
