@@ -286,6 +286,16 @@ Realizamos también pequeñas refactorizaciones del código. Optimizamos la téc
 \subsubsection*{2012/12/18}
 En el día de hoy, se ha integrado el Named Entity Recognition de Stanford con el código actual mediante comunicación via un socket TCP. Ahora podemos utilizar ambos reconocedores de entidades (será necesario realizar una comparativa entre ellos).
 
+\subsubsection*{2012/12/26}
+Concertamos una reunión con el profesor responsable de las prácticas para realizar un seguimiento de la misma y plantearle unas dudas sobre el reconocimiento de entidades tipo Other.
+
+Realizamos correciones menores en el soporte de Unicode, el timeout de descarga de ficheros, el salvado de resultados en ficheros, la selección mediante el fichero de configuración del tipo de motor de NER o la falta de clasificadores de preguntas.
+
+Por otro lado, hemos mejorado el Passage Retrieval consdirando también los snippets que nos proporcionan los buscadores como posibles pasajes relevantes. También modificamos la lógica del Answer Extraction para eliminar aquellos términos que ya aparecen en la pregunta como posibles respuestas (no nos van a preguntar de qué color es el caballo blanco de Santiago).
+
+Tras realizar unas pruebas para evaluar la calidad de nuestro sistema, observamos que si el Question Classification falla, es imposible obtener una respuesta válida. Por tanto, nos hemos propuesto mejorarlo con la inclusión de más \emph{features} a nuestros clasificadores. Hemos probado con añadir un segundo sustantivo, pero vimos que empeoraba el rendimiento en el conjunto de test. A continuación, intentamos aproximarnos al problema utilizado chunking para obtener la \emph{head word}
+más característica; sin embargo, la calidad del análisis sintáctico superficial no era suficiente para obtener buenos resultados. Por último, hemos contemplado la posibilidad de usar análisis sintáctico completo. En el trabajo de Babak Loni \cite{tesis:qc} se comenta el uso del \emph{full parser} de Stanford en combinación con un algoritmo diseñado por él para la obtención de la \emph{head word}. Queda pendiente dicho trabajo para el próximo día.
+
 \clearpage
 \section{Bibliografía}
 \begin{thebibliography}{99}
@@ -310,6 +320,9 @@ BitBucket: \url{http://www.bitbucket.org/daniel_garabato/ln}.
 
 \bibitem{latex}
 \LaTeX: \url{http://www.latex-project.org}.
+
+\bibitem{tesis:qc}
+B. Loni: \emph{Enhanced Question Classification with Optimal Combination of Features}. Ed. Delft University of Technology, 2011.
 
 \end{thebibliography}
 
