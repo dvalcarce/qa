@@ -153,6 +153,9 @@ sudo pip install -u pdfminer
 \section{Algoritmos}
 \subsection{Query Formulation}
 \subsubsection{Stopwords}
+Este algoritmo nos devuelve una query. Es llamado cada vez que se crea un objeto de tipo Question y recibe el texto de la pregunta. Su funcionamiento consiste en primero pasar el texto de la pregunta a minúsculas, a continuación, obtenemos una lista con los caracteres de la pregunta. De esta lista eliminamos los símbolos que no nos interesan ( ',', '?', '!', '.', '(', ')', ';', ':') puesto que no nos influyen en la búsqueda. Tenemos así el texto de la pregunta filtrado.
+
+Finalmente obtenemos otra lista con las palabras de la pregunta y, utilizando el corpus del NLTK con las stopwords, eliminamos las palabras irrelevantes a la hora de realizar la búsqueda. Tenemos así nuestra query lista para pasársela a los buscadores.
 
 \subsection{Document Segmentation}
 \subsubsection{Fixed Number off Lines}
