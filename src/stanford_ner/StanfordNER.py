@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import os
 import socket
 import subprocess
-import os
 import time
 
 class StanfordNER:
@@ -64,15 +64,12 @@ class StanfordNER:
 			self.socket.sendall(msg)
 			buf = self.socket.recv(len(text)*3)
 			self.socket.close()
-
-			result = map(lambda x: tuple(x.split("/")), buf.split())
-			result = filter(lambda x: len(x) == 2, result)
 		except socket.error:
 			logger = logging.getLogger("qa_logger")
 			logger.warning("error with socket " + str(socket.getsockname()))
 			return ""
 
-		return result
+		return buf
 
 
 	def launch_servlet(self, host, port):
@@ -89,7 +86,8 @@ class StanfordNER:
 			"edu.stanford.nlp.ie.NERServer",
 			"-loadClassifier",
 			os.path.join("stanford_ner", "classifiers", "english.muc.7class.distsim.crf.ser.gz"),
-			"-port", str(port)],
+			"-port", str(port),
+			"-outputFormat", "inlineXML"],
 			stdout=dev_null,
 			stderr=log
 			)

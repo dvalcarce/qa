@@ -11,6 +11,7 @@ import sys
 from Answer import Answer
 from collections import Counter
 from conf.MyConfig import MyConfig, MyConfigException
+from lxml.etree import fromstring
 from nltk.probability import FreqDist
 from nltk.tree import Tree
 from qc.QuestionClassifier import QuestionClassifier
@@ -116,20 +117,23 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		try:
 			recognizer = StanfordNER.get_instance(host, port)
-			processed_text = recognizer.process(text)
+			text = recognizer.process(text)
 		except StanfordNERError:
 			logger = logging.getLogger("qa_logger")
 			logger.warning("Stanford NER not available, using NLTK NER")
 			return self._nltk_ner(text, searched_entity)
 
+		# XML Parsing
+		text = "<xml>" + text.replace("&", "") + "</xml>"
+		tree = fromstring(text)
+
 		# Entity Extraction
 		entities = []
 		all_entities = []
-		for (word, entity) in processed_text:
-			if entity == searched_entity:
-				entities.append(word)
-			if entity != "O":
-				all_entities.append(word)
+		for element in tree.iterchildren():
+			if element.tag == searched_entity:
+				entities.append(element.text)
+			all_entities.append(element.text)
 
 		if 'OTHER' in searched_entity:
 			entities += self._other_recognition(tagged_sentences, all_entities)
