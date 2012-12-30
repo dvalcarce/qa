@@ -3,6 +3,7 @@
 import itertools
 import logging
 import nltk
+import os
 import pickle
 import random
 import re
@@ -47,24 +48,22 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 	def _question_classification(self, question):
 		# Choose the specified classifier
 		try:
-			classifier_path = MyConfig.get("answer_extraction", "question_classifier")
-			pkl_file = open(classifier_path)
+			features = MyConfig.get("answer_extraction", "question_features")
 		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
 			logger.warning(str(e))
-			try:
-				pkl_file= open('qc/qc_maxent.pkl')
-			except IOerror:
-				logger.error("Question classifier not available. Please, train one with qc/QuestionClassifier.py")
-				sys.exit()
+			features = "fnh"
 
-
-		classifier = pickle.load(pkl_file)
-		pkl_file.close()
+		try:
+			classifier_file = MyConfig.get("answer_extraction", "question_classifier")
+			classifier_path = os.path.join("qc", features, classifier_file)
+		except MyConfigException as e:
+			logger = logging.getLogger("qa_logger")
+			logger.warning(str(e))
+			classifier_path = os.path.join("qc", "fhn", "qc_bayes.pkl")
 
 		# Question classification
-		return classifier.classify(QuestionClassifier.get_features(question))
-
+		return QuestionClassifier.classify(classifier_path, question, features)
 
 	@classmethod
 	def _nltk_ner(self, text, searched_entity):

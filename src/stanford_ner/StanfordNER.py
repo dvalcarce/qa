@@ -7,7 +7,7 @@ import socket
 import subprocess
 import time
 
-class StanfordNER:
+class StanfordNER(object):
 
 	_instances = {}
 
@@ -22,10 +22,12 @@ class StanfordNER:
 	def disconnect_all(self):
 		for instance in self._instances.itervalues():
 			try:
-				instance.servlet.kill()
+				instance.servlet.terminate()
 			except:
 				logger = logging.getLogger("qa_logger")
 				logger.info("Servlet couldn't be killed")
+			else:
+				instance.servlet.kill()
 
 
 	def __init__(self, host, port):
@@ -79,7 +81,7 @@ class StanfordNER:
 			raise StanfordNERError("Stanford servlet cannot be automatically launched")
 
 		dev_null = open(os.path.join("/", "dev", "null"), "w")
-		log = open(os.path.join("conf", "config.conf"))
+		log = open(os.path.join("log", "stanford_ner.log"), "a")
 
 		self.servlet = subprocess.Popen(["java", "-mx500m",
 			"-cp", os.path.join("stanford_ner", "stanford-ner.jar"),
@@ -88,9 +90,9 @@ class StanfordNER:
 			os.path.join("stanford_ner", "classifiers", "english.muc.7class.distsim.crf.ser.gz"),
 			"-port", str(port),
 			"-outputFormat", "inlineXML"],
-			stdout=dev_null,
+			stdout=log,
 			stderr=log
-			)
+		)
 
 		dev_null.close()
 		log.close()
@@ -103,10 +105,10 @@ class StanfordNERError(Exception):
 	pass
 
 if __name__ == "__main__":
+	os.chdir(os.pardir)
 	host = raw_input("Choose host: ")
 	port = int(raw_input("Choose port: "))
 	text = raw_input("Write your text: ")
-	os.chdir(os.pardir)
 	recognizer = StanfordNER.get_instance(host, port)
 	processed_text = recognizer.process(text)
 	print processed_text

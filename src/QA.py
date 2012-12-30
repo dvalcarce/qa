@@ -40,7 +40,7 @@ class QA(object):
 		print "Welcome to the best Question Answering System"
 		q = raw_input("Write your question: ")
 
-		while (q == None or q == ""):
+		while not q or q == "":
 			q = raw_input("Write your question: ")
 
 		return [Question("0001", q)]
@@ -207,32 +207,31 @@ class QA(object):
 	def main(self):
 		self.date = datetime.strftime(datetime.today(), "%Y-%m-%d_%H:%M:%S")
 
-		try:
-			self.init_logger()
+		self.init_logger()
 
-			if len(sys.argv) == 1:
-				questions = self.ask()
-			elif len(sys.argv) == 2:
-				# DEBUG
-				if sys.argv[1] == "pickle":
-					self.debug()
-				# END DEBUG
-				questions = self.parse_questions(sys.argv[1])
-			else:
-				sys.exit("QA Error: bad syntax\nQA.py [file]")
+		if len(sys.argv) == 1:
+			questions = self.ask()
+		elif len(sys.argv) == 2:
+			# DEBUG
+			if sys.argv[1] == "pickle":
+				self.debug()
+			# END DEBUG
+			questions = self.parse_questions(sys.argv[1])
+		else:
+			sys.exit("QA Error: bad syntax\nQA.py [file]")
 
-			for q in questions:
-				doc_list = q.search()
-				passages = self.get_relevant_passages(doc_list, q)
-				(answers, empty) = self.get_best_answers(passages, q)
-				self.write_answers(answers, empty, q)
-
-		except KeyboardInterrupt:
-			sys.exit("Exiting...")
-		finally:
-			utils.clean()
+		for q in questions:
+			doc_list = q.search()
+			passages = self.get_relevant_passages(doc_list, q)
+			(answers, empty) = self.get_best_answers(passages, q)
+			self.write_answers(answers, empty, q)
 
 
 if __name__ == '__main__':
 	qa = QA()
-	qa.main()
+	try:
+		qa.main()
+	except (KeyboardInterrupt, EOFError):
+		sys.exit("\nExiting...")
+	finally:
+		utils.clean()

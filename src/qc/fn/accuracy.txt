@@ -1,0 +1,5 @@
+Accuracy tests
+Naive Bayes Classifier: 	0.781869688385
+Decision Tree Classifier: 	0.620396600567
+Maximum Entropy Classifier: 	0.784702549575
+
