@@ -15,14 +15,14 @@ class Passage(object):
 				self.score = SimilarityAlgorithm.calculate_score(question, self)
 			elif (algorithm == "proximity"):
 				self.score = ProximityAlgorithm.calculate_score(question, self)
-			elif (algorithm == "0"):
-				self.score = 0
+			elif (algorithm == "mixed"):
+				self.score = MixedAlgorithm.calculate_score(question, self)
 			else:
-				self.score = 0
+				self.score = MixedAlgorithm.calculate_score(question, self)
 		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
 			logger.warning(str(e))
-			self.score = SimilarityAlgorithm.calculate_score(question, self)
+			self.score = MixedAlgorithm.calculate_score(question, self)
 
 
 	def find_answer(self, question):

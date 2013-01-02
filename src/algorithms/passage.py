@@ -50,13 +50,14 @@ class SimilarityAlgorithm(PassageFilteringAlgorithm):
 		# Reverse rank order from 1..n to n..1
 		rank = num - rank + 1
 
-		# Normalize rank from n..1 to 1..0
-		rank = (rank - 1) / (num - 1)
+		# Normalize rank from n..1 to 1..0.5
+		rank = (rank - 2 + num) / (2*num - 2)
 
 		# Weight score by rank
 		score = score * rank
 
 		return score
+
 
 class ProximityAlgorithm(PassageFilteringAlgorithm):
 
@@ -96,4 +97,31 @@ class ProximityAlgorithm(PassageFilteringAlgorithm):
 				last_match= i
 				searched_term+= 1
 
+		try:
+			num = int(MyConfig.get("document_retrieval", "n_results"))
+		except MyConfigException as e:
+			logger = logging.getLogger("qa_logger")
+			logger.warning(str(e))
+			return score
+
+		# Reverse rank order from 1..n to n..1
+		rank = num - rank + 1
+
+		# Normalize rank from n..1 to 1..0.5
+		rank = (rank - 2 + num) / (2*num - 2)
+
+		# Weight score by rank
+		score = score * rank
+
 		return score
+
+
+class MixedAlgorithm(PassageFilteringAlgorithm):
+
+	@classmethod
+	def calculate_score(self, question, passage):
+		score1 = SimilarityAlgorithm.calculate_score(question, passage)
+		score2 = ProximityAlgorithm.calculate_score(question, passage)
+
+		return (score1 + score2) / 2
+
