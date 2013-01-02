@@ -75,6 +75,8 @@ class StanfordParserError(Exception):
 
 if __name__ == "__main__":
 	os.chdir(os.pardir)
+	os.chdir(os.pardir)
+	print os.getcwd()
 	try:
 		text = raw_input("Write your text: ")
 		while text and text != "":

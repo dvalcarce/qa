@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 import nltk
 import os
 import pickle
 import random
+import sys
 
 from nltk.corpus import qc
 from nltk.tree import Tree
@@ -110,10 +112,10 @@ class QuestionClassifier(object):
 		if node == "SBARQ":
 			for subtree in tree:
 				if subtree.node in ["WHNP", "WHPP", "WHADJP", "WHADVP"] and len(subtree) >= 2:
+					# Second non-trivial rule
 					if subtree.node != "WHNP":
 						return subtree
 					else:
-						# Second non-trivial rule
 						for t in subtree:
 							if t.node == "NP" and t[len(t)-1].node == "POS":
 								return t
@@ -202,15 +204,15 @@ class QuestionClassifier(object):
 		features.sort()
 		folder = "".join(features)
 
-		if not os.path.exists(folder):
-			os.mkdir(folder)
+		if not os.path.exists(os.path.join("qc", folder)):
+			os.mkdir(os.path.join("qc", folder))
 
 		return folder
 
 	@classmethod
 	def train(self, features):
 		print "Getting training corpus"
-		train_corpus = QuestionClassifier.get_qc_corpus(os.path.join("corpus", "qc_train.txt"))
+		train_corpus = QuestionClassifier.get_qc_corpus(os.path.join("qc", "corpus", "qc_train.txt"))
 		train_set = [(QuestionClassifier.get_features(question, features), entity) for (entity, question) in train_corpus]
 
 		folder = self._get_folder(features)
@@ -222,7 +224,7 @@ class QuestionClassifier(object):
 				classifier[name] = c.train(train_set, algorithm="iis")
 			else:
 				classifier[name] = c.train(train_set)
-			f = open(os.path.join(folder, filename), "wb")
+			f = open(os.path.join("qc", folder, filename), "wb")
 			pickle.dump(classifier[name], f, 0)
 			f.close()
 
@@ -230,7 +232,7 @@ class QuestionClassifier(object):
 	@classmethod
 	def test(self, features):
 		print "Getting testing corpus"
-		test_corpus = QuestionClassifier.get_qc_corpus(os.path.join("corpus", "qc_test.txt"))
+		test_corpus = QuestionClassifier.get_qc_corpus(os.path.join("qc", "corpus", "qc_test.txt"))
 		test_set = [(QuestionClassifier.get_features(question, features), entity) for (entity, question) in test_corpus]
 
 		folder = self._get_folder(features)
@@ -238,7 +240,7 @@ class QuestionClassifier(object):
 		classifier = {}
 		print "Accuracy tests"
 		for (name, _, filename) in self.classifiers:
-			pkl_file = open(os.path.join(folder, filename), "rb")
+			pkl_file = open(os.path.join("qc", folder, filename), "rb")
 			classifier[name] = pickle.load(pkl_file)
 			accuracy = nltk.classify.accuracy(classifier[name], test_set)
 			print name + " Classifier: \t" + str(accuracy)
@@ -255,6 +257,7 @@ class QuestionClassifier(object):
 				try:
 					pkl_file = open(os.path.join("qc", "fhn", "qc_bayes.pkl"))
 				except IOError:
+					logger = logging.getLogger("qa_logger")
 					logger.error("Question classifier not available. Please, train one with qc/QuestionClassifier.py")
 					sys.exit()
 
@@ -265,6 +268,8 @@ class QuestionClassifier(object):
 
 
 if __name__ == '__main__':
+	os.chdir(os.pardir)
+
 	print "1. Train models"
 	print "2. Test models"
 	print "3. Classify question"
@@ -295,7 +300,7 @@ if __name__ == '__main__':
 				classifier = {}
 				for (name, _, filename) in QuestionClassifier.classifiers:
 					folder = QuestionClassifier._get_folder(features)
-					f = open(os.path.join(folder, filename), "rb")
+					f = open(os.path.join("qc", folder, filename), "rb")
 					classifier[name] = pickle.load(f)
 					f.close()
 					entities = classifier[name].classify(result)
