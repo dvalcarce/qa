@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import re
+import nltk
 
 from conf.MyConfig import MyConfig, MyConfigException
 from Passage import Passage
@@ -14,7 +16,7 @@ class DocumentSegmentationAlgorithm(object):
 		pass
 
 
-class FixedNumberOfLinesAlgorithm(DocumentSegmentationAlgorithm):
+class SplitIntoLinesAlgorithm(DocumentSegmentationAlgorithm):
 
 	@classmethod
 	def split_into_passages(self, document):
@@ -25,7 +27,7 @@ class FixedNumberOfLinesAlgorithm(DocumentSegmentationAlgorithm):
 		passage_list = []
 
 		try:
-			n_lines = int(MyConfig.get("passage_retrieval", "n_lines"))
+			n_lines = int(MyConfig.get("document_segmentation", "n_lines"))
 		except MyConfigException as e:
 			logger = logging.getLogger("qa_logger")
 			logger.warning(str(e))
@@ -66,3 +68,22 @@ class SplitIntoParagraphsAlgorithm(DocumentSegmentationAlgorithm):
 
 		return passage_list
 
+
+class SplitIntoSentencesAlgorithm(DocumentSegmentationAlgorithm):
+
+	@classmethod
+	def split_into_passages(self, document):
+		if document is None or document.content is None or document.content == "":
+			return []
+
+		try:
+			n_sentences= int(MyConfig.get("document_segmentation", "n_sentences"))
+		except MyConfigException as e:
+			logger= logging.getLogger("qa_logger")
+			logger.warning(str(e))
+			n_sentences= 5
+
+		sent_list= nltk.sent_tokenize(document.content)
+		passage_list= [Passage(" ".join(sent_list[i:i+n_sentences]) + "\n", document) for i in range(0, max(1, len(sent_list) - n_sentences + 1))]
+
+		return passage_list

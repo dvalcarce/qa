@@ -73,7 +73,7 @@ class Document(object):
 
 		try:
 			content = url.download(timeout=timeout)
-		except URLTimeoutError:
+		except URLError:
 			# If we cannot retrieve the document,
 			# we skip it
 			logger = logging.getLogger("qa_logger")
@@ -94,10 +94,12 @@ class Document(object):
 		# Split document into passages
 		try:
 			algorithm = MyConfig.get("document_segmentation", "algorithm")
-			if algorithm == "fixed_lines":
-				self.passages = FixedNumberOfLinesAlgorithm.split_into_passages(self)
+			if algorithm == "lines":
+				self.passages = SplitIntoLinesAlgorithm.split_into_passages(self)
 			elif algorithm == "paragraphs":
 				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self)
+			elif algorithm == "sentences":
+				self.passages = SplitIntoSentencesAlgorithm.split_into_passages(self)
 			else:
 				self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self)
 		except MyConfigException as e:

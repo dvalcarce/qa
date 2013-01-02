@@ -13,6 +13,8 @@ class Passage(object):
 			algorithm = MyConfig.get("passage_filtering", "algorithm")
 			if (algorithm == "similarity"):
 				self.score = SimilarityAlgorithm.calculate_score(question, self)
+			elif (algorithm == "proximity"):
+				self.score = ProximityAlgorithm.calculate_score(question, self)
 			elif (algorithm == "0"):
 				self.score = 0
 			else:

@@ -57,3 +57,43 @@ class SimilarityAlgorithm(PassageFilteringAlgorithm):
 		score = score * rank
 
 		return score
+
+class ProximityAlgorithm(PassageFilteringAlgorithm):
+
+	@classmethod
+	def calculate_score(self, question, passage):
+		rank= passage.document.rank
+		q= question.text
+		text= passage.text
+
+		# Removestopwords from question and passage
+		# and split it into words
+		q= StopwordsAlgorithm.formulate_query(q).split()
+		text= StopwordsAlgorithm.formulate_query(text).split()
+
+		# Apply stemming to q and text
+		porter= PorterStemmer()
+		q= map(porter.stem, q)
+		text= map(porter.stem, text)
+
+		score= 0
+		searched_term= 0
+		last_match= 0
+		first_match= True
+
+		if len(q) < 1:
+			return 0
+
+		for i in range(1, len(text)):
+			if searched_term >= len(q):
+				searched_term= 0
+			if text[i] == q[searched_term]:
+				if first_match:
+					score+= 1
+					first_match= False
+				else:
+					score+= 1/(i-last_match)
+				last_match= i
+				searched_term+= 1
+
+		return score
