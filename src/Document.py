@@ -35,7 +35,12 @@ class Document(object):
 		device = TextConverter(resource_manager, retrieval, codec=encoding, laparams=layout_params)
 
 		f = file(pdf_file, "rb")
-		process_pdf(resource_manager, device, f)
+		try:
+			process_pdf(resource_manager, device, f)
+		except:
+			logger = logging.getLogger("qa_logger")
+			logger.warning("pdf file couldn't be retrieved (no permissions?)")
+			return ""
 
 		text = retrieval.getvalue()
 		
@@ -73,7 +78,7 @@ class Document(object):
 
 		try:
 			content = url.download(timeout=timeout)
-		except URLError:
+		except:
 			# If we cannot retrieve the document,
 			# we skip it
 			logger = logging.getLogger("qa_logger")
