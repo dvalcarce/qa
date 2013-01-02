@@ -54,7 +54,11 @@ class Document(object):
 
 	def _extract_text(self, text, mimetype):
 		if (mimetype == "text/html" or mimetype == "xml"):
-			return utils.from_unicode_to_ascii(plaintext(text))
+			try:
+				text = plaintext(text)
+			except:
+				return ""
+			return utils.from_unicode_to_ascii(text)
 		elif (mimetype == "application/pdf"):
 			self._pdf_to_plaintext(text)
 		elif (mimetype == "text/plain"):
