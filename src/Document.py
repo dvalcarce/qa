@@ -96,7 +96,7 @@ class Document(object):
 		self.title = result.title
 		self.url = utils.from_unicode_to_ascii(result.url)
 		self.rank = rank
-		self.description = plaintext(result.description)
+		self.description = utils.from_unicode_to_ascii(result.description)
 
 		self.content = self._get_content(result)
 
