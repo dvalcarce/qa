@@ -62,7 +62,7 @@ class StanfordNER(object):
 		self.socket = self.connect()
 
 		try:
-			msg = (text + "\n").encode('utf-8')
+			msg = (text + "\n").encode('utf-8', 'ignore')
 			self.socket.sendall(msg)
 			buf = self.socket.recv(len(text)*3)
 			self.socket.close()
