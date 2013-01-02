@@ -124,7 +124,10 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
 		# XML Parsing
 		text = "<xml>" + text.replace("&", "") + "</xml>"
-		tree = fromstring(text)
+		try:
+			tree = fromstring(text)
+		except:
+			return []
 
 		# Entity Extraction
 		entities = []
