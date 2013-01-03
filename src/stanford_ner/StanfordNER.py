@@ -62,13 +62,13 @@ class StanfordNER(object):
 		self.socket = self.connect()
 
 		try:
-			msg = (text + "\n").encode('utf-8', 'ignore')
+			msg = (text + "\n")#.encode('utf-8', 'ignore')
 			self.socket.sendall(msg)
 			buf = self.socket.recv(len(text)*3)
 			self.socket.close()
 		except socket.error:
 			logger = logging.getLogger("qa_logger")
-			logger.warning("error with socket " + str(socket.getsockname()))
+			logger.warning("error with socket " + str(self.socket.getsockname()))
 			return ""
 
 		return buf
