@@ -152,19 +152,24 @@ sudo pip install -u pdfminer
 \clearpage
 \section{Algoritmos}
 \subsection{Query Formulation}
-\subsubsection{Stopwords}
-Este algoritmo nos devuelve una query. Es llamado cada vez que se crea un objeto de tipo Question y recibe el texto de la pregunta. Su funcionamiento consiste en primero pasar el texto de la pregunta a minúsculas, a continuación, obtenemos una lista con los caracteres de la pregunta. De esta lista eliminamos los símbolos que no nos interesan ( ',', '?', '!', '.', '(', ')', ';', ':') puesto que no nos influyen en la búsqueda. Tenemos así el texto de la pregunta filtrado.
+El objetivo de estos algoritmos es formular una consulta para los buscadores web a partir de la pregunta introducida por el usuario.
 
-Finalmente obtenemos otra lista con las palabras de la pregunta y, utilizando el corpus del NLTK con las stopwords, eliminamos las palabras irrelevantes a la hora de realizar la búsqueda. Tenemos así nuestra query lista para pasársela a los buscadores.
+\subsubsection{Stopwords}
+Este algoritmo nos devuelve una query. Es llamado cada vez que se crea un objeto de tipo Question y recibe el texto de la pregunta. Su funcionamiento consiste en primero pasar el texto de la pregunta a minúsculas y , a continuación, obtenemos una lista con los caracteres de la pregunta. De esta lista eliminamos los símbolos que no nos interesan (comas, interrogaciones, exclamaciones, etc.) puesto que no nos influyen en la búsqueda. Tenemos así el texto de la pregunta filtrado.
+
+Finalmente obtenemos otra lista con las palabras de la pregunta y, utilizando el corpus del NLTK con las \emph{stopwords}, eliminamos las palabras irrelevantes a la hora de realizar la búsqueda. Tenemos así nuestra query lista para pasársela a los buscadores.
 
 \subsection{Document Segmentation}
 Los siguientes algoritmos son llamados cada vez que se crea un objeto de tipo Documento; les pasaremos un documento y nos devolverán la lista de pasajes de dicho documento.
 
-\subsubsection{Fixed Number off Lines}
+\subsubsection{Split into Lines}
 En este primer algoritmo obtenemos pasajes compuestos por un número fijo de líneas ( a determinar por el usuario, en caso de fallo al obtenerlo, dicho número será 5 ) del documento superponiendo dichos pasajes. Para ello, se divide el contenido del documento en líneas y se itera sobre estas líneas de manera que cada pasaje estará formado por el número de líneas fijado. En cada nueva iteración, un pasaje estará formado por dicho número de líneas menos una del pasaje de la iteración anterior más una nueva línea. Por último se añade también como pasaje la descripción que nos ofrece el motor de búsqueda.
 
 \subsubsection{Split into Paragraphs}
 En este segundo caso, la forma de obtener pasajes cambia para obtener en cada pasaje un único párrafo. Se divide el contenido del documento en líneas y cada pasaje estará formado por una de ellas. Añadiendo además, como en el caso anterior, el pasaje formado por la descripción ofrecida por el motor de búsqueda.
+
+\subsubsection{Split into Sentences}
+%%%%%%%%%%%% TO DO %%%%%%%%%%%%
 
 \subsection{Passage Filtering}
 El siguiente algoritmo fijará una determinada puntuación a cada pasaje que necesitamos saber cuando queremos obtener los pasajes más relevantes para una determinada pregunta.
@@ -174,9 +179,16 @@ En primer lugar, al texto de la pregunta y del pasaje les eliminamos las stopwor
 
 Por último, los pasajes que pertenezcan a documentos obtenidos de respuestas situadas en las posiciones más altas del ranking de respuestas devueltas por los motores de búsqueda obtendrán mayor puntuación por considerarse que esto indica que son mejores. Normalizamos el ranking del documento al que pertenece el pasaje que estamos puntuando y multiplicamos la puntuación inicial anterior por esta cantidad, obteniendo así, la puntuación final del pasaje.
 
+\subsubsection{Proximity}
+%%%%%%%%%%%% TO DO %%%%%%%%%%%%
+
+\subsubsection{Mixed}
+%%%%%%%%%%%% TO DO %%%%%%%%%%%%
+
 \subsection{Answer Extraction}
 \subsubsection{Entity Recognition}
 \label{s:ne_recog}
+
 
 \clearpage
 \section{Diario de trabajo}
@@ -306,8 +318,16 @@ Realizamos correciones menores en el soporte de Unicode, el timeout de descarga 
 
 Por otro lado, hemos mejorado el Passage Retrieval consdirando también los snippets que nos proporcionan los buscadores como posibles pasajes relevantes. También modificamos la lógica del Answer Extraction para eliminar aquellos términos que ya aparecen en la pregunta como posibles respuestas (no nos van a preguntar de qué color es el caballo blanco de Santiago).
 
-Tras realizar unas pruebas para evaluar la calidad de nuestro sistema, observamos que si el Question Classification falla, es imposible obtener una respuesta válida. Por tanto, nos hemos propuesto mejorarlo con la inclusión de más \emph{features} a nuestros clasificadores. Hemos probado con añadir un segundo sustantivo, pero vimos que empeoraba el rendimiento en el conjunto de test. A continuación, intentamos aproximarnos al problema utilizado chunking para obtener la \emph{head word}
-más característica; sin embargo, la calidad del análisis sintáctico superficial no era suficiente para obtener buenos resultados. Por último, hemos contemplado la posibilidad de usar análisis sintáctico completo. En el trabajo de Babak Loni \cite{tesis:qc} se comenta el uso del \emph{full parser} de Stanford en combinación con un algoritmo diseñado por él para la obtención de la \emph{head word}. Queda pendiente dicho trabajo para el próximo día.
+Tras realizar unas pruebas para evaluar la calidad de nuestro sistema, observamos que si el Question Classification falla, es imposible obtener una respuesta válida. Por tanto, nos hemos propuesto mejorarlo con la inclusión de más \emph{features} a nuestros clasificadores. Hemos probado con añadir un segundo sustantivo, pero vimos que empeoraba el rendimiento en el conjunto de test. A continuación, intentamos aproximarnos al problema utilizado chunking para obtener la \emph{head word} más característica; sin embargo, la calidad del análisis sintáctico superficial no era suficiente para obtener buenos resultados. Por último, hemos contemplado la posibilidad de usar análisis sintáctico completo. En el trabajo de Babak Loni \cite{tesis:qc} se comenta el uso del \emph{full parser} de Stanford en combinación con un algoritmo diseñado por él para la obtención de la \emph{head word}. Queda pendiente dicho trabajo para el próximo día.
+
+\subsubsection*{2013/01/02}
+Hemos adaptado el \emph{full parser} de Stanford para que se comunique mediante \emph{pipes} con nuestra práctica. Implementamos el algoritmo descrito en \cite{tesis:qc} y \cite{paper:qc} para obtener \emph{head words} usando el analizador sintáctico antes descrito. Entrenamos nuevos clasificadores de preguntas con diferentes características y comprobamos que el que mejor se comporta es el clasificador bayesiano ingenuo que tiene como características de entrada la primera palabra, el primer sustantivo y la \emph{head word}.
+
+Se ha elaborado un nuevo algoritmo de Document Segmentation que divide un texto en pasajes de n oraciones solapadas. Por otro lado, se ha diseñado un algoritmo de Passage Filtering que examina la proximidad de los términos de la pregunta en el pasaje con el fin de puntuarlo. Por último, se ha creado un método híbrido para el filtrado de pasajes que combina el algoritmo por ``similitud'' y el de ``proximidad'' para ponderar ambas aproximaciones.
+
+Se ha refinado el tratamiento de excepciones especialmente en lo referido a problemas en la obtención de documentos y en el tratamiento de caracteres Unicode.
+
+En último lugar, hemos realizado pruebas con diferentes parámetros en nuestros algoritmos.
 
 \clearpage
 \section{Bibliografía}
@@ -336,6 +356,9 @@ BitBucket: \url{http://www.bitbucket.org/daniel_garabato/ln}.
 
 \bibitem{tesis:qc}
 B. Loni: \emph{Enhanced Question Classification with Optimal Combination of Features}. Ed. Delft University of Technology, 2011.
+
+\bibitem{paper:qc}
+J. Silva et al: \emph{From symbolic to sub-symbolic information in question classification}. Ed. Springer Science, 2010.
 
 \end{thebibliography}
 
