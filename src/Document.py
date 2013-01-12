@@ -71,16 +71,16 @@ class Document(object):
 
 	def _get_content(self, result):
 		url = URL(result.url)
-		mimetype = url.mimetype
-
 		try:
-			timeout = int(MyConfig.get("document_retrieval", "timeout"))
-		except MyConfigException as e:
-			logger = logging.getLogger("qa_logger")
-			logger.warning(str(e))
-			timeout = 15
+			mimetype = url.mimetype
 
-		try:
+			try:
+				timeout = int(MyConfig.get("document_retrieval", "timeout"))
+			except MyConfigException as e:
+				logger = logging.getLogger("qa_logger")
+				logger.warning(str(e))
+				timeout = 15
+
 			content = url.download(timeout=timeout)
 		except:
 			# If we cannot retrieve the document,
