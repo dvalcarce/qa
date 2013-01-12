@@ -2,236 +2,228 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-import datetime
-import logging, logging.config
+import logging
+import logging.config
 import os
 import pickle
 import re
 import sys
 import utils
 
-from Answer import Answer
-from ConfigParser import ConfigParser
 from datetime import datetime
-from conf.MyConfig import MyConfig, MyConfigException
+from Answer import Answer
+from conf.MyConfig import MyConfig
 from nltk.probability import FreqDist
-from Passage import Passage
 from Question import Question
+
 
 class QA(object):
 
-	def init_logger(self):
-		directory = "log"
-		log_config = os.path.join("conf", "logging.conf")
-		if not os.path.exists(directory):
-			os.mkdir(directory)
-		if not os.path.exists(log_config):
-			sys.exit("Missing or invalid log configuration")
+    def init_logger(self):
+        directory = "log"
+        log_config = os.path.join("conf", "logging.conf")
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+        if not os.path.exists(log_config):
+            sys.exit("Missing or invalid log configuration")
 
-		try:
-			logging.config.fileConfig(log_config)
-		except:
-			sys.exit("fileConfig: Critical error")
+        try:
+            logging.config.fileConfig(log_config)
+        except:
+            sys.exit("fileConfig: Critical error")
 
-		logging.getLogger("qa_logger").debug('logging initialized')
+        logging.getLogger("qa_logger").debug('logging initialized')
 
+    def ask(self):
+        print "Welcome to the best Question Answering System"
+        q = raw_input("Write your question: ")
 
-	def ask(self):
-		print "Welcome to the best Question Answering System"
-		q = raw_input("Write your question: ")
+        while not q or q == "":
+            q = raw_input("Write your question: ")
 
-		while not q or q == "":
-			q = raw_input("Write your question: ")
+        return [Question("0001", q)]
 
-		return [Question("0001", q)]
+    def parse_questions(self, path):
+        try:
+            q_file = codecs.open(path, "r", encoding="utf-8", errors="ignore")
+        except IOError:
+            sys.exit("QA Error: bad argument")
 
+        questions = []
+        for line in q_file:
+            # We use a regular expression for matching questions
+            m = re.match(r"(?P<id>[^ \t]+)[ \t]*(?P<question>.+)", utils.from_unicode_to_ascii(line))
+            id_q = m.group("id")
+            q = m.group("question")
+            questions.append(Question(id_q, q))
 
-	def parse_questions(self, path):
-		try:
-			q_file = codecs.open(path, "r", encoding="utf-8", errors="ignore")
-		except IOError:
-			sys.exit("QA Error: bad argument")
+        try:
+            q_file.close()
+        except IOError:
+            logger = logging.getLogger("qa_logger")
+            logger.warning("Questions file not closed")
 
-		questions = []
-		for line in q_file:
-			# We use a regular expression for matching questions
-			m = re.match(r"(?P<id>[^ \t]+)[ \t]*(?P<question>.+)", utils.from_unicode_to_ascii(line))
-			id_q = m.group("id")
-			q = m.group("question")
-			questions.append(Question(id_q, q))
+        return questions
 
-		try:
-			q_file.close()
-		except IOError:
-			logger = logging.getLogger("qa_logger")
-			logger.warning("Questions file not closed")
+    def score_passages(self, doc_list, question):
+        passage_list = []
 
-		return questions
+        logger = logging.getLogger("qa_logger")
+        logger.info("%s:\t\tDocument Segmentation", question.id_q)
 
+        for doc in doc_list:
+            for passage in doc.passages:
+                passage.calculate_score(question)
+                passage_list.append(passage)
 
-	def score_passages(self, doc_list, question):
-		passage_list = []
+        return passage_list
 
-		logger = logging.getLogger("qa_logger")
-		logger.info("%s:\t\tDocument Segmentation", question.id_q)
+    def get_relevant_passages(self, doc_list, question):
+        logger = logging.getLogger("qa_logger")
+        logger.info("%s:\tPassage Retrieval", question.id_q)
 
-		for doc in doc_list:
-			for passage in doc.passages:
-				passage.calculate_score(question)
-				passage_list.append(passage)
+        passage_list = self.score_passages(doc_list, question)
+        passage_list.sort(key=lambda x: x.score, reverse=True)
 
-		return passage_list
+        # Select n best passages
+        try:
+            n = int(MyConfig.get("document_segmentation", "n_relevants"))
+        except:
+            n = 100
+            logger = logging.getLogger("qa_logger")
+            logger.warning("n_relevants not found")
 
+        logger.info("%s:\t\tPassage Filtering", question.id_q)
 
-	def get_relevant_passages(self, doc_list, question):
-		logger = logging.getLogger("qa_logger")
-		logger.info("%s:\tPassage Retrieval", question.id_q)
+        return passage_list[:n]
 
-		passage_list = self.score_passages(doc_list, question)
-		passage_list.sort(key=lambda x: x.score, reverse=True)
+    def get_best_answers(self, passage_list, q):
+        logger = logging.getLogger("qa_logger")
+        logger.info("%s:\tAnswer Processing", q.id_q)
 
-		# Select n best passages
-		try:
-			n = int(MyConfig.get("document_segmentation", "n_relevants"))
-		except:
-			n = 100
-			logger = logging.getLogger("qa_logger")
-			logger.warning("n_relevants not found")
+        empty = passage_list == []
 
-		logger.info("%s:\t\tPassage Filtering", question.id_q)
+        logger.info("%s:\t\tAnswer Extraction", q.id_q)
 
-		return passage_list[:n]
+        answer_list = []
+        for passage in passage_list:
+            a = passage.find_answer(q)
+            if a.is_successful():
+                answer_list.append(a)
 
+        if not answer_list:
+            return ([], empty)
 
-	def get_best_answers(self, passage_list, q):
-		logger = logging.getLogger("qa_logger")
-		logger.info("%s:\tAnswer Processing", q.id_q)
+        logger.info("%s:\t\tAnswer Filtering", q.id_q)
 
-		empty = passage_list == []
+        # Obtain answer frequency
+        fd = FreqDist(answer_list)
 
-		logger.info("%s:\t\tAnswer Extraction", q.id_q)
+        # Normalize frequencies
+        normalize = fd.freq(fd.max())
 
-		answer_list = []
-		for passage in passage_list:
-			a = passage.find_answer(q)
-			if a.is_successful():
-				answer_list.append(a)
+        # Modify scores by frequency
+        for answer in answer_list:
+            answer.score = int(answer.score * (fd.freq(answer) / normalize))
 
-		if not answer_list:
-			return ([], empty)
+        # Sort answers by score
+        answer_list.sort(key=lambda x: x.score, reverse=True)
 
-		logger.info("%s:\t\tAnswer Filtering", q.id_q)
+        # Filter bad answers
+        try:
+            threshold = int(MyConfig.get("answer_filtering", "threshold"))
+        except:
+            logger = logging.getLogger("qa_logger")
+            logger.error("answer quality threshold not found")
+            threshold = 50
 
-		# Obtain answer frequency
-		fd = FreqDist(answer_list)
+        answer_list = filter(lambda x: x.score > threshold, answer_list)
 
-		# Normalize frequencies
-		normalize = fd.freq(fd.max())
+        final_answers = []
+        for a in answer_list:
+            if a not in final_answers:
+                final_answers.append(a)
+            if len(final_answers) == 3:
+                break
 
-		# Modify scores by frequency
-		for answer in answer_list:
-			answer.score = int(answer.score * (fd.freq(answer) / normalize))
+        return (final_answers, empty)
 
-		# Sort answers by score
-		answer_list.sort(key=lambda x: x.score, reverse=True)
+    def write_answers(self, answer_list, empty, q):
+        id_q = q.id_q
+        (run_tag, _) = Answer.get_run_tag()
 
-		# Filter bad answers
-		try:
-			threshold = int(MyConfig.get("answer_filtering", "threshold"))
-		except:
-			logger = logging.getLogger("qa_logger")
-			logger.error("answer quality threshold not found")
-			threshold = 50
+        folder = "answers"
+        if not os.path.isdir(folder) and os.path.exists(folder):
+            logger = logging.getLogger("qa_logger")
+            logger.error("answers folder cannot be created")
+            sys.exit()
+        if not os.path.exists(folder):
+            os.mkdir(folder)
 
-		answer_list = filter(lambda x: x.score > threshold, answer_list)
+        f = open(os.path.join(folder, self.date + ".txt"), "a")
 
-		final_answers = []
-		for a in answer_list:
-			if a not in final_answers:
-				final_answers.append(a)
-			if len(final_answers) == 3:
-				break
+        if answer_list == []:
 
-		return (final_answers, empty)
+            if empty:
+                # If there are no documents related to the query,
+                # then there is no answer with maximum probability.
+                f.write(id_q + " " + run_tag + " 1 1000 NIL\n")
+            else:
+                # If there are no good answer,
+                # then we return NIL with score 0.
+                f.write(id_q + " " + run_tag + " 1 0 NIL\n")
+            return
 
+        position = 1
+        for answer in answer_list:
+            f.write(str(answer).format(position) + "\n")
+            position += 1
 
-	def write_answers(self, answer_list, empty, q):
-		id_q = q.id_q
-		(run_tag, _) = Answer.get_run_tag()
+        if len(answer_list) < 3:
+            # If the are less than 3 good answers,
+            # then we return NIL with score 0 in the next position
+            f.write(id_q + " " + run_tag + " " + str(position) + " 0 NIL\n")
 
-		folder = "answers"
-		if not os.path.isdir(folder) and os.path.exists(folder):
-			logger = logging.getLogger("qa_logger")
-			logger.error("answers folder cannot be created")
-			sys.exit()
-		if not os.path.exists(folder):
-			os.mkdir(folder)
+        f.close()
 
-		f = open(os.path.join(folder, self.date + ".txt"), "a")
+    def debug(self):
+        pkl_file = open('documentos.pkl', 'rb')
+        doc_list = pickle.load(pkl_file)
+        q = Question("0001", "Who discovered radium?")
+        passages = self.get_relevant_passages(doc_list, q)
+        (answers, empty) = self.get_best_answers(passages, q)
+        self.write_answers(answers, empty, q)
 
-		if answer_list == []:
+        sys.exit()
 
-			if empty:
-				# If there are no documents related to the query,
-				# then there is no answer with maximum probability.
-				f.write(id_q + " " + run_tag + " 1 1000 NIL\n")
-			else:
-				# If there are no good answer,
-				# then we return NIL with score 0.
-				f.write(id_q + " " + run_tag + " 1 0 NIL\n")
-			return
+    def main(self):
+        self.date = datetime.strftime(datetime.today(), "%Y-%m-%d_%H:%M:%S")
 
-		position = 1
-		for answer in answer_list:
-			f.write(str(answer).format(position) + "\n")
-			position += 1
+        self.init_logger()
 
-		if len(answer_list) < 3:
-			# If the are less than 3 good answers,
-			# then we return NIL with score 0 in the next position
-			f.write(id_q + " " + run_tag + " " + str(position) + " 0 NIL\n")
+        if len(sys.argv) == 1:
+            questions = self.ask()
+        elif len(sys.argv) == 2:
+            # DEBUG
+            if sys.argv[1] == "pickle":
+                self.debug()
+            # END DEBUG
+            questions = self.parse_questions(sys.argv[1])
+        else:
+            sys.exit("QA Error: bad syntax\nQA.py [file]")
 
-		f.close()
-
-
-	def debug(self):
-		pkl_file = open('documentos.pkl', 'rb')
-		doc_list = pickle.load(pkl_file)
-		q = Question("0001", "Who discovered radium?")
-		passages = self.get_relevant_passages(doc_list, q)
-		(answers, empty) = self.get_best_answers(passages, q)
-		self.write_answers(answers, empty, q)
-
-		sys.exit()
-
-	def main(self):
-		self.date = datetime.strftime(datetime.today(), "%Y-%m-%d_%H:%M:%S")
-
-		self.init_logger()
-
-		if len(sys.argv) == 1:
-			questions = self.ask()
-		elif len(sys.argv) == 2:
-			# DEBUG
-			if sys.argv[1] == "pickle":
-				self.debug()
-			# END DEBUG
-			questions = self.parse_questions(sys.argv[1])
-		else:
-			sys.exit("QA Error: bad syntax\nQA.py [file]")
-
-		for q in questions:
-			doc_list = q.search()
-			passages = self.get_relevant_passages(doc_list, q)
-			(answers, empty) = self.get_best_answers(passages, q)
-			self.write_answers(answers, empty, q)
+        for q in questions:
+            doc_list = q.search()
+            passages = self.get_relevant_passages(doc_list, q)
+            (answers, empty) = self.get_best_answers(passages, q)
+            self.write_answers(answers, empty, q)
 
 
 if __name__ == '__main__':
-	qa = QA()
-	try:
-		qa.main()
-	except (KeyboardInterrupt, EOFError):
-		sys.exit("\nExiting...")
-	finally:
-		utils.clean()
+    qa = QA()
+    try:
+        qa.main()
+    except (KeyboardInterrupt, EOFError):
+        sys.exit("\nExiting...")
+    finally:
+        utils.clean()

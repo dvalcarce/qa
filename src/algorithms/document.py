@@ -1,89 +1,90 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
 import nltk
 
 from conf.MyConfig import MyConfig, MyConfigException
 from Passage import Passage
 
+
 # Algorithms for Document Segmentation
 
 class DocumentSegmentationAlgorithm(object):
 
-	@classmethod
-	def split_into_passages(self, document):
-		pass
+    @classmethod
+    def split_into_passages(self, document):
+        pass
 
 
 class SplitIntoLinesAlgorithm(DocumentSegmentationAlgorithm):
 
-	@classmethod
-	def split_into_passages(self, document):
-		if document is None or document.content is None or document.content == "":
-			return []
+    @classmethod
+    def split_into_passages(self, document):
+        if document is None or document.content is None or document.content == "":
+            return []
 
-		lines = document.content.split("\n")
-		passage_list = []
+        lines = document.content.split("\n")
+        passage_list = []
 
-		try:
-			n_lines = int(MyConfig.get("document_segmentation", "n_lines"))
-		except MyConfigException as e:
-			logger = logging.getLogger("qa_logger")
-			logger.warning(str(e))
-			n_lines = 5
+        try:
+            n_lines = int(MyConfig.get("document_segmentation", "n_lines"))
+        except MyConfigException as e:
+            logger = logging.getLogger("qa_logger")
+            logger.warning(str(e))
+            n_lines = 5
 
-		# Iterating over the lines of the document
-		# obtaining overlapped passages:
-		# 	max(1, len(lines)-n_lines+1)
-		# Don't ask: magic numbers ;-)
-		for i in range(0, max(1, len(lines)-n_lines+1)):
-			lines_of_text = lines[i : i+n_lines]
-			# Join list of lines
-			piece_of_text = "\n".join(lines_of_text)
-			passage_list.append(Passage(piece_of_text, document))
+        # Iterating over the lines of the document
+        # obtaining overlapped passages:
+        #   max(1, len(lines)-n_lines+1)
+        # Don't ask: magic numbers ;-)
+        for i in range(0, max(1, len(lines) - n_lines + 1)):
+            lines_of_text = lines[i: i + n_lines]
+            # Join list of lines
+            piece_of_text = "\n".join(lines_of_text)
+            passage_list.append(Passage(piece_of_text, document))
 
-		# Adds search engine snippet
-		passage_list.append(Passage(document.description, document))
+        # Adds search engine snippet
+        passage_list.append(Passage(document.description, document))
 
-		return passage_list
+        return passage_list
 
 
 class SplitIntoParagraphsAlgorithm(DocumentSegmentationAlgorithm):
 
-	@classmethod
-	def split_into_passages(self, document):
-		if document is None or document.content is None or document.content == "":
-			return []
+    @classmethod
+    def split_into_passages(self, document):
+        if document is None or document.content is None or document.content == "":
+            return []
 
-		paragraphs = document.content.split("\n")
+        paragraphs = document.content.split("\n")
 
-		passage_list = []
+        passage_list = []
 
-		for paragraph in paragraphs:
-			passage_list.append(Passage(paragraph, document))
+        for paragraph in paragraphs:
+            passage_list.append(Passage(paragraph, document))
 
-		# Adds search engine snippet
-		passage_list.append(Passage(document.description, document))
+        # Adds search engine snippet
+        passage_list.append(Passage(document.description, document))
 
-		return passage_list
+        return passage_list
 
 
 class SplitIntoSentencesAlgorithm(DocumentSegmentationAlgorithm):
 
-	@classmethod
-	def split_into_passages(self, document):
-		if document is None or document.content is None or document.content == "":
-			return []
+    @classmethod
+    def split_into_passages(self, document):
+        if document is None or document.content is None or document.content == "":
+            return []
 
-		try:
-			n_sentences= int(MyConfig.get("document_segmentation", "n_sentences"))
-		except MyConfigException as e:
-			logger= logging.getLogger("qa_logger")
-			logger.warning(str(e))
-			n_sentences= 5
+        try:
+            n_sentences = int(MyConfig.get("document_segmentation", "n_sentences"))
+        except MyConfigException as e:
+            logger = logging.getLogger("qa_logger")
+            logger.warning(str(e))
+            n_sentences = 5
 
-		sent_list= nltk.sent_tokenize(document.content)
-		passage_list= [Passage(" ".join(sent_list[i:i+n_sentences]) + "\n", document) for i in range(0, max(1, len(sent_list) - n_sentences + 1))]
+        sent_list = nltk.sent_tokenize(document.content)
+        passage_list = [Passage(" ".join(sent_list[i: i + n_sentences]) + "\n",
+            document) for i in range(0, max(1, len(sent_list) - n_sentences + 1))]
 
-		return passage_list
+        return passage_list
