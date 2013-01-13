@@ -8,7 +8,7 @@ from algorithms.query import *
 from ast import literal_eval as safe_eval
 from conf.MyConfig import MyConfig, MyConfigException
 from Document import Document
-from pattern.web import *
+from pattern.web import Google, Bing
 
 
 class Question(object):
