@@ -130,6 +130,8 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
         entities = []
         all_entities = []
         for element in tree.iterchildren():
+            if element is None:
+                continue
             if element.tag == searched_entity:
                 entities.append(element.text)
             all_entities.append(element.text)
