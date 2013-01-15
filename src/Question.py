@@ -68,7 +68,13 @@ class Question(object):
 
         results = []
         for engine in search_engines:
-            results += engine.search(self.query, count=num)
+            try:
+                results += engine.search(self.query, count=num)
+            except Exception as e:
+                logger = logging.getLogger("qa_logger")
+                logger.error("Problem with search engine. Try again later.")
+                logger.debug(e)
+                sys.exit(1)
 
         doc_list = []
         # rank loops over [0..num-1]
