@@ -82,10 +82,10 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
                         entities.append(entity)
                     all_entities.append(entity)
 
-        if 'OTHER' in searched_entity:
+        if 'OTHER' == searched_entity:
             entities += self._other_recognition(tagged_sentences, all_entities)
 
-        if 'NUMBER' in searched_entity:
+        if 'NUMBER' == searched_entity:
             entities += self._number_recognition(text, tagged_sentences, all_entities)
 
         return entities
@@ -136,10 +136,10 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
                 entities.append(element.text)
             all_entities.append(element.text)
 
-        if 'OTHER' in searched_entity:
+        if 'OTHER' == searched_entity:
             entities += self._other_recognition(tagged_sentences, all_entities)
 
-        if 'NUMBER' in searched_entity:
+        if 'NUMBER' == searched_entity:
             entities += self._number_recognition(text, tagged_sentences, all_entities)
 
         return entities
