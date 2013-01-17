@@ -22,24 +22,6 @@ class AnswerExtractionAlgorithm(object):
     def process_answer(self, passage, question):
         pass
 
-
-class XXXAlgorithm(AnswerExtractionAlgorithm):
-
-    @classmethod
-    def process_answer(self, passage, question):
-        # Do magic
-        window = "window = " + passage.text
-        exact = "exact"
-        random.seed()
-        score = random.randint(0, 1000)
-        if passage.document.url.find("wikipedia") != -1:
-            score = 0
-
-        answer = Answer(passage, question, window, exact, score)
-
-        return answer
-
-
 class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
     @classmethod
@@ -227,7 +209,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
         entities = self._filter_entities(entities, q)
 
-        exact, window, score = self._entity_ranking(q, entities)
+        exact, window, score = self._entity_ranking(entities)
 
         answer = Answer(passage, question, window, exact, score)
 
