@@ -188,7 +188,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
         return [entity for entity in entities if entity.lower() not in words]
 
     @classmethod
-    def _entity_ranking(self, question, entities):
+    def _entity_ranking(self, entities):
         if len(entities) == 0:
             return "", "", int(0)
 
