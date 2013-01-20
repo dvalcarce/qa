@@ -16,7 +16,7 @@
 basicstyle=\ttfamily,                   	% Code font
 stepnumber=1,                           	% Step between two line-numbers
 numbersep=5pt,                          	% How far are line-numbers from code
-frame=single,                             	% A frame around the code
+frame=topbottom,                             	% A frame around the code
 tabsize=4,                              	% Default tab size
 captionpos=b,                           	% Caption-position = bottom
 breaklines=true,                        	% Automatic line breaking?
@@ -106,7 +106,22 @@ Basándonos en varios modelos conceptuales de un sistema de búsqueda de respues
 		\end{description}
 \end{description}
 
-\subsection{Flujo del programa}
+\subsection{Vista estática}
+En la figura \ref{fig:clases} se muestra un diagrama de clases de nuestro sistema.
+
+% % % % % % % % % %
+% TODO: Completar %
+% % % % % % % % % %
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[angle=90,width=0.85\textwidth]{res/clases}
+\end{center}
+\caption{Diagrama de clases de la práctica}
+\label{fig:clases}
+\end{figure}
+
+\subsection{Vista dinámica}
 Para ilustrar el proceso de búsqueda de respuestas del sistema, hemos elaborado un diagrama de secuencia que puede verse en la Figura \ref{fig:secuencia}. En dicho diagrama se puede observar el flujo del programa durante la búsqueda de respuestas ante una pregunta realizada por el usuario por línea de comandos.
 
 \begin{figure}[h!]
@@ -119,6 +134,10 @@ Para ilustrar el proceso de búsqueda de respuestas del sistema, hemos elaborado
 
 \clearpage
 \section{Herramientas empleadas}
+A continuación se muestran las herramientas utilizadas en el desarrollo de la práctica, bla, bla, bla...
+% % % % % % % % % %
+% TODO: Completar %
+% % % % % % % % % %
 
 \begin{description}
 	\item[NLTK] Framework libre de procesamiento de lenguaje natural para Python. Puede descargarse en \cite{nltk}.
@@ -138,7 +157,7 @@ Para ilustrar el proceso de búsqueda de respuestas del sistema, hemos elaborado
 \section{Manual de instalación y uso}
 En esta sección se describen los pasos a seguir para instalar correctamente todos los componentes necesarios para ejecutar nuestra práctica. Asimismo, también se adjuntan las intrucciones detalladas de uso.
 
-A pesar de que las tecnologías utilizadas son multiplataforma, se recomienda utilizar un sistema operativo UNIX. Concretamente, se ha comprobado el correcto funcionamiento de la práctica en Debian 6.0, ArchLinux 2012.10.06, Ubuntu 12.04 y Mac OS X 10.8.
+A pesar de que las tecnologías utilizadas son multiplataforma, se recomienda utilizar un sistema operativo UNIX. Concretamente, se ha comprobado el correcto funcionamiento de la práctica en ArchLinux 2012.10.06, Debian 6.0, Mac OS X 10.8 y Ubuntu 12.04.
 
 \subsection{Instalación del sistema}
 A continuación se detallan los paquetes necesarios y cómo instalarlos.
@@ -149,10 +168,10 @@ Es necesario disponer de una versión moderna de Python 2 (al menos Python 2.6, 
 Una vez obtenido Python, es necesario instalar diversos módulos. Para simplificar el proceso, es preciso disponer de las SetupTools de Python. Hay scripts disponibles para diversas plataformas que pueden descargarse de su sitio web \cite{setuptools}.
 
 \begin{lstlisting}
-# sh Downloads/setuptools-...egg
+# sh path/to/downloads/setuptools-{version}.egg
 \end{lstlisting}
 
-En primer lugar, instalamos Pip para instalar el resto de módulos:
+Es preciso instalar Pip para instalar el resto de módulos:
 
 \begin{lstlisting}
 # easy_install pip
@@ -176,19 +195,83 @@ $ python
 \subsubsection{Java}
 Aunque nuestra práctica está realizada en Python, utilizamos herramientas del grupo Stanford NLP que están desarrolladas en Java. Estas requieren Java 6 o superior. En la web de Oracle se puede descargar el JDK \cite{java}.
 
+Los componentes de Stanford que se son necesarios ya vienen incluidos con el código de la práctica por lo que no es necesario descargarse nada más.
 
 \subsubsection{Claves de buscadores}
+El módulo de obtención de documentos de la web requiere unas \emph{API Keys} de los buscadores a utilizar. En el fichero de configuración de la práctica ya se incluye por defecto unas claves gratuitas de Google y Bing que pueden ser sustituidas por otras claves válidas sin dificultad.
 
+La clave de Google permite realizar 100 consultas por hora, mientras que la de Bing da acceso a 5000 consultas al mes.
 
 
 \subsection{Uso del sistema}
-El sistema tiene dos modos de funcionamiento principales así como un tercero con objetivos de \emph{debugging}.
+El sistema tiene dos modos de funcionamiento principales así como un tercero con objetivos de \emph{debugging}. Con el objetivo de facilitar el uso de nuestro programa, se ha codificado un script en Bash (\texttt{launch.sh}) localizado en la raíz del proyecto que permite lanzar fácilmente la práctica.
 
+En cualquiera de los tres modos de ejecución, las respuestas se almacenan en un fichero en la carpeta \texttt{res}. El nombre de dicho fichero se obtiene a partir del \emph{timestamp} de la hora de ejecución del programa.
 
+\subsubsection{Modo interactivo}
+El modo interactivo permite al usuario introducir una pregunta por la entrada estándar. El sistema buscará procesará la pregunta y devolverá la respuesta en el fichero de respuestas.
 
+Para iniciar este modo, debemos ejecutar el script con la opción \emph{interactive}:
+\begin{lstlisting}
+$ ./launch.sh interactive
+\end{lstlisting}
+
+O bien ejecutar directamente el código Python:
+\begin{lstlisting}
+$ cd src
+$ python QA.py
+\end{lstlisting}
+
+\subsubsection{Modo \emph{batch}}
+Para el procesamiento de preguntas por lotes, nuestra práctica permite especificar un fichero en el que se leerán una serie de preguntas que serán procesadas secuencialmente. Los resultados de cada pregunta se encuentran todos en el mismo fichero.
+
+El formato del fichero de preguntas es el siguiente. Cada pregunta se encontrarán en una línea y estará precedida por un código alfanumérico (sin blancos). A continuación de dicho código, el resto de la línea será considerado el cuerpo de la pregunta.
+
+Este modo de ejecución puede ser invocado desde el script con la opción \emph{batch} seguido de la ruta del fichero de preguntas:
+\emph{interactive}:
+\begin{lstlisting}
+$ ./launch.sh batch <file>
+\end{lstlisting}
+
+También se puede ejecutar directamente el código Python:
+\begin{lstlisting}
+$ cd src
+$ python QA.py <file>
+\end{lstlisting}
+
+\subsubsection{Modo \emph{debug}}
+Por último, nuestra práctica permite ejecutar el proceso de búsqueda de respuestas a partir de un conjunto de documentos ya obtenidos de los motores de búsqueda. El objetivo de esta modalidad de ejecución es limitar el número de consultas web durante la fase de pruebas debido a los límites de las claves gratuitas de Bing y Google.
+
+Para que funcione correctamente este módulo, es necesario realizar en primer lugar una pregunta de modo interactivo o \emph{batch} con la opción \emph{persistence.document} activada en el fichero de configuracion (más información sobre cómo modificar la configuración de la práctica en la Sección \ref{section:conf}). Esto nos generará un fichero llamado \texttt{documentos.pkl} que contiene los documentos obtenidos serializados mediante el módulo Pickle de Python y que es necesario para la ejecución en modo \emph{debug}.
+
+A continuación, solo se necesita ejecutar el script la opción \emph{debug}:
+\begin{lstlisting}
+$ ./launch.sh debug
+\end{lstlisting}
+
+Alternativamente, se puede ejecutar directamente el código Python:
+\begin{lstlisting}
+$ cd src
+$ python QA.py pickle
+\end{lstlisting}
+
+\subsection{Fichero de configuración}
+\label{section:conf}
+Para dotar de mayor flexibilidad a la práctica, se han creado dos ficheros de configuración que permiten modificar el comportamiento de los diversos módulos y del sistema de \emph{logging}.
+
+\subsubsection{\texttt{src/conf/config.conf}}
+Permite modificar los parámetros de los diversos módulos del sistema de búsqueda de repuestas. Las posibles opciones se encuentran en forma de comentario dentro del fichero de configuración y tienen nombres autodescriptivos.
+
+\subsubsection{\texttt{src/conf/logging.conf}}
+El fichero de configuración del módulo Logging de Python permite establecer qué tipo de \emph{logs} se registran en ficheros de texto o por salida estándar. Para más información, consultar la referencia oficial del módulo \cite{logging}.
 
 \clearpage
 \section{Algoritmos}
+En esta sección se detallan los algoritmos utilizados en el sistema de búsqueda de respuestas.
+% % % % % % % % % %
+% TODO: Completar %
+% % % % % % % % % %
+
 \subsection{Query Formulation}
 El objetivo de estos algoritmos es formular una consulta para los buscadores web a partir de la pregunta introducida por el usuario.
 
@@ -207,7 +290,9 @@ En este primer algoritmo obtenemos pasajes compuestos por un número fijo de lí
 En este segundo caso, la forma de obtener pasajes cambia para obtener en cada pasaje un único párrafo. Se divide el contenido del documento en líneas y cada pasaje estará formado por una de ellas. Añadiendo además, como en el caso anterior, el pasaje formado por la descripción ofrecida por el motor de búsqueda.
 
 \subsubsection{Split into Sentences}
-%%%%%%%%%%%% TO DO %%%%%%%%%%%%
+% % % % % % % % % %
+% TODO: Completar %
+% % % % % % % % % %
 
 \subsection{Passage Filtering}
 El siguiente algoritmo fijará una determinada puntuación a cada pasaje que necesitamos saber cuando queremos obtener los pasajes más relevantes para una determinada pregunta.
@@ -218,15 +303,21 @@ En primer lugar, al texto de la pregunta y del pasaje les eliminamos las stopwor
 Por último, los pasajes que pertenezcan a documentos obtenidos de respuestas situadas en las posiciones más altas del ranking de respuestas devueltas por los motores de búsqueda obtendrán mayor puntuación por considerarse que esto indica que son mejores. Normalizamos el ranking del documento al que pertenece el pasaje que estamos puntuando y multiplicamos la puntuación inicial anterior por esta cantidad, obteniendo así, la puntuación final del pasaje.
 
 \subsubsection{Proximity}
-%%%%%%%%%%%% TO DO %%%%%%%%%%%%
+% % % % % % % % % %
+% TODO: Completar %
+% % % % % % % % % %
 
 \subsubsection{Mixed}
-%%%%%%%%%%%% TO DO %%%%%%%%%%%%
+% % % % % % % % % %
+% TODO: Completar %
+% % % % % % % % % %
 
 \subsection{Answer Extraction}
 \subsubsection{Entity Recognition}
 \label{s:ne_recog}
-%%%%%%%%%%%% TO DO %%%%%%%%%%%%
+% % % % % % % % % %
+% TODO: Completar %
+% % % % % % % % % %
 
 
 \clearpage
@@ -247,7 +338,7 @@ Hemos instalado y configurado NLTK. Hemos estudiado utilizar el módulo Pattern 
 Por otro lado, hemos comenzado a estudiar la formulación de la consulta (\emph{query formulation}). Debemos eliminar aquellas palabras innecesarias (\emph{stopwords}) por lo que utilizamos el diccionario de Porter ya integrado en NLTK. Consideramos mantener las comillas y los apóstrofes ya que dan mejores resultados en los buscadores. Optamos por no eliminar la interrogación final puesto que es irrelevante para ellos.
 
 \subsection{Jornada del 2012/11/05}
-Se ha dedicado la tarde del presente día a la implementación de la búsqueda de información en los buscadores web (a saber, Google y Bing). Hemos comenzado empleando la biblioteca Pattern\cite{pattern-web} la cual nos aporta una interfaz adaptador entre el API de los buscadores y nuestro sistema. No obstante, tras las pruebas iniciales comprobamos que el servidor de Google devolvía un error HTTP400 Bad Request a nuestras peticiones.
+Se ha dedicado la tarde del presente día a la implementación de la búsqueda de información en los buscadores web (a saber, Google y Bing). Hemos comenzado empleando la biblioteca Pattern\cite{pattern} la cual nos aporta una interfaz adaptador entre el API de los buscadores y nuestro sistema. No obstante, tras las pruebas iniciales comprobamos que el servidor de Google devolvía un error HTTP400 Bad Request a nuestras peticiones.
 
 Al no encontrar solución a este problema, dedujimos que sería un bug en la biblioteca Pattern por lo que comenzamos a desarrollar nuestra propia biblioteca para integrar las APIs de los buscadores. Tras la integración del API de Google, verificamos en las pruebas que se producía el mismo error. Buscando posibles soluciones en la web, averiguamos que el origen del error 400 no era una petición HTTP mal formada si no un error de autenticación: la clave del API que estábamos utilizando era incorrecta.
 
@@ -378,16 +469,16 @@ Por restricciones de cuota en los motores de búsqueda de Google y Bing, no se p
 \begin{thebibliography}{99}
 
 \bibitem{modelo1}
-J. Lin, B. Katz: \emph{Question Answering Techniques for the World Wide Web}. EACL (2003). \url{http://www.umiacs.umd.edu/%7Ejimmylin/publications/Lin_Katz_EACL2003_tutorial.pdf}
+J. Lin, B. Katz: \emph{Question Answering Techniques for the World Wide Web}. EACL (2003). \url{http://www.umiacs.umd.edu/~jimmylin/publications/Lin_Katz_EACL2003_tutorial.pdf}.
 
 \bibitem{modelo2}
-B. Magnini: \emph{Open Domain Question Answering: Techniques, Resources and Systems}. RANLP (2005). \url{http://lml.bas.bg/ranlp2005/tutorials/magnini.ppt}
+B. Magnini: \emph{Open Domain Question Answering: Techniques, Resources and Systems}. RANLP (2005). \url{http://lml.bas.bg/ranlp2005/tutorials/magnini.ppt}.
 
 \bibitem{python}
-Python: \url{http://www.python.org}
+Python: \url{http://www.python.org}.
 
 \bibitem{setuptools}
-Python SetupTools: \url{http://pypi.python.org/pypi/setuptools}
+Python SetupTools: \url{http://pypi.python.org/pypi/setuptools}.
 
 \bibitem{nltk}
 NLTK: \url{http://www.nltk.org}.
@@ -402,7 +493,7 @@ CLIPS Pattern: \url{http://www.clips.ua.ac.be/pages/pattern}.
 PDFMiner: \url{http://www.unixuser.org/~euske/python/pdfminer/index.html}.
 
 \bibitem{java}
-Oracle Java: \url{http://www.oracle.com/us/technologies/java/overview/index.html}
+Oracle Java: \url{http://www.oracle.com/us/technologies/java/overview/index.html}.
 
 \bibitem{git}
 Git: \url{http://www.git-scm.com}.
@@ -412,6 +503,9 @@ BitBucket: \url{http://www.bitbucket.org/daniel_garabato/ln}.
 
 \bibitem{latex}
 \LaTeX: \url{http://www.latex-project.org}.
+
+\bibitem{logging}
+Configuración del módulo Logging de Python: \url{http://docs.python.org/2/library/logging.config.html}.
 
 \bibitem{tesis:qc}
 B. Loni: \emph{Enhanced Question Classification with Optimal Combination of Features}. Ed. Delft University of Technology, 2011.
