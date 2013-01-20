@@ -152,7 +152,7 @@ class QA(object):
         id_q = q.id_q
         (run_tag, _) = Answer.get_run_tag()
 
-        folder = "answers"
+        folder = os.path.join("..", "res")
         if not os.path.isdir(folder) and os.path.exists(folder):
             logger = logging.getLogger("qa_logger")
             logger.error("answers folder cannot be created")
