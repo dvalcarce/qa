@@ -1,0 +1,6 @@
+MRR (strict):		     0.32333
+MRR (permissive)	     0.32333
+Right answers (strict):	    18
+Right answers (strict):	    18
+NIL answers:		     1
+NIL right answers:	     0
