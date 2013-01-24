@@ -5,6 +5,40 @@
 \usepackage[pdftex]{color,graphicx}
 \usepackage{listings}
 \usepackage{url}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+\newcounter{subsubsubsection}
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
 
 \definecolor{gray}{RGB}{127,127,127}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -107,7 +141,7 @@ Basándonos en varios modelos conceptuales de un sistema de búsqueda de respues
 \end{description}
 
 \subsection{Vista estática}
-En la figura \ref{fig:clases} se muestra un diagrama de clases de nuestro sistema.
+En la Figura \ref{fig:clases} se muestra un diagrama de clases de nuestro sistema.
 
 % % % % % % % % % %
 % TODO: Completar %
@@ -157,7 +191,7 @@ A continuación se muestran las herramientas utilizadas en el desarrollo de la p
 \section{Manual de instalación y uso}
 En esta sección se describen los pasos a seguir para instalar correctamente todos los componentes necesarios para ejecutar nuestra práctica. Asimismo, también se adjuntan las intrucciones detalladas de uso.
 
-A pesar de que las tecnologías utilizadas son multiplataforma, se recomienda utilizar un sistema operativo UNIX. Concretamente, se ha comprobado el correcto funcionamiento de la práctica en ArchLinux 2012.10.06, Debian 6.0, Mac OS X 10.8 y Ubuntu 12.04.
+A pesar de que las tecnologías utilizadas son multiplataforma, se recomienda utilizar un sistema operativo UNIX. Concretamente, se ha comprobado el correcto funcionamiento de la práctica en ArchLinux 2012.10.06, Debian 7.0, Mac OS X 10.8 y Ubuntu 11.04.
 
 \subsection{Instalación del sistema}
 A continuación se detallan los paquetes necesarios y cómo instalarlos.
@@ -295,7 +329,7 @@ En este segundo caso, la forma de obtener pasajes cambia para obtener en cada pa
 % % % % % % % % % %
 
 \subsection{Passage Filtering}
-El siguiente algoritmo fijará una determinada puntuación a cada pasaje que necesitamos saber cuando queremos obtener los pasajes más relevantes para una determinada pregunta.
+Estos algortimos fijarán una determinada puntuación a cada pasaje según su relevancia para una determinada pregunta para así poder seleccionar los mejores.
 
 \subsubsection{Similarity}
 En primer lugar, al texto de la pregunta y del pasaje les eliminamos las stopwords con el algoritmo de Query Formulation: Stopwords y dividimos ambos textos en palabras obteniendo dos listas. A continuación, aplicamos stemming sobre ambas listas, obtenemos las palabras que están en ambas listas y este número de palabras coincidentes será nuestra puntuación inicial.
@@ -313,11 +347,95 @@ Por último, los pasajes que pertenezcan a documentos obtenidos de respuestas si
 % % % % % % % % % %
 
 \subsection{Answer Extraction}
+Los algoritmos de extracción de respuestas tienen como objetivo hallar una respuesta dados una pregunta y un pasaje relevante.
+
 \subsubsection{Entity Recognition}
 \label{s:ne_recog}
-% % % % % % % % % %
-% TODO: Completar %
-% % % % % % % % % %
+El funcionamiento de este algoritmo se basa en la extracción de entidades del texto de un pasaje. Para ello, en primer lugar, obtenemos la clasificación de la pregunta y, a continuación, recuperamos las entidades adecuadas a dicha clasificación.
+
+Para cada pasaje, devolvemos la entidad que más se repite en la pregunta con una puntuación que determina su frecuencia de aparición en el pasaje.
+
+\subsubsubsection{Question Classification}
+Realizamos una clasificación de la pregunta para saber qué tipo de entidades debemos obtener del pasaje. Para ello hemos entrenado diferentes clasificadores a partir de un corpus de entrenamiento formado por preguntas y su clasificación en Other, Number, Person, Location, Time, Date, Money, Percent y Organization.
+
+Hemos utilizado tres tipos de clasificadores: de Bayes ingenuo, de árbol de decisión y de máxima entropía. A su vez, hemos utilizado diferente combinaciones de las siguientes características: primera palabra, primer sustantivo y \emph{head word}.
+
+Para obtener la \emph{head word}, es decir, la palabra clave que indica el tipo de pregunta hemos utilizado el algoritmo descrito en \cite{tesis:qc} y \cite{paper:qc}.
+
+Tras probar todas las combinaciones posibles de clasificadores y características, el que mejor resultados da en el conjunto de test ha sido el clasificador bayesiano ingenuo con todas las características.
+
+\subsubsubsection{Named Entity Recognition}
+Una vez obtenida la clasificación de la pregunta, debemos buscar las entidades de ese tipo. Para ello, utilizamos el NER Parser de Stanford que permite la extracción de entidades tipo Time, Location, Organization, Person, Money, Percent y Date; sin embargo, debemos definir estrategias diferentes para los Number y los Other.
+
+Para reconocer entidades Number utizamos el Part-of-Speech Tagger del NLTK obteniendo los numerales cardinales y ordinales (CD y JJ) y una expresión regular que reconoce caracteres numéricos.
+
+Por último, la extracción de entidades tipo Other se realiza obteniendo los sustantivos comunes que no son entidades tras un análisis léxico por parte del NLTK.
+
+Descartamos aquellas respuestas que son palabras que ya aparecen en la pregunta.
+
+También es posible emplear el extractor de entidades del NLTK (se puede indicar en el fichero de configuración); no obstante, hemos visto que proporciona peores resultados.
+
+\clearpage
+\section{Resultados}
+En las siguientes tablas se muestran los resultados obtenidos para las pruebas realizadas. Nos quedamos con la cuarta configuración puesto que es con la que obtenemos un mayor MRR.
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Id & Document Retrieval & Document Segmentation & Passage Filtering\\\hline
+1 & 10 resultados & sentences/5/100 & mixed\\\hline
+2 & 10 resultados & paragraph/-/100 & mixed\\\hline
+3 & 10 resultados & sentences/1/200 & mixed\\\hline
+4 & 20 resultados & sentences/1/500 & mixed\\\hline
+5 & 20 resultados & sentences/1/500 & proximity\\\hline
+6 & 20 resultados & sentences/1/500 & similarity\\\hline
+7 & 20 resultados & sentences/5/100 & mixed\\\hline
+8 & 20 resultados & sentences/5/100 & proximity\\\hline
+9 & 20 resultados & sentences/5/100 & similarity\\\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Id & run-tag & MRR estricto & MRR permisivo & Respuestas R\\ \hline
+1 & plnaex031ms & 0,24333 & 0,24333 & 15\\ \hline
+2 & plnaex031ms & 0,19667 & 0,19667 & 11\\ \hline
+3 & plnaex031ms & 0,31 & 0,31 & 19\\ \hline
+4 & plnaex031ms & 0,32333 & 0,32333 & 18\\ \hline
+5 & plnaex031ms & 0,26 & 0,26 & 16\\ \hline
+6 & plnaex031ms & 0,29 & 0,29 & 17\\ \hline
+7 & plnaex031ms & 0,28 & 0,28 & 16\\ \hline
+8 & plnaex031ms & 0,19 & 0,21 & 11 \\ \hline
+9 & plnaex031ms & 0,22667 & 0,22667 & 13\\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Id & R o U & NILs & NILs correctos & \% R & \% R o U\\ \hline
+1 & 15 & 1 & 0 & 30,00\% & 30,00\% \\ \hline
+2 & 11 & 1 & 0 & 22,00\% & 22,00\% \\ \hline
+3 & 19 & 1 & 0 & 38,00\% & 38,00\% \\ \hline
+4 & 18 & 1 & 0 & 36,00\% & 36,00\% \\ \hline
+5 & 16 & 1 & 0 & 32,00\% & 32,00\% \\ \hline
+6 & 17 & 1 & 0 & 34,00\% & 34,00\% \\ \hline
+7 & 16 & 1 & 0 & 32,00\% & 32,00\% \\ \hline
+8 & 12 & 1 & 0 & 22,00\% & 24,00\% \\ \hline
+9 & 13 & 2 & 0 & 26,00\% & 26,00\% \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+
 
 
 \clearpage
@@ -424,7 +542,7 @@ Creamos un algoritmo de Answer Extraction basado en la técnica de Named Entitie
 
 Mejoramos nuestra metodología de Answer Filtering ponderando las puntuaciones de las respuestas por su frecuencia relativa de aparición en los pasajes relevantes.
 
-Realizamos las primeras pruebas sobre un sistema ya funcional y obtenemos buenos resultados ---en principio--- para preguntas relacionadas con personas. Las respuestas están motivadas correctamente y la tasa de aciertos ronda el 20\%. Consideramos esto un hito en el desarrollo del sistema ya que tenemos una primera versión preliminar que proporciona resultados coherentes.
+Realizamos las primeras pruebas sobre un sistema ya funcional y obtenemos buenos resultados ---en principio--- para preguntas relacionadas con personas. Las respuestas están motivadas correctamente y la tasa de aciertos ronda el 20\\%. Consideramos esto un hito en el desarrollo del sistema ya que tenemos una primera versión preliminar que proporciona resultados coherentes.
 
 \subsection{Jornada del 2012/12/11}
 Dedicamos el día de hoy a implementar técnicas de Question Classification. Utilizamos dos modelos: un clasificador bayesiano ingenuo y un modelo de máxima entropía proporcionados por NLTK.
@@ -463,6 +581,9 @@ En último lugar, hemos realizado pruebas con diferentes parámetros en nuestros
 Hemos dedicado el día de hoy a realizar pruebas de la práctica con diferentes parámetros para obtener los valores óptimos de los mismos. También hemos corregido ciertos fallos que nos han surgido tras la búsqueda de respuestas en serie.
 
 Por restricciones de cuota en los motores de búsqueda de Google y Bing, no se pueden realizar las 50 búsquedas consecutivas. Para evitar errores en la obtención de documentos, lo mejor es ejecutar la búsqueda sobre ficheros de hasta 30 preguntas espaciados temporalmente por, al menos, una hora.
+
+\subsection{Jornada del 2013/01/24}
+Ultimamos los últimos detalles de la práctica (solución de algunos bugs, refactorización de código, etc.) y de la memoria (digramas, instrucciones y resultados) para preparar la defensa.
 
 \clearpage
 \section{Bibliografía}
