@@ -318,33 +318,29 @@ Finalmente obtenemos otra lista con las palabras de la pregunta y, utilizando el
 Los siguientes algoritmos son llamados cada vez que se crea un objeto de tipo Documento; les pasaremos un documento y nos devolverán la lista de pasajes de dicho documento.
 
 \subsubsection{Split into Lines}
-En este primer algoritmo obtenemos pasajes compuestos por un número fijo de líneas ( a determinar por el usuario, en caso de fallo al obtenerlo, dicho número será 5 ) del documento superponiendo dichos pasajes. Para ello, se divide el contenido del documento en líneas y se itera sobre estas líneas de manera que cada pasaje estará formado por el número de líneas fijado. En cada nueva iteración, un pasaje estará formado por dicho número de líneas menos una del pasaje de la iteración anterior más una nueva línea. Por último se añade también como pasaje la descripción que nos ofrece el motor de búsqueda.
+En este primer algoritmo obtenemos pasajes compuestos por un número fijo de líneas ( a determinar por el usuario, en caso de fallo al obtenerlo, dicho número será 5 ) del documento superponiendo dichos pasajes. Para ello, se divide el contenido del documento en líneas y se itera sobre estas líneas de manera que cada pasaje estará formado por el número de líneas fijado. En cada nueva iteración, un pasaje estará formado por dicho número de líneas menos una del pasaje de la iteración anterior más una nueva línea. Por último se añade también como pasaje la descripción que nos ofrece el motor de búsqueda ya que puede resultar relevante según la lógica del buscador.
 
 \subsubsection{Split into Paragraphs}
 En este segundo caso, la forma de obtener pasajes cambia para obtener en cada pasaje un único párrafo. Se divide el contenido del documento en líneas y cada pasaje estará formado por una de ellas. Añadiendo además, como en el caso anterior, el pasaje formado por la descripción ofrecida por el motor de búsqueda.
 
 \subsubsection{Split into Sentences}
-% % % % % % % % % %
-% TODO: Completar %
-% % % % % % % % % %
+Por último, este algoritmo obtiene pasajes formados por el número de frases indicadas por el usuario. El contenido del documento se divide en frases utilizando el sent\_tokenize del NLTK. Se añade además, como en los dos casos anteriores, el pasaje formado por la descripción ofrecida por el motor de búsqueda.
 
 \subsection{Passage Filtering}
-Estos algortimos fijarán una determinada puntuación a cada pasaje según su relevancia para una determinada pregunta para así poder seleccionar los mejores.
+Estos algoritmos fijarán una determinada puntuación a cada pasaje según su relevancia para una determinada pregunta para así poder seleccionar los mejores.
 
 \subsubsection{Similarity}
-En primer lugar, al texto de la pregunta y del pasaje les eliminamos las stopwords con el algoritmo de Query Formulation: Stopwords y dividimos ambos textos en palabras obteniendo dos listas. A continuación, aplicamos stemming sobre ambas listas, obtenemos las palabras que están en ambas listas y este número de palabras coincidentes será nuestra puntuación inicial.
+En primer lugar, al texto de la pregunta y del pasaje les eliminamos las stopwords con el algoritmo de Query Formulation: Stopwords y dividimos ambos textos en palabras, obteniendo dos listas. A continuación, aplicamos stemming sobre ambas listas, obtenemos las palabras que están en ambas listas y este número de palabras coincidentes será nuestra puntuación inicial.
 
 Por último, los pasajes que pertenezcan a documentos obtenidos de respuestas situadas en las posiciones más altas del ranking de respuestas devueltas por los motores de búsqueda obtendrán mayor puntuación por considerarse que esto indica que son mejores. Normalizamos el ranking del documento al que pertenece el pasaje que estamos puntuando y multiplicamos la puntuación inicial anterior por esta cantidad, obteniendo así, la puntuación final del pasaje.
 
 \subsubsection{Proximity}
-% % % % % % % % % %
-% TODO: Completar %
-% % % % % % % % % %
+Como en el caso del algoritmo anterior primero eliminamos las stopwords con el algoritmo de Query Formulation: Stopwords, dividimos ambos textos en palabras y aplicamos stemming tanto sobre la lista de palabras de la pregunta como la de palabras del pasaje.
+
+A la hora de puntuar los pasajes se valora que estos tengan palabras de la pregunta cercanas entre si, asignándole una puntuación de acuerdo a lo próximas que estén entre sí.
 
 \subsubsection{Mixed}
-% % % % % % % % % %
-% TODO: Completar %
-% % % % % % % % % %
+Consideramos en este algoritmo una estrategia mixta, asignándole a cada pasaje la media de la puntuación obtenida con los dos algoritmos anteriores (Similarity y Proximity).
 
 \subsection{Answer Extraction}
 Los algoritmos de extracción de respuestas tienen como objetivo hallar una respuesta dados una pregunta y un pasaje relevante.
