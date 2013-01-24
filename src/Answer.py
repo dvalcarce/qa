@@ -28,6 +28,8 @@ class Answer(object):
         url = self.passage.document.url
         text = self.exact if exact else self.window
 
+        text = text.replace("}", "}}").replace("{", "{{")
+
         return id_q + " " + run_tag + " {0} " + str(score) + " " + url + " " + text
 
     def __init__(self, passage, question, window, exact, score):
