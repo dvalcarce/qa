@@ -86,9 +86,10 @@ class ProximityAlgorithm(PassageFilteringAlgorithm):
         if len(q) < 1:
             return 0
 
-        for i in range(1, len(text)):
+        for i in range(0, len(text)):
             if searched_term >= len(q):
                 searched_term = 0
+				first_match = True
             if text[i] == q[searched_term]:
                 if first_match:
                     score += 1
