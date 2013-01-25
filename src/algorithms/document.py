@@ -87,4 +87,7 @@ class SplitIntoSentencesAlgorithm(DocumentSegmentationAlgorithm):
         passage_list = [Passage(" ".join(sent_list[i: i + n_sentences]) + "\n",
             document) for i in range(0, max(1, len(sent_list) - n_sentences + 1))]
 
+        # Adds search engine snippet
+        passage_list.append(Passage(document.description, document))
+        
         return passage_list
