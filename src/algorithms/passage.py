@@ -62,60 +62,62 @@ class SimilarityAlgorithm(PassageFilteringAlgorithm):
 
 class ProximityAlgorithm(PassageFilteringAlgorithm):
 
-    @classmethod
-    def calculate_score(self, question, passage):
-        rank = passage.document.rank
-        q = question.text
-        text = passage.text
+	@classmethod
+	def calculate_score(self, question, passage):
+		rank = passage.document.rank
+		q = question.text
+		text = passage.text
 
-        # Removestopwords from question and passage
-        # and split it into words
-        q = StopwordsAlgorithm.formulate_query(q).split()
-        text = StopwordsAlgorithm.formulate_query(text).split()
+		# Removestopwords from question and passage
+		# and split it into words
+		q = StopwordsAlgorithm.formulate_query(q).split()
+		text = StopwordsAlgorithm.formulate_query(text).split()
 
-        # Apply stemming to q and text
-        porter = PorterStemmer()
-        q = map(porter.stem, q)
-        text = map(porter.stem, text)
+		# Apply stemming to q and text
+		porter = PorterStemmer()
+		q = map(porter.stem, q)
+		text = map(porter.stem, text)
 
-        score = 0
-        searched_term = 0
-        last_match = 0
-        first_match = True
+		score = 0
+		searched_term = 0
+		last_match = 0
+		first_match = True
 
-        if len(q) < 1:
-            return 0
+		if len(q) < 1:
+			return 0
 
-        for i in range(0, len(text)):
-            if searched_term >= len(q):
-                searched_term = 0
+		for i in range(0, len(text)):
+			if searched_term >= len(q):
+				searched_term = 0
 				first_match = True
-            if text[i] == q[searched_term]:
-                if first_match:
-                    score += 1
-                    first_match = False
-                else:
-                    score += 1 / (i - last_match)
-                last_match = i
-                searched_term += 1
 
-        try:
-            num = int(MyConfig.get("document_retrieval", "n_results"))
-        except MyConfigException as e:
-            logger = logging.getLogger("qa_logger")
-            logger.warning(str(e))
-            return score
+			if text[i] == q[searched_term]:
+				if first_match:
+					score += 1
+					first_match = False
+				else:
+					score += 1 / (i - last_match)
 
-        # Reverse rank order from 1..n to n..1
-        rank = num - rank + 1
+				last_match = i
+				searched_term += 1
 
-        # Normalize rank from n..1 to 1..0.5
-        rank = (rank - 2 + num) / (2 * num - 2)
+		try:
+			num = int(MyConfig.get("document_retrieval", "n_results"))
+		except MyConfigException as e:
+			logger = logging.getLogger("qa_logger")
+			logger.warning(str(e))
+			return score
 
-        # Weight score by rank
-        score = score * rank
+		# Reverse rank order from 1..n to n..1
+		rank = num - rank + 1
 
-        return score
+		# Normalize rank from n..1 to 1..0.5
+		rank = (rank - 2 + num) / (2 * num - 2)
+
+		# Weight score by rank
+		score = score * rank
+
+		return score
 
 
 class MixedAlgorithm(PassageFilteringAlgorithm):
