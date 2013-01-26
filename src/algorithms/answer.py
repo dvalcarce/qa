@@ -22,6 +22,7 @@ class AnswerExtractionAlgorithm(object):
     def process_answer(self, passage, question):
         pass
 
+
 class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
 
     @classmethod
@@ -112,11 +113,12 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
         entities = []
         all_entities = []
         for element in tree.iterchildren():
+            word = "" if element.text is None else element.text
             if element is None:
                 continue
             if element.tag == searched_entity:
-                entities.append(element.text)
-            all_entities.append(element.text)
+                entities.append(word)
+            all_entities.append(word)
 
         if 'OTHER' == searched_entity:
             entities += self._other_recognition(tagged_sentences, all_entities)
