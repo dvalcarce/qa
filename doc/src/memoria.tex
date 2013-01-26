@@ -168,20 +168,39 @@ Para ilustrar el proceso de búsqueda de respuestas del sistema, hemos elaborado
 
 \clearpage
 \section{Herramientas empleadas}
-A continuación se muestran las herramientas utilizadas en el desarrollo de la práctica, bla, bla, bla...
-% % % % % % % % % %
-% TODO: Completar %
-% % % % % % % % % %
+Durante el desarrollo de la práctica se emplearon diversas utilidades de terceros que han permitido facilitar el desarrollo de la misma y simplificar, parcialmente, su complejidad mediante la incorporación de módulos ya desarrollados que posibilitan su elaboración, puesto que sin ellos el alcance de la implementación sería inabordable. A continuación se especifican cuales son las herramientas principales en las que nos hemos basado.
 
 \begin{description}
-	\item[NLTK] Framework libre de procesamiento de lenguaje natural para Python. Puede descargarse en \cite{nltk}.
-	\item[Pattern] Módulo de \emph{web mining} libre para Python. Puede descargarse en \cite{pattern}.
-	\item[PDFMiner] Módulo de Python para la extracción de información de docuemntos PDF. Más información en \cite{pdfminer}.
-	\item[lxml] Módulo de Python...
-	\item[Stanford NER]
-	\item[Stanford Parser]
-	\item[Git] Sistema de control de versiones distribuido libre. Puede descargarse en \cite{git}.
-	\item[BitBucket] Repositorio online para git. Puede accederse a él en \cite{bitbucket}.
+	\item[NLTK] Se trata de una plataforma libre para el desarrollo de aplicaciones en lenguaje Python que permite llevar a cabo un procesamiento del lenguaje natural. 
+
+\emph{NLTK} proporciona interfaces para tratar con múltiples \emph{corpus} y diversos recursos léxicos, como por ejemplo \emph{WordNet}, que permiten llevar a cabo su propósito de tratar el lenguaje natural permitiendo funcionalidades como la realización de análisis sintácticos, tokenización o la clasificación de textos, que han sido algunos de los pilares fundamentales sobre los cuales se ha construído nuestra práctica.
+
+Puede obtenerse más información a cerca del mismo, así como descargarse, en \cite{nltk}.
+
+	\item[Pattern] Consiste en un módulo libre de \emph{web mining} para Python. Su principal funcionalidad es la extracción de información mediante la realización de consultas a diversos búscadores web como \emph{Google}, \emph{Bing} o \emph{Wikipedia}.
+
+La utilización de este módulo nos ha permitido manejar las API's de los diferentes buscadores a través de la interfaz que proporciona el propio módulo, logrando encapsular el funcionamiento y las particularidades de cada API.
+
+Se puede encontrar más información en \cite{pattern}.
+
+	\item[PDFMiner] Módulo de Python que permite llevar a cabo la conversión de un documento en formato PDF a texto plano. Esta herramienta nos ha facilitado el tratamiento de los documentos PDF recuperados de la web, ya que, por su propia naturaleza, contienen información adiccional que es irrelevante para nuestro propósito y que, a través de esta utilidad, conseguimos obviar.
+
+Se puede obtener más información en \cite{pdfminer}.
+
+	\item[lxml] Consiste en un módulo que posibilita el manejo de datos estructurados en XML y HTML a través de una sencilla interfaz en Python. Puede encontrarse más información sobre el mismo en \cite{lxml}.
+
+	\item[Stanford NER] También conocido como \emph{CRFClassifier}, se trata de un reconocedor de entidades implementado en Java que permite clasificar las diferentes entidades de un texto según su dominio: nombres, organizaciones, lugares, etc.
+
+Su funcionamiento a través de \emph{sockets} nos ha permitido incorporarlo a nuestra implementación de la práctica. Puede obtenerse más información sobre esta herramienta en \cite{stanford-ner}.
+
+	\item[Stanford Parser] Se trata de un analizador de lenguaje natural que permite, mediante una etiquetación, identificar los diferentes elementos que componen un texto: frases, sujeto, verbo, etc.
+
+	Del mismo modo que el \emph{Stanford NER} se comunica a través de \emph{sockets} con nuestro programa en Python. Se puede encontrar más información sobre el mismo en \cite{stanford-parser}.
+
+	\item[Git] Sistema de control de versiones distribuido que facilita las tareas de desarrollo del software proporcionando soporte a diferentes versiones del mismo. Puede obtenerse más información en \cite{git}.
+
+	\item[BitBucket] Utilidad online que permite la creación de repositorios centralizados para sistemas de control de versiones como \emph{git} o \emph{mercurial}. Puede accederse a nuestro repositorio en \cite{bitbucket}.
+
 	\item[\LaTeX] Sistema de composición de textos con el que se ha elborado el presente documento. Más información en \cite{latex}.
 
 \end{description}
@@ -609,6 +628,15 @@ CLIPS Pattern: \url{http://www.clips.ua.ac.be/pages/pattern}.
 \bibitem{pdfminer}
 PDFMiner: \url{http://www.unixuser.org/~euske/python/pdfminer/index.html}.
 
+\bibitem{lxml}
+lxml: \url{http://lxml.de/}.
+
+\bibitem{stanford-ner}
+Stanford NER: \url{http://nlp.stanford.edu/software/CRF-NER.shtml}
+
+\bibitem{stanford-parser}
+Stanford Parser: \url{http://nlp.stanford.edu/software/lex-parser.shtml}
+
 \bibitem{java}
 Oracle Java: \url{http://www.oracle.com/us/technologies/java/overview/index.html}.
 
@@ -631,6 +659,5 @@ B. Loni: \emph{Enhanced Question Classification with Optimal Combination of Feat
 J. Silva et al: \emph{From symbolic to sub-symbolic information in question classification}. Ed. Springer Science, 2010.
 
 \end{thebibliography}
-
 
 \end{document}
