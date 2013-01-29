@@ -3,7 +3,7 @@ LOCATION What county is Modesto , California in ?
 PERSON Who was Galileo ?
 DATE When did Hawaii become a state ?
 NUMBER How tall is the Sears Building ?
-PERSON George Bush purchased a small interest in which baseball team ?
+ORGANIZATION George Bush purchased a small interest in which baseball team ?
 OTHER What is Australia 's national flower ?
 LOCATION What city had a world fair in 1900 ?
 PERSON What person 's head is on a dime ?
@@ -34,7 +34,7 @@ OTHER What is the proper name for a female walrus ?
 OTHER What is a group of turkeys called ?
 TIME How long did Rip Van Winkle sleep ?
 NUMBER How many liters in a gallon ?
-PERSON What is the name of the chocolate company in San Francisco ?
+ORGANIZATION What is the name of the chocolate company in San Francisco ?
 PERSON Who discovered x-rays ?
 PERSON Which comedian 's signature line is `` Can we talk '' ?
 DATE When did Elvis Presley die ?
@@ -68,7 +68,7 @@ LOCATION What country did Ponce de Leon come from ?
 OTHER The U.S. Department of Treasury first issued paper currency for the U.S. during which war ?
 NUMBER What is the temperature of the sun 's surface ?
 DATE What year did Canada join the United Nations ?
-PERSON What is the oldest university in the US ?
+ORGANIZATION What is the oldest university in the US ?
 LOCATION Where is Prince Edward Island ?
 DATE Mercury , what year was it discovered ?
 OTHER What is the longest major league baseball-winning streak ?
@@ -112,7 +112,7 @@ OTHER What were Christopher Columbus ' three ships ?
 OTHER What is another name for vitamin B1 ?
 PERSON Who discovered radium ?
 DATE When was Algeria colonized ?
-PERSON What baseball team was the first to make numbers part of their uniform ?
+ORGANIZATION What baseball team was the first to make numbers part of their uniform ?
 LOCATION What continent is Egypt on ?
 LOCATION What is the capital of Mongolia ?
 LOCATION In the late 1700 's British convicts were used to populate which colony ?
@@ -322,13 +322,13 @@ NUMBER How cold should a refrigerator be ?
 DATE When was the telephone invented ?
 OTHER What is the most common eye color ?
 LOCATION Where was the first golf course in the United States ?
-PERSON What did Jesse Jackson organize ?
+ORGANIZATION What did Jesse Jackson organize ?
 OTHER What is New York 's state bird ?
 LOCATION What is the National Park in Utah ?
 DATE What is Susan B. Anthony 's birthday ?
 LOCATION In which state would you find the Catskill Mountains ?
 OTHER What do you call a word that is spelled the same backwards and forwards ?
-PERSON What chain store is headquartered in Bentonville , Arkansas ?
+ORGANIZATION What chain store is headquartered in Bentonville , Arkansas ?
 OTHER What currency does Luxembourg use ?
 NUMBER What is the population of Venezuela ?
 OTHER What type of polymer is used for bulletproof vests ?
