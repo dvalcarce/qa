@@ -49,7 +49,7 @@ class SimilarityAlgorithm(PassageFilteringAlgorithm):
             return score
 
         # Reverse rank order from 1..n to n..1
-        rank = num - rank + 1
+        rank = num - rank + 1.0
 
         # Normalize rank from n..1 to 1..0.5
         rank = (rank - 2 + num) / (2 * num - 2)
@@ -86,17 +86,17 @@ class ProximityAlgorithm(PassageFilteringAlgorithm):
         if len(q) < 1:
             return 0
 
-        for i in range(0, len(text)):
+        for i, word in enumerate(text):
             if searched_term >= len(q):
                 searched_term = 0
                 first_match = True
 
-            if text[i] == q[searched_term]:
+            if word == q[searched_term]:
                 if first_match:
                     score += 1
                     first_match = False
                 else:
-                    score += 1 / (i - last_match)
+                    score += 1.0 / (i - last_match)
 
                 last_match = i
                 searched_term += 1
@@ -109,7 +109,7 @@ class ProximityAlgorithm(PassageFilteringAlgorithm):
             return score
 
         # Reverse rank order from 1..n to n..1
-        rank = num - rank + 1
+        rank = num - rank + 1.0
 
         # Normalize rank from n..1 to 1..0.5
         rank = (rank - 2 + num) / (2 * num - 2)
@@ -127,4 +127,4 @@ class MixedAlgorithm(PassageFilteringAlgorithm):
         score1 = SimilarityAlgorithm.calculate_score(question, passage)
         score2 = ProximityAlgorithm.calculate_score(question, passage)
 
-        return (score1 + score2) / 2
+        return (score1 + score2) / 2.0
