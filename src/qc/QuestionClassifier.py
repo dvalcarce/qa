@@ -190,7 +190,7 @@ class QuestionClassifier(object):
         corpus = corpus.split("\n")
         corpus = [tuple(line.split(" ", 1)) for line in corpus]
         f.close()
-        return corpus
+        return corpus[:-1]
 
     @classmethod
     def _get_folder(self, features):
@@ -206,7 +206,9 @@ class QuestionClassifier(object):
     @classmethod
     def train(self, features):
         print "Getting training corpus"
+
         train_corpus = QuestionClassifier.get_qc_corpus(os.path.join("qc", "corpus", "qc_train.txt"))
+
         train_set = [(QuestionClassifier.get_features(question, features), entity) for (entity, question) in train_corpus]
 
         folder = self._get_folder(features)
