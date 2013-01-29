@@ -72,6 +72,14 @@ class SplitIntoParagraphsAlgorithm(DocumentSegmentationAlgorithm):
 class SplitIntoSentencesAlgorithm(DocumentSegmentationAlgorithm):
 
     @classmethod
+    def _aux(self, content, n_sentences, document):
+        sent_list = nltk.sent_tokenize(content)
+        passage_list = [Passage(" ".join(sent_list[i: i + n_sentences]),
+            document) for i in range(0, max(1, len(sent_list) - n_sentences + 1))]
+
+        return passage_list
+
+    @classmethod
     def split_into_passages(self, document):
         if document is None or document.content is None or document.content == "":
             return []
@@ -83,11 +91,9 @@ class SplitIntoSentencesAlgorithm(DocumentSegmentationAlgorithm):
             logger.warning(str(e))
             n_sentences = 5
 
-        sent_list = nltk.sent_tokenize(document.content)
-        passage_list = [Passage(" ".join(sent_list[i: i + n_sentences]) + "\n",
-            document) for i in range(0, max(1, len(sent_list) - n_sentences + 1))]
+        passage_list = self._aux(document.content, n_sentences, document)
 
         # Adds search engine snippet
-        passage_list.append(Passage(document.description, document))
-        
+        passage_list += self._aux(document.description, n_sentences, document)
+
         return passage_list
