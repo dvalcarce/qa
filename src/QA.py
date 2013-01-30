@@ -69,7 +69,7 @@ class QA(object):
         passage_list = []
 
         logger = logging.getLogger("qa_logger")
-        logger.info("%s:\t\tDocument Segmentation", question.id_q)
+        logger.info("%s:\t\tPassage Filtering", question.id_q)
 
         for doc in doc_list:
             for passage in doc.passages:
@@ -81,6 +81,7 @@ class QA(object):
     def get_relevant_passages(self, doc_list, question):
         logger = logging.getLogger("qa_logger")
         logger.info("%s:\tPassage Retrieval", question.id_q)
+        logger.info("%s:\t\tDocument Segmentation", question.id_q)
 
         passage_list = self.score_passages(doc_list, question)
         passage_list.sort(key=lambda x: x.score, reverse=True)
@@ -92,8 +93,6 @@ class QA(object):
             n = 100
             logger = logging.getLogger("qa_logger")
             logger.warning("n_relevants not found")
-
-        logger.info("%s:\t\tPassage Filtering", question.id_q)
 
         return passage_list[:n]
 
@@ -189,7 +188,8 @@ class QA(object):
     def debug(self):
         pkl_file = open('documentos.pkl', 'rb')
         doc_list = pickle.load(pkl_file)
-        q = Question("0001", "Who discovered radium?")
+
+        q = Question("0001", "What colour is Octopus blood?")
         passages = self.get_relevant_passages(doc_list, q)
         (answers, empty) = self.get_best_answers(passages, q)
         self.write_answers(answers, empty, q)

@@ -72,7 +72,7 @@ class Question(object):
                 results += engine.search(self.query, count=num)
             except Exception as e:
                 logger = logging.getLogger("qa_logger")
-                logger.error("Problem with search engine. Try again later.")
+                logger.error("Problem with search engine.")
                 logger.debug(e)
                 sys.exit(1)
 

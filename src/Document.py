@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+import struct
 import utils
 
 from algorithms.document import *
@@ -11,7 +12,7 @@ from cStringIO import StringIO
 from pattern.web import URL, plaintext
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
-from pdfminer.pdfinterp import PDFResourceManager, process_pdf
+from pdfminer.pdfinterp import PDFResourceManager, process_pdf, PDFTextExtractionNotAllowed
 
 
 class Document(object):
@@ -36,9 +37,17 @@ class Document(object):
         f = file(pdf_file, "rb")
         try:
             process_pdf(resource_manager, device, f)
-        except:
+        except PDFTextExtractionNotAllowed:
             logger = logging.getLogger("qa_logger")
             logger.warning("pdf file couldn't be retrieved (no permissions?)")
+            return ""
+        except struct.error as e:
+            logger = logging.getLogger("qa_logger")
+            logger.warning("pdfminer internal error " + str(e))
+            return ""
+        except Exception as e:
+            logger = logging.getLogger("qa_logger")
+            logger.warning(str(e))
             return ""
 
         text = retrieval.getvalue()
@@ -48,16 +57,12 @@ class Document(object):
         f.close()
         os.remove(pdf_file)
 
-        return text
+        return utils.from_unicode_to_ascii(text)
 
     def _extract_text(self, text, mimetype):
-        if (mimetype == "text/html" or mimetype == "xml"):
-            try:
-                text = plaintext(text)
-            except:
-                return ""
-            return utils.from_unicode_to_ascii(text)
-        elif (mimetype == "application/pdf"):
+        if mimetype == "text/html" or mimetype == "application/xml":
+            return plaintext(text)
+        elif mimetype == "application/pdf":
             self._pdf_to_plaintext(text)
         elif (mimetype == "text/plain"):
             return text
@@ -68,22 +73,22 @@ class Document(object):
 
     def _get_content(self, result):
         url = URL(result.url)
+
+        try:
+            timeout = int(MyConfig.get("document_retrieval", "timeout"))
+        except MyConfigException as e:
+            logger = logging.getLogger("qa_logger")
+            logger.warning(str(e))
+            timeout = 15
+
         try:
             mimetype = url.mimetype
-
-            try:
-                timeout = int(MyConfig.get("document_retrieval", "timeout"))
-            except MyConfigException as e:
-                logger = logging.getLogger("qa_logger")
-                logger.warning(str(e))
-                timeout = 15
-
-            content = url.download(timeout=timeout)
-        except:
-            # If we cannot retrieve the document,
-            # we skip it
+            content = utils.from_unicode_to_ascii(url.download(timeout=timeout, unicode=True))
+        except Exception as e:
+            # If we cannot retrieve the document, we skip it
             logger = logging.getLogger("qa_logger")
             logger.warning("%s couldn't be retrieved", result.url)
+            logger.warning(str(e))
             return ""
 
         return self._extract_text(content, mimetype)
@@ -94,7 +99,7 @@ class Document(object):
         self.rank = rank
         self.description = utils.from_unicode_to_ascii(result.description)
 
-        self.content = self._get_content(result)
+        self.content = utils.from_unicode_to_ascii(self._get_content(result))
 
         # Split document into passages
         try:
@@ -110,4 +115,4 @@ class Document(object):
         except MyConfigException as e:
             logger = logging.getLogger("qa_logger")
             logger.warning(str(e))
-            self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self, self.content)
+            self.passages = SplitIntoParagraphsAlgorithm.split_into_passages(self)

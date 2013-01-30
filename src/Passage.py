@@ -31,7 +31,7 @@ class Passage(object):
             if (algorithm == "entity"):
                 self.answer = EntityRecognitionAlgorithm.process_answer(self, question)
             else:
-                self.answer = None
+                self.answer = EntityRecognitionAlgorithm.process_answer(self, question)
         except MyConfigException as e:
             logger = logging.getLogger("qa_logger")
             logger.warning(str(e))
