@@ -169,7 +169,10 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
             noun_synsets = wn.synsets(features["noun"], pos=wn.NOUN)
             if len(noun_synsets) == 0:
                 return nouns
-            head_synset = noun_synsets[0]
+            else:
+                head_synset = noun_synsets[0]
+        else:
+            head_synset = head_synsets[0]
 
         for noun in nouns:
             try:
