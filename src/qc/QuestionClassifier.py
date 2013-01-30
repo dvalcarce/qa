@@ -164,8 +164,9 @@ class QuestionClassifier(object):
     @classmethod
     def get_features(self, question, features):
         # Query question cache (optimization)
+        key = question + features
         if question in self._questions:
-            return self._questions[question]
+            return self._questions[key]
 
         tokens = nltk.word_tokenize(question)
         tagged_tokens = nltk.pos_tag(tokens)
@@ -179,7 +180,7 @@ class QuestionClassifier(object):
         if "h" in features:
             result["head"] = self._get_head_word(question).lower()
 
-        self._questions[question] = result
+        self._questions[key] = result
 
         return result
 
@@ -276,6 +277,7 @@ if __name__ == '__main__':
     choice2 = raw_input("Choose the preferred features: ").lower()
 
     features = set(choice2) & {"f", "h", "n"}
+    features = "".join(features)
 
     if choice == 1:
         # Choice 1 (Train)
