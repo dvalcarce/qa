@@ -7,7 +7,7 @@
 \usepackage{url}
 \usepackage{titlesec}
 \usepackage{tabularx}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 
 \titleclass{\subsubsubsection}{straight}[\subsection]
 
@@ -169,7 +169,7 @@ Para ilustrar el proceso de búsqueda de respuestas del sistema, hemos elaborado
 Durante el desarrollo de la práctica se emplearon diversas utilidades de terceros que han permitido facilitar el desarrollo de la misma y simplificar, parcialmente, su complejidad mediante la incorporación de módulos ya desarrollados que posibilitan su elaboración, puesto que sin ellos el alcance de la implementación sería inabordable. A continuación se especifican cuales son las herramientas principales en las que nos hemos basado.
 
 \begin{description}
-	\item[NLTK] Se trata de una plataforma libre para el desarrollo de aplicaciones en lenguaje Python que permite llevar a cabo un procesamiento del lenguaje natural. 
+	\item[NLTK] Se trata de una plataforma libre para el desarrollo de aplicaciones en lenguaje Python que permite llevar a cabo un procesamiento del lenguaje natural.
 
 \emph{NLTK} proporciona interfaces para tratar con múltiples \emph{corpus} y diversos recursos léxicos, como por ejemplo \emph{WordNet}, que permiten llevar a cabo su propósito de tratar el lenguaje natural permitiendo funcionalidades como la realización de análisis sintácticos, tokenización o la clasificación de textos, que han sido algunos de los pilares fundamentales sobre los cuales se ha construído nuestra práctica.
 
@@ -319,9 +319,6 @@ El fichero de configuración del módulo Logging de Python permite establecer qu
 \clearpage
 \section{Algoritmos}
 En esta sección se detallan los algoritmos utilizados en el sistema de búsqueda de respuestas.
-% % % % % % % % % %
-% TODO: Completar %
-% % % % % % % % % %
 
 \subsection{Query Formulation}
 El objetivo de estos algoritmos es formular una consulta para los buscadores web a partir de la pregunta introducida por el usuario.
@@ -371,22 +368,28 @@ Para cada pasaje, devolvemos la entidad que más se repite en la pregunta con un
 \subsubsubsection{Question Classification}
 Realizamos una clasificación de la pregunta para saber qué tipo de entidades debemos obtener del pasaje. Para ello hemos entrenado diferentes clasificadores a partir de un corpus de entrenamiento formado por preguntas y su clasificación en Other, Number, Person, Location, Time, Date, Money, Percent y Organization.
 
-Hemos utilizado tres tipos de clasificadores: de Bayes ingenuo, de árbol de decisión y de máxima entropía. A su vez, hemos utilizado diferente combinaciones de las siguientes características: primera palabra, primer sustantivo y \emph{head word}.
+Hemos utilizado tres tipos de clasificadores: de Bayes ingenuo, de árbol de decisión y de máxima entropía. A su vez, hemos utilizado diferente combinaciones de las siguientes características: primera palabra (o dos primeras si empieza por preposición), primer sustantivo y \emph{head word}.
 
 Para obtener la \emph{head word}, es decir, la palabra clave que indica el tipo de pregunta hemos utilizado el algoritmo descrito en \cite{tesis:qc} y \cite{paper:qc}.
 
-Tras probar todas las combinaciones posibles de clasificadores y características, el que mejor resultados da en el conjunto de test ha sido el clasificador bayesiano ingenuo con todas las características.
+Tras probar todas las combinaciones posibles de clasificadores y características, el que mejor resultados da en el conjunto de test ha sido el clasificador bayesiano ingenuo con la \emph{head word} y la primera palabra.
 
 \subsubsubsection{Named Entity Recognition}
 Una vez obtenida la clasificación de la pregunta, debemos buscar las entidades de ese tipo. Para ello, utilizamos el NER Parser de Stanford que permite la extracción de entidades tipo Time, Location, Organization, Person, Money, Percent y Date; sin embargo, debemos definir estrategias diferentes para los Number y los Other.
 
-Para reconocer entidades Number utizamos el Part-of-Speech Tagger del NLTK obteniendo los numerales cardinales y ordinales (CD y JJ) y una expresión regular que reconoce caracteres numéricos.
-
-Por último, la extracción de entidades tipo Other se realiza obteniendo los sustantivos comunes que no son entidades tras un análisis léxico por parte del NLTK.
-
 Descartamos aquellas respuestas que son palabras que ya aparecen en la pregunta.
 
 También es posible emplear el extractor de entidades del NLTK (se puede indicar en el fichero de configuración); no obstante, hemos visto que proporciona peores resultados.
+
+\subsubsubsection{Number Recognition}
+Para reconocer entidades Number utizamos el Part-of-Speech Tagger del NLTK obteniendo los numerales cardinales y ordinales (CD y JJ) y una expresión regular que reconoce caracteres numéricos.
+
+\subsubsubsection{Other Recognition}
+Por último, la extracción de entidades tipo Other se realiza obteniendo los sustantivos comunes que no son entidades tras un análisis léxico por parte del NLTK. A continuación obtenemos la \emph{head word} correspondiente a la pregunta y buscamos su \emph{synset} en WordNet. Comparamos con el \emph{synset} de cada uno de los sustantivos candidatos mediante la métrica de similitud Lin \cite{wn1} \cite{wn2} \cite{wn3}. Aceptamos como posibles respuetas todos aquellos sustantivos que se encuentren entre un umbral mínimo ---así eliminamos palabras no relacionadas--- y un umbral máximo ---no queremos sinónimos de la \emph{head word}.
+
+Si el algoritmo de obtención de \emph{head word} no es capaz de devolver un término, evaluamos todos los sustantivos como posibles respuestas (no podemos utilizar la metodología anteriormente descrita).
+
+Si la \emph{head word} no es vacía, entonces buscamos su \emph{synset} correspodiente en WordNet. En caso de encontrarlo procedemos con normalidad. Por el contrario, si no existe entonces buscamos el \emph{synset} del primer sustantivo de la pregunta. Si aún así, no conseguimos un \emph{synset}, devolvemos todos los sustantivos; en el caso opuesto, procedemos con la métrica de similitud entre el primer sustantivo y las palabras candidatas.
 
 \clearpage
 \section{Resultados}
@@ -445,10 +448,6 @@ Id & R o U & NILs & NILs correctos & \% R & \% R o U\\ \hline
 \end{tabular}
 \end{center}
 \end{table}
-
-
-
-
 
 
 \clearpage
@@ -598,9 +597,35 @@ Por restricciones de cuota en los motores de búsqueda de Google y Bing, no se p
 \subsection{Jornada del 2013/01/24}
 Ultimamos los últimos detalles de la práctica (solución de algunos bugs, refactorización de código, etc.) y de la memoria (digramas, instrucciones y resultados) para preparar la defensa.
 
+\subsection{Jornada del 2013/01/29}
+Corregimos varios bugs y mejoramos el tratamiento de excepciones. Analizando los resultados obtenidos hasta la fecha, observamos que el sistema responde incorrectamente la gran mayoría de las preguntas clasificadas como OTHER. Por tanto, nos propusimos mejorarlo.
+
+Por un lado, pensamos en realizar una aproximación al problema de reconocer entidades genéricas mediante un análisis sintáctico de los pasajes. No obstante, descartamos esta opción por encontrar poca bibliografía que la apoyara. Nos decidimos por opciones más relacionadas con el análisis semántico y, al final, nos decatamos por usar los campos semánticos de WordNet.
+
+Asumimos que la respuesta estará en el campo semántico de la \emph{head word} de la pregunta. Gracias al algoritmo que hemos implementado para ello en la sección de Question Classification, solo tenemos que analizar el campo semántico de la palabra que nos devuelve.
+
+\subsection{Jornada del 2013/01/30}
+Para establecer la relación semántica entre dos palabras con Wordnet existen diferentes métricas. Hemos consultado diferentes fuentes (\cite{wn1}, \cite{wn2} y \cite{wn3}) que comparan su precisión y su cobertura bajo diferentes situaciones. A continuación, las describimos y justificamos nuestra elección:
+
+\begin{description}
+\item[Path Similarity] Devuelve una puntuación denotando cuán similares son los significados basada en el camino más corto que conecta las palabras en la jerarquía de hiperónimos e hipónimos.
+\item[Leacock-Chodorow] Usa la información de la métrica anterior combinada con la máxima profundidad de la taxonomía donde se encuentran ambos significados.
+\item[Wu-Palmer] Devuelve una puntuación en base a la profundidad máxima de la taxonomía y en el nodo ancestro más específico (\emph{least common subsumer}).
+\item[Resnik] Usa \emph{information content} del \emph{least common subsumer} para determinar la similitud.
+\item[Jiang-Conrath] Se trata de una mejora sobre Resnik que además de utilizar \emph{information content} del \emph{least common subsumer}, también utiliza \emph{information content} de los dos \emph{synsets}.
+\item[Lin] Esta métrica de similitud intenta ser una mejora de las anteriores (usando \emph{information content} del \emph{least common subsumer} y de los dos \emph{synsets}). Además, su objetivo es que sea de uso universal (válida para cualquier dominio).
+\end{description}
+
+Hay que destacar que las tres últimas métricas hacen uso de \emph{information content} que puede ser obtenido de numerosos corpus. Hemos elegido el British National Corpus por ser el que tiene mayor número de palabras y, por tanto, ser el que mejor resultados proporciona como se puede ver en \cite{wn1}.
+
+Tras algunas pruebas empíricas y tras analizar los datos de los papers hemos comprobado que el algoritmo de Lin es el más adecuado.
+
+Por último, ya que hemos modificado el algoritmo de respuestas de forma muy significativa es necesario repetir de nuevo las pruebas.
+
 \clearpage
 \section{Bibliografía}
-\begin{thebibliography}{99}
+\renewcommand{\section}[2]{}
+\begin{thebibliography}{9}
 
 \bibitem{modelo1}
 J. Lin, B. Katz: \emph{Question Answering Techniques for the World Wide Web}. EACL (2003). \url{http://www.umiacs.umd.edu/~jimmylin/publications/Lin_Katz_EACL2003_tutorial.pdf}.
