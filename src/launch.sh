@@ -10,8 +10,6 @@ info()
 	echo "    launch.sh debug"
 }
 
-cd src
-
 if [ $# -eq 0 ]; then
 	info
 elif [ $1 = "interactive" ]; then
