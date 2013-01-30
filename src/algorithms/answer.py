@@ -177,7 +177,6 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
         for noun in nouns:
             try:
                 noun_synset = wn.synsets(noun, pos=wn.NOUN)[0]
-                print noun, noun_synset.lin_similarity(head_synset, ic)
                 if threshold < noun_synset.lin_similarity(head_synset, ic) < 0.9:
                     result.append(noun)
             except IndexError:
