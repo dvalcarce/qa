@@ -142,6 +142,11 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
         all_entities = set(itertools.chain(*map(str.split, all_entities)))
         nouns = [noun for noun in nouns if noun not in all_entities]
 
+        features = QuestionClassifier.get_features(question.text, "hn")
+        head = features["head"]
+        if head == "":
+            return nouns
+
         # Filter nouns with WordNet synsets
         try:
             threshold = float(MyConfig.get("answer_extraction", "other_threshold"))
@@ -149,8 +154,6 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
             logger = logging.getLogger("qa_logger")
             logger.warning(str(e))
             threshold = 0.6
-
-        head = QuestionClassifier.get_features(question.text, "h")["head"]
 
         try:
             ic = wordnet_ic.ic(MyConfig.get("answer_extraction", "ic"))
@@ -160,17 +163,24 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
             ic = wordnet_ic.ic("ic-bnc.dat")
 
         result = []
-        try:
-            head_synset = wn.synsets(head, pos=wn.NOUN)[0]
-            for noun in nouns:
-                try:
-                    noun_synset = wn.synsets(noun, pos=wn.NOUN)[0]
-                    if threshold < noun_synset.lin_similarity(head_synset, ic) < 0.9:
-                        result.append(noun)
-                except IndexError:
-                    continue
-        except IndexError:
-            pass
+
+        head_synsets = wn.synsets(head, pos=wn.NOUN)
+        if len(head_synsets) == 0:
+            noun_synsets = wn.synsets(features["noun"], pos=wn.NOUN)
+
+        if len(noun_synsets) == 0:
+            return nouns
+
+        head_synset = noun_synsets[0]
+
+        for noun in nouns:
+            try:
+                noun_synset = wn.synsets(noun, pos=wn.NOUN)[0]
+                print noun, noun_synset.lin_similarity(head_synset, ic)
+                if threshold < noun_synset.lin_similarity(head_synset, ic) < 0.9:
+                    result.append(noun)
+            except IndexError:
+                continue
 
         return result
 
