@@ -9,6 +9,8 @@ from qc.stanford_parser.StanfordParser import StanfordParser
 def from_unicode_to_ascii(string):
     if isinstance(string, str):
         return string
+    if string is None:
+        return ""
     return unicodedata.normalize("NFKD", string).encode("ascii", "ignore")
 
 

@@ -4,12 +4,13 @@ import itertools
 import logging
 import nltk
 import os
-import random
 import re
 
 from Answer import Answer
 from conf.MyConfig import MyConfig, MyConfigException
 from lxml.etree import fromstring
+from nltk.corpus import wordnet as wn
+from nltk.corpus import wordnet_ic
 from nltk.probability import FreqDist
 from nltk.tree import Tree
 from qc.QuestionClassifier import QuestionClassifier
@@ -47,7 +48,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
         return QuestionClassifier.classify(classifier_path, question, features)
 
     @classmethod
-    def _nltk_ner(self, text, searched_entity):
+    def _nltk_ner(self, text, searched_entity, question):
         # Entity Classification
         sentences = nltk.sent_tokenize(text)
         tokenized_sentences = [nltk.word_tokenize(s) for s in sentences]
@@ -66,7 +67,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
                     all_entities.append(entity)
 
         if 'OTHER' == searched_entity:
-            entities += self._other_recognition(tagged_sentences, all_entities)
+            entities += self._other_recognition(tagged_sentences, all_entities, question)
 
         if 'NUMBER' == searched_entity:
             entities += self._number_recognition(text, tagged_sentences, all_entities)
@@ -74,7 +75,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
         return entities
 
     @classmethod
-    def _stanford_ner(self, text, searched_entity):
+    def _stanford_ner(self, text, searched_entity, question):
         sentences = nltk.sent_tokenize(text)
         tokenized_sentences = [nltk.word_tokenize(s) for s in sentences]
         tagged_sentences = [nltk.pos_tag(s) for s in tokenized_sentences]
@@ -121,7 +122,7 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
             all_entities.append(word)
 
         if 'OTHER' == searched_entity:
-            entities += self._other_recognition(tagged_sentences, all_entities)
+            entities += self._other_recognition(tagged_sentences, all_entities, question)
 
         if 'NUMBER' == searched_entity:
             entities += self._number_recognition(text, tagged_sentences, all_entities)
@@ -129,20 +130,49 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
         return entities
 
     @classmethod
-    def _other_recognition(self, tagged_sentences, all_entities):
+    def _other_recognition(self, tagged_sentences, all_entities, question):
         # Nouns retrieval
         nouns = []
         for sentence in tagged_sentences:
             nouns += filter(lambda x: x[1] == "NN", sentence)
         nouns = [noun for (noun, tag) in nouns]
-        nouns = set(nouns)
 
         # Nouns filtering
         # Remove all entities that are nouns
         all_entities = set(itertools.chain(*map(str.split, all_entities)))
-        nouns -= all_entities
+        nouns = [noun for noun in nouns if noun not in all_entities]
 
-        return list(nouns)
+        # Filter nouns with WordNet synsets
+        try:
+            threshold = float(MyConfig.get("answer_extraction", "other_threshold"))
+        except MyConfigException as e:
+            logger = logging.getLogger("qa_logger")
+            logger.warning(str(e))
+            threshold = 0.6
+
+        head = QuestionClassifier.get_features(question.text, "h")["head"]
+
+        try:
+            ic = wordnet_ic.ic(MyConfig.get("answer_extraction", "ic"))
+        except MyConfigException as e:
+            logger = logging.getLogger("qa_logger")
+            logger.warning(str(e))
+            ic = wordnet_ic.ic("ic-bnc.dat")
+
+        result = []
+        try:
+            head_synset = wn.synsets(head, pos=wn.NOUN)[0]
+            for noun in nouns:
+                try:
+                    noun_synset = wn.synsets(noun, pos=wn.NOUN)[0]
+                    if threshold < noun_synset.lin_similarity(head_synset, ic) < 0.9:
+                        result.append(noun)
+                except IndexError:
+                    continue
+        except IndexError:
+            pass
+
+        return result
 
     @classmethod
     def _number_recognition(self, text, tagged_sentences, all_entities):
@@ -205,9 +235,9 @@ class EntityRecognitionAlgorithm(AnswerExtractionAlgorithm):
             logger.warning(str(e))
 
         if ner_algorithm == "nltk":
-            entities = self._nltk_ner(p, searched_entity)
+            entities = self._nltk_ner(p, searched_entity, question)
         else:
-            entities = self._stanford_ner(p, searched_entity)
+            entities = self._stanford_ner(p, searched_entity, question)
 
         entities = self._filter_entities(entities, q)
 
