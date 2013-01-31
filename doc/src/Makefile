@@ -6,4 +6,4 @@ compile: memoria.tex
 	mv memoria.pdf ../
 
 clean:
-	rm -f *.log *.toc *.aux
+	rm -f *.log *.toc *.aux *.out
