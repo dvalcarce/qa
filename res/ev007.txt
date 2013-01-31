@@ -1,7 +1,6 @@
-error: 0020 plnaex031ms 3 129 http://www.carmeyavdat.com/172430/The-Negev-Desert Negev Desert	()W
-MRR (strict):		     0.28000
-MRR (permissive)	     0.28000
-Right answers (strict):	    16
-Right answers (strict):	    16
-NIL answers:		     1
+MRR (strict):		     0.29667
+MRR (permissive)	     0.29667
+Right answers (strict):	    18
+Right answers (strict):	    18
+NIL answers:		     2
 NIL right answers:	     0
