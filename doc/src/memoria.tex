@@ -259,7 +259,7 @@ La clave de Google permite realizar 100 consultas por hora, mientras que la de B
 
 
 \subsection{Uso del sistema}
-El sistema tiene dos modos de funcionamiento principales así como un tercero con objetivos de \emph{debugging}. Con el objetivo de facilitar el uso de nuestro programa, se ha codificado un script en Bash (\texttt{launch.sh}) localizado en la raíz del proyecto que permite lanzar fácilmente la práctica.
+El sistema tiene dos modos de funcionamiento principales así como un tercero con objetivos de \emph{debugging}. Con el objetivo de facilitar el uso de nuestro programa, se ha codificado un script en Bash (\texttt{launch.sh}) localizado en la carpeta \texttt{src} del proyecto que permite lanzar fácilmente la práctica.
 
 En cualquiera de los tres modos de ejecución, las respuestas se almacenan en un fichero en la carpeta \texttt{res}. El nombre de dicho fichero se obtiene a partir del \emph{timestamp} de la hora de ejecución del programa.
 
@@ -273,7 +273,6 @@ $ ./launch.sh interactive
 
 O bien ejecutar directamente el código Python:
 \begin{lstlisting}
-$ cd src
 $ python QA.py
 \end{lstlisting}
 
@@ -290,7 +289,6 @@ $ ./launch.sh batch <file>
 
 También se puede ejecutar directamente el código Python:
 \begin{lstlisting}
-$ cd src
 $ python QA.py <file>
 \end{lstlisting}
 
@@ -306,7 +304,6 @@ $ ./launch.sh debug
 
 Alternativamente, se puede ejecutar directamente el código Python:
 \begin{lstlisting}
-$ cd src
 $ python QA.py pickle
 \end{lstlisting}
 
@@ -397,22 +394,20 @@ Si la \emph{head word} no es vacía, entonces buscamos su \emph{synset} correspo
 
 \clearpage
 \section{Resultados}
-En las siguientes tablas se muestran los resultados obtenidos para las pruebas realizadas. Nos quedamos con la cuarta configuración puesto que es con la que obtenemos un mayor MRR.
+En las siguientes tablas se muestran los resultados obtenidos para las pruebas realizadas. Nos quedamos con la cuarta configuración puesto que es con la que obtenemos un mayor MRR aunque la quinta opción también es bastante buena.
 
 \begin{table}[h!]
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Id & Document Retrieval & Document Segmentation & Passage Filtering\\\hline
-1 & 10 resultados & sentences/5/100 & mixed\\\hline
-2 & 10 resultados & paragraph/-/100 & mixed\\\hline
-3 & 10 resultados & sentences/1/200 & mixed\\\hline
+1 & 20 resultados & paragraphs/-/100 & mixed\\\hline
+2 & 20 resultados & paragraphs/-/100 & proximity\\\hline
+3 & 20 resultados & paragraphs/-/200 & similarity\\\hline
 4 & 20 resultados & sentences/1/500 & mixed\\\hline
 5 & 20 resultados & sentences/1/500 & proximity\\\hline
 6 & 20 resultados & sentences/1/500 & similarity\\\hline
-7 & 20 resultados & sentences/5/100 & mixed\\\hline
-8 & 20 resultados & sentences/5/100 & proximity\\\hline
-9 & 20 resultados & sentences/5/100 & similarity\\\hline
+7 & 20 resultados & sentences/5/500 & mixed\\\hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -422,15 +417,13 @@ Id & Document Retrieval & Document Segmentation & Passage Filtering\\\hline
 \begin{tabular}{|c|c|c|c|c|}
 \hline
 Id & run-tag & MRR estricto & MRR permisivo & Respuestas R\\ \hline
-1 & plnaex031ms & 0,24333 & 0,24333 & 15\\ \hline
-2 & plnaex031ms & 0,19667 & 0,19667 & 11\\ \hline
-3 & plnaex031ms & 0,31 & 0,31 & 19\\ \hline
-4 & plnaex031ms & 0,32333 & 0,32333 & 18\\ \hline
-5 & plnaex031ms & 0,26 & 0,26 & 16\\ \hline
-6 & plnaex031ms & 0,29 & 0,29 & 17\\ \hline
-7 & plnaex031ms & 0,28 & 0,28 & 16\\ \hline
-8 & plnaex031ms & 0,19 & 0,21 & 11 \\ \hline
-9 & plnaex031ms & 0,22667 & 0,22667 & 13\\ \hline
+1 & plnaex031ms & 0,34667 & 0,34667 & 19\\ \hline
+2 & plnaex031ms & 0,27333 & 0,27333 & 16\\ \hline
+3 & plnaex031ms & 0,36 & 0,36 & 19\\ \hline
+4 & plnaex031ms & 0,35667 & 0,35667 & 20\\ \hline
+5 & plnaex031ms & 0,34 & 0,34 & 22\\ \hline
+6 & plnaex031ms & 0,33333 & 0,33333 & 20\\ \hline
+7 & plnaex031ms & 0,29667 & 0,29667 & 18\\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -440,15 +433,13 @@ Id & run-tag & MRR estricto & MRR permisivo & Respuestas R\\ \hline
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
 Id & R o U & NILs & NILs correctos & \% R & \% R o U\\ \hline
-1 & 15 & 1 & 0 & 30,00\% & 30,00\% \\ \hline
-2 & 11 & 1 & 0 & 22,00\% & 22,00\% \\ \hline
+1 & 19 & 1 & 0 & 38,00\% & 38,00\% \\ \hline
+2 & 16 & 3 & 0 & 32,00\% & 32,00\% \\ \hline
 3 & 19 & 1 & 0 & 38,00\% & 38,00\% \\ \hline
-4 & 18 & 1 & 0 & 36,00\% & 36,00\% \\ \hline
-5 & 16 & 1 & 0 & 32,00\% & 32,00\% \\ \hline
-6 & 17 & 1 & 0 & 34,00\% & 34,00\% \\ \hline
-7 & 16 & 1 & 0 & 32,00\% & 32,00\% \\ \hline
-8 & 12 & 1 & 0 & 22,00\% & 24,00\% \\ \hline
-9 & 13 & 2 & 0 & 26,00\% & 26,00\% \\ \hline
+4 & 20 & 2 & 0 & 40,00\% & 40,00\% \\ \hline
+5 & 22 & 2 & 0 & 44,00\% & 44,00\% \\ \hline
+6 & 20 & 2 & 0 & 40,00\% & 40,00\% \\ \hline
+7 & 18 & 2 & 0 & 36,00\% & 36,00\% \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -625,6 +616,9 @@ Hay que destacar que las tres últimas métricas hacen uso de \emph{information 
 Tras algunas pruebas empíricas y tras analizar los datos de los papers hemos comprobado que el algoritmo de Lin es el más adecuado.
 
 Por último, ya que hemos modificado el algoritmo de respuestas de forma muy significativa es necesario repetir de nuevo las pruebas.
+
+\subsection{Jornada del 2013/01/31}
+Evaluamos las pruebas y actualizamos la memoria convenientemente. Grabamos el CD con la práctica para su entrega.
 
 \clearpage
 \section{Bibliografía}
